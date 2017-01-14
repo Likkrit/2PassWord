@@ -1,0 +1,390 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Set Page Color Popup</title>
+    <style>
+        body {
+            overflow: hidden;
+            margin: 0px;
+            padding: 0px;
+            font: 12px "open sans", "Helvetica Neue", "Microsoft Yahei", Helvetica, Arial, sans-serif;
+        }
+
+        ul,
+        li {
+            overflow: hidden;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .header {
+            padding: 20px 20px 10px;
+            font-size: 18px;
+            background: #e0e0e0;
+        }
+
+        .header .table {
+            display: table;
+            width: 100%;
+        }
+
+        .header .title {
+            display: table-cell;
+        }
+
+        .header .record {
+            padding-right: 6px;
+            font-size: 12px;
+            line-height: 18px;
+            vertical-align: bottom;
+            display: table-cell;
+            text-align: right;
+            color: #848484;
+            cursor: pointer;
+        }
+
+        .header .record strong {
+            font-size: 18px;
+            font-weight: normal;
+            color: #333;
+            margin-right: 4px;
+        }
+
+        .title-add-item {
+            display: inline-block;
+            padding: 0 10px;
+            color: #000;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .title-back {
+            display: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .container {
+            width: 300px;
+            position: relative;
+            border: 0px solid rgba(0, 0, 0, .1);
+        }
+
+        .body {
+            height: 460px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            /*margin-bottom: 40px;*/
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #38b7ea;
+            border-radius: 3px;
+            padding: 7px 12px;
+            margin: 0 8px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: normal;
+            transition: .2s all ease;
+        }
+
+        .button:hover {
+            background-color: #49c8fb;
+        }
+
+        .button:active {
+            background-color: #219bcc;
+        }
+
+        .button-medium {
+            padding: 8px 20px;
+        }
+
+        .button-default {
+            border: 1px solid #ddd;
+            color: #333;
+            background-color: #fff;
+        }
+
+        .button-default:hover {
+            background-color: #efefef;
+        }
+
+        .button-default:active {
+            background-color: #dddddd;
+        }
+
+        input {
+            display: inline-block;
+            height: 24px;
+            width: 150px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border-color: #DFE3E8;
+            box-shadow: none;
+            color: rgba(53, 64, 82, .8);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        }
+
+        input:focus {
+            box-shadow: none;
+            border-color: #66afe9;
+            outline: 0;
+        }
+
+        label {
+            color: rgba(53, 64, 82, .8);
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .body .box .item {
+            height: 32px;
+            padding: 12px 20px;
+            color: #c7c7c7;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .body .box .item.available {
+            /*background-color: #f7f7f7;*/
+            font-weight: bold;
+        }
+
+        .body .box .item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .box .items {
+            opacity: 0;
+            transition: .5s ease;
+        }
+
+        .box .item .name {
+            display: block;
+            font-size: 14px;
+        }
+
+        .box .item.available .name {
+            color: #000;
+        }
+
+        .box .item .username {
+            display: block;
+            font-weight: normal;
+        }
+
+        .box .item.available .username {
+            color: #848484;
+        }
+
+        .box .item.available .insert {
+            color: #fff;
+        }
+
+        .box .insert-box {
+            /*display: none;*/
+            height: 32px;
+            width: 70px;
+            position: absolute;
+            right: 0;
+            top: 0;
+            margin-top: 15px;
+        }
+
+        .box .available .insert-box {
+            display: block;
+        }
+
+        .box .insert {
+            position: absolute;
+            right: 0;
+            color: #c7c7c7;
+        }
+
+        .box .insert:hover {
+            color: #333;
+        }
+
+        .footer {
+            background-color: #f7f7f7;
+            height: 40px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: none;
+        }
+
+        .footer:hover {
+            background-color: #f1f1f1;
+        }
+
+        .footer:active {
+            background-color: #ebebeb;
+        }
+
+        .footer a {
+            line-height: 40px;
+            margin: 0 auto;
+            display: block;
+            text-align: center;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .item-detail {
+            text-align: center;
+        }
+
+        .item-row {
+            margin: 12px 0;
+        }
+
+        .item-row label {
+            display: inline-block;
+            width: 60px;
+        }
+
+        .successTip {
+            display: flex;
+            display: -webkit-flex;
+            height: 100%;
+            width: 100%;
+            align-items: center;
+            -webkit-align-items: center;
+            justify-content: center;
+            -webkit-justify-content: center;
+            background: rgba(255, 255, 255, .7);
+            font-size: 10rem;
+            color: #77ff9e;
+            position: absolute;
+            top: 0;
+        }
+
+        body .hide {
+            display: none;
+        }
+
+        .trash {
+            font-size: 18px;
+            color: #ff4f4f;
+            font-weight: normal;
+            padding: 5px 20px;
+            cursor: pointer;
+            /*position: absolute;*/
+        }
+        .login-page {
+            display: flex;
+            display: -webkit-flex;
+            display: none;
+            height: 100%;
+            width: 100%;
+            align-items: center;
+            -webkit-align-items: center;
+            justify-content: center;
+            -webkit-justify-content: center;
+            background: rgba(255, 255, 255, .7);
+            color: #77ff9e;
+            position: absolute;
+            top: 0;
+            z-index: 111;
+        }
+    </style>
+    <link rel="stylesheet" href="./css/font-awesome/css/font-awesome.min.css">
+    <script src="popup_bind.js"></script>
+    <script src="popup.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="table">
+                <div class="title">
+                    <span class="title-text">选择一个记录</span>
+                    <span class="title-back"><i class="fa fa-arrow-left" aria-hidden="true"></i></span>
+                    <span class="title-add-item"><i class="fa fa-plus" aria-hidden="true"></i><span>
+                </div>
+                <div class="record"><strong>0</strong>条</div>
+            </div>
+
+        </div>
+        <div class="body">
+            <div class="box">
+              <div class="login-page">
+                <input type="text" name="" value="" placeholder="enter your key" class="key">
+                <span class="button button-medium" data-action="login">
+                  Login
+                </span>
+              </div>
+                <div class="items">
+                    <div class="item available">
+                        <span class="name">test</span>
+                    <span class="username">test@qq.com</span>
+                    <div class="insert-box">
+                        <span class="button insert">插入</span></div>
+                </div>
+                <div class="item available">
+                    <span class="name">test</span>
+                    <span class="username">test@qq.com</span>
+                    <div class="insert-box">
+                        <span class="insert">插入</span></div>
+                </div>
+                <div class="item">test</div>
+                <div class="item">test</div>
+                <div class="item">test</div>
+                <div class="item">test</div>
+            </div>
+            <div class="item-detail" style="display:none">
+                <div class="item-row">
+                    <label>ID</label><input class="id" value="test">
+                </div>
+                <div class="item-row">
+                    <label>Name</label><input class="name" value="test">
+                </div>
+                <div class="item-row">
+                    <label>UserName</label><input class="user-name" value="test">
+                </div>
+                <div class="item-row">
+                    <label>PassWord</label><input class="pass-word" type="password" value="test">
+                </div>
+                <div class="item-row">
+                    <label>Other</label><input class="other" value="test">
+                </div>
+                <div class="item-row">
+                    <label>host</label><input class="host" value="test">
+                </div>
+                <div class="item-row">
+                    <label>Input1</label><input class="input-id1" value="test">
+                </div>
+                <div class="item-row">
+                    <label>Input2</label><input class="input-id2" value="test">
+                </div>
+                <div class="item-row">
+                    <span class="button button-medium save" data-action="save">保存</span>
+                    <span class="button button-medium button-default close" data-action="close">关闭</span>
+                    <span class="trash">
+                      <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="successTip hide">
+        <i class="fa fa-check" aria-hidden="true"></i>
+    </div>
+    <div class="footer">
+        <a class="exit-button">退出</a>
+    </div>
+    </div>
+</body>
+
+</html>

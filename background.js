@@ -1,0 +1,267 @@
+
+// 消息传递函数
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  // if (sender.tab) {}  来自content script  sender.tab.url
+  if (request.type == "getItems") {
+    sendResponse(background.getItems(request.url));
+  // } else if (request.type == "getItemDetail") {
+  //   var a = background.getItemDetail(request.dataId);
+  //   sendResponse(a);
+  }
+});
+
+var connecting;
+// 消息传递通道
+chrome.runtime.onConnect.addListener(function(port) {
+  connecting = true;
+  if (port.name == "addItem") {
+    port.onMessage.addListener(function(request) {
+      background.addItem(request.newItem, function() {
+        if (connecting)
+          port.postMessage({
+            msg: "ok"
+          });
+      });
+    });
+  } else if (port.name == "deleteItem") {
+    port.onMessage.addListener(function(request) {
+      background.deleteItem(request.itemId, function() {
+        if (connecting)
+          port.postMessage({
+            msg: "ok"
+          });
+      });
+    });
+  } else if (port.name == "pullItems") {
+    port.onMessage.addListener(function(request) {
+      background.pullItems(function() {
+        if (connecting)
+          port.postMessage({
+            msg: "ok",
+            items: background.items
+          });
+      });
+    });
+  }else if (port.name == "sendKey") {
+    port.onMessage.addListener(function(request) {
+      background.key = request.key;
+      localStorage.privateKey = request.key;
+      background.pullItems(function() {
+        if (connecting)
+          port.postMessage({
+            msg: "ok",
+            items: background.items
+          });
+      });
+    });
+  }
+  port.onDisconnect.addListener(function(port) {
+    connecting = false;
+  });
+});
+
+// 当一个标签加载完成时，此事件触发
+// 用于显示当前浏览标签是否有记录下的用户名密码
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+  if (changeInfo.status != "loading") {
+    return false;
+  }
+  var url = tab.url || "";
+  if (!background.items)
+    return;
+  for (var i = 0; i < background.items.length; i++) {
+    if (background.items[i].name && url.indexOf(background.items[i].name) > 0 || url.indexOf(background.items[i].host) > 0) {
+      chrome.browserAction.setIcon({
+        path: "images/page_64.png",
+        tabId: tabId
+      });
+      return;
+    }
+  }
+});
+
+
+var background = {
+  items: [],
+  key : '',
+  // url : '/collect-******',
+  getUrl : function(){
+    var a = CryptoJS.MD5(background.key).toString().toUpperCase();
+    a = localStorage.url + 'collect-'+ a.slice(a.length - 7);
+    return a;
+  },
+  getItems: function(url) {
+    if (url) {
+      var temp = clones(this.items);
+      var items = [];
+      for (var i = 0; i < temp.length; i++) {
+        if (url.indexOf(temp[i].name) > 0 || url.indexOf(temp[i].host) > 0) {
+          temp[i].available = true;
+          items.push(temp[i]);
+        }
+      }
+      for (i = 0; i < temp.length; i++) {
+        if (!temp[i].available) {
+          items.push(temp[i]);
+        }
+      }
+      return items;
+    }
+  },
+  pullItems: function(callback) {
+    var that = this;
+    callback = callback || function(){};
+    reqwest({
+      url: background.getUrl() + "/data.json?" + new Date().getTime(),
+      // url: "/collect-******/data.json?" + new Date().getTime(),
+      method: 'GET',
+      success: function(response) {
+        var i, temp, decrypted, name, host, updateTime, userName, passWord, other, inputId1, inputId2, newItem,
+          items = [];
+        for (i in response) {
+          user = pw = other = '';
+          temp = decodeURIComponent(response[i]);
+          temp = JSON.parse(temp);
+
+          name = temp.name || '';
+          host = temp.host || '';
+          updateTime = temp.updateTime || '';
+
+          temp = DES.decrypt(temp.items, background.key) || '';
+          temp = temp.split(',');
+
+          userName = temp[0] || '';
+          passWord = temp[1] || '';
+          other = temp[2] || '';
+          inputId1 = temp[3] || '';
+          inputId2 = temp[4] || '';
+
+          newItem = {
+            "id": i,
+            "name": name,
+            "host": host,
+            "updateTime": updateTime,
+            "userName": userName,
+            "passWord": passWord,
+            "other": other,
+            "inputId1": inputId1,
+            "inputId2": inputId2,
+          };
+          items.push(newItem);
+
+        }
+
+        that.items = items.reverse();
+        callback();
+      }
+    });
+  },
+  addItem: function(newItem, callback) {
+    var packed, packedEncryped, data = {},
+      that = this;
+    var now = newItem.id || new Date().getTime();
+    packed = newItem.userName + ',' + newItem.passWord + ',' + newItem.other + ',' + newItem.inputId1 + ',' + newItem.inputId2;
+    packedEncryped = DES.encrypt(packed, background.key);
+    newItem = {
+      name: newItem.name,
+      host: newItem.host,
+      updateTime: new Date().getTime(),
+      items: packedEncryped
+    };
+    data[now] = encodeURIComponent(JSON.stringify(newItem));
+    reqwest({
+      url: background.getUrl() + "/data.json",
+      // url: "/collect-******/data.json",
+      method: 'PATCH',
+      data: JSON.stringify(data),
+      success: function(resp) {
+        that.pullItems();
+        callback();
+        console.log('success');
+      }
+    });
+  },
+  deleteItem: function(itemId, callback) {
+    var that = this;
+    reqwest({
+      url: background.getUrl() + "/data/" + itemId + ".json",
+      // url: "/collect-******/data/" + itemId + ".json",
+      method: 'DELETE',
+      success: function(resp) {
+        that.pullItems();
+        callback();
+        console.log('success');
+      },
+      error: function(err) {
+        console.log(err);
+      }
+    });
+  }
+
+};
+
+var DES = {
+  encrypt: function(message, key) {
+    // des加密解密 js与java版
+    // https://gist.github.com/ufologist/5581486
+    // https://www.douban.com/note/276592520/
+    var keyHex = CryptoJS.enc.Utf8.parse(key);
+    var encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    return encrypted.toString();
+  },
+  decrypt: function(ciphertext, key) {
+    var keyHex = CryptoJS.enc.Utf8.parse(key);
+
+    var decrypted = CryptoJS.DES.decrypt({
+      ciphertext: CryptoJS.enc.Base64.parse(ciphertext)
+    }, keyHex, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    return decrypted.toString(CryptoJS.enc.Utf8);
+  }
+};
+
+
+var reqwesJ = function(url, openType, successCallback, errorCallback) {
+  var xmlhttp = null;
+  openType = openType || 'GET';
+  successCallback = successCallback || function(responseText) {};
+  errorCallback = errorCallback || function(errorCode) {};
+  if (window.XMLHttpRequest) {
+    xmlhttp = new XMLHttpRequest();
+  } else if (window.ActiveXObject) {
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  if (xmlhttp !== null) {
+    xmlhttp.onreadystatechange = function() {
+      if (xmlhttp.readyState == 4) {
+        if (xmlhttp.status == 200) {
+          var responseData = null;
+          try {
+            responseData = JSON.parse(xmlhttp.responseText);
+          } catch (e) {
+            errorCallback(99);
+            return;
+          }
+          successCallback(responseData);
+        } else {
+          errorCallback(xmlhttp.status);
+        }
+      } else {}
+    };
+    xmlhttp.open(openType, url, true);
+    xmlhttp.send(null);
+  } else {
+    errorCallback(0);
+  }
+};
+
+var clones = function(myJSON) {
+  var myNewJSON = JSON.stringify(myJSON);
+  myNewJSON = JSON.parse(myNewJSON);
+  return myNewJSON;
+};

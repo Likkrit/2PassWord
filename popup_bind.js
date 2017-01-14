@@ -3,13 +3,50 @@
 // found in the LICENSE file.
 
 
-document.addEventListener('DOMContentLoaded', function() {
+$(document).ready(function(){
+
+
+
+// document.addEventListener('DOMContentLoaded', function() {
   // 弹出opUp
-
   // 冒泡 注册插入点击事件
-  var divs = document.querySelector('body');
-  divs.addEventListener('click', click);
+  // var divs = document.querySelector('body');
+  // divs.addEventListener('click', click);
 
+  $('#add').on('click',function(){
+    $('#page')
+      .transition('scale')
+    ;
+    $('#items')
+      .transition('hide')
+    ;
+  });
+
+  $('#items').on('click','.item',function(){
+    var dataId = $(this).attr('data-id');
+    var item = popUp.getItemFromPopUp(dataId);
+    if(item){
+      $('#page')
+        .transition('scale')
+      ;
+      $('#items')
+        .transition('hide')
+      ;
+      popUp.renderItemDetail(item);
+      // popUp.enterDetailPage(item);
+    }
+  });
+
+  // 获取当前标签页URL
+  chrome.tabs.getSelected(function(tab) {
+    popUp.url = tab.url || "";
+    popUp.getItemsFromBackground(popUp.url);
+  });
+
+
+
+});
+/*
   // 密码框 鼠标移入移出事件
   var passwordInput = document.querySelector(".item-detail .pass-word");
   passwordInput.addEventListener('mouseover', function(){
@@ -34,15 +71,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector(".login-page").style.display = "flex";
   }
 
-  // 获取当前标签页URL
-  chrome.tabs.getSelected(function(tab) {
-    popUp.url = tab.url || "";
-    popUp.getItemsFromBackground(popUp.url);
-  });
-});
 
 
-function click(e) {
+
+function click2(e) {
   var dataId;
   // 关闭按钮 点击事件
   if (e.target.getAttribute("data-action") == "close") {
@@ -118,3 +150,4 @@ function click(e) {
   // window.close();
 
 }
+*/

@@ -73,12 +73,28 @@ var popUp = {
     response = response || [];
     popUp.items = response;
     for (var i = 0; i < response.length; i++) {
-      if (response[i].available) {
+      /*if (response[i].available) {
         availableNum++;
+
         itemStr += '<div class="item available" data-id=' + response[i].id + '>';
       } else {
         itemStr += '<div class="item" data-id=' + response[i].id + '>';
-      }
+      }*/
+
+      itemStr += '<div class="item" data-id=' + response[i].id + '>';
+      itemStr += '<div class="right floated content"><div class="ui button">Add</div></div>';
+      itemStr += '<div class="content">';
+      itemStr += '<div class="header">';
+      itemStr += response[i].name;
+      itemStr += '</div>';
+      itemStr += '<div class="meta"><p>';
+      itemStr += response[i].userName;
+      itemStr += '</p>';
+      itemStr += '</div>';
+      itemStr += '</div>';
+      itemStr += '</div>';
+
+      /*
       itemStr += '<span class="name">' + response[i].name + '</span>';
       itemStr += '<span class="username">' + response[i].userName + '</span>';
       if (response[i].inputId1 && response[i].inputId2 && response[i].available) {
@@ -86,14 +102,14 @@ var popUp = {
       } else if (response[i].inputId1 && response[i].inputId2) {
         itemStr += '<div class="insert-box"><span class="button button-default insert">填入</span></div>';
       }
-      itemStr += '</div>';
+      itemStr += '</div>'; */
     }
-    document.querySelector('.items').innerHTML = itemStr;
+    document.querySelector('#items').innerHTML = itemStr;
 
     // if(availableNum)
     document.querySelector('.record strong').innerHTML = i;
 
-    document.querySelector('.box .items').style.opacity = 1;
+    // document.querySelector('.box .items').style.opacity = 1;
   },
   // 增加一个条目
   addItem: function(newItem) {
@@ -164,14 +180,14 @@ var popUp = {
     document.querySelector(".item-detail").style.display = "none";
   },
   renderItemDetail: function(obj) {
-    document.querySelector(".item-detail .id").value = obj.id || '';
-    document.querySelector(".item-detail .name").value = obj.name || '';
-    document.querySelector(".item-detail .user-name").value = obj.userName || '';
-    document.querySelector(".item-detail .pass-word").value = obj.passWord || '';
-    document.querySelector(".item-detail .other").value = obj.other || '';
-    document.querySelector(".item-detail .host").value = obj.host || '';
-    document.querySelector(".item-detail .input-id1").value = obj.inputId1 || '';
-    document.querySelector(".item-detail .input-id2").value = obj.inputId2 || '';
+    document.querySelector("[name=id]").value = obj.id || '';
+    document.querySelector("[name=name]").value = obj.name || '';
+    document.querySelector("[name=username]").value = obj.userName || '';
+    document.querySelector("[name=password]").value = obj.passWord || '';
+    document.querySelector("[name=other]").value = obj.other || '';
+    document.querySelector("[name=host]").value = obj.host || '';
+    document.querySelector("[name=input1]").value = obj.inputId1 || '';
+    document.querySelector("[name=input2]").value = obj.inputId2 || '';
   }
 };
 

@@ -85,15 +85,16 @@ var background = {
   items: [],
   key : '',
   // url : '/collect-******',
-  getUrl : function(){
+  getDatabase : function(){
     var a = CryptoJS.MD5(background.key).toString().toUpperCase();
-    a = localStorage.url + 'collect-'+ a.slice(a.length - 7);
+    a = 'http://' + localStorage.url + 'collect-'+ a.slice(a.length - 7);
     return a;
   },
+  // 获取指定tab url的账户列表，列表根据url排序过
   getItems: function(url) {
     if (url) {
-      var temp = clones(this.items);
       var items = [];
+      var temp = clones(this.items);
       for (var i = 0; i < temp.length; i++) {
         if (url.indexOf(temp[i].name) > 0 || url.indexOf(temp[i].host) > 0) {
           temp[i].available = true;
@@ -108,11 +109,12 @@ var background = {
       return items;
     }
   },
+  // 从服务器刷新列表
   pullItems: function(callback) {
     var that = this;
     callback = callback || function(){};
     reqwest({
-      url: background.getUrl() + "/data.json?" + new Date().getTime(),
+      url: background.getDatabase() + "/data.json?" + new Date().getTime(),
       // url: "/collect-******/data.json?" + new Date().getTime(),
       method: 'GET',
       success: function(response) {
@@ -156,6 +158,7 @@ var background = {
       }
     });
   },
+  // 增加一个条目（需要增加的条目数组, 回调函数）
   addItem: function(newItem, callback) {
     var packed, packedEncryped, data = {},
       that = this;
@@ -170,7 +173,7 @@ var background = {
     };
     data[now] = encodeURIComponent(JSON.stringify(newItem));
     reqwest({
-      url: background.getUrl() + "/data.json",
+      url: background.getDatabase() + "/data.json",
       // url: "/collect-******/data.json",
       method: 'PATCH',
       data: JSON.stringify(data),
@@ -181,10 +184,11 @@ var background = {
       }
     });
   },
+  // 删除列表（条目id, 回调函数）
   deleteItem: function(itemId, callback) {
     var that = this;
     reqwest({
-      url: background.getUrl() + "/data/" + itemId + ".json",
+      url: background.getDatabase() + "/data/" + itemId + ".json",
       // url: "/collect-******/data/" + itemId + ".json",
       method: 'DELETE',
       success: function(resp) {
@@ -200,6 +204,7 @@ var background = {
 
 };
 
+// DES函数封装
 var DES = {
   encrypt: function(message, key) {
     // des加密解密 js与java版
@@ -260,8 +265,9 @@ var reqwesJ = function(url, openType, successCallback, errorCallback) {
   }
 };
 
-var clones = function(myJSON) {
-  var myNewJSON = JSON.stringify(myJSON);
-  myNewJSON = JSON.parse(myNewJSON);
-  return myNewJSON;
+// 对象克隆
+var clones = function(obj) {
+  var newObj = JSON.stringify(obj);
+  newObj = JSON.parse(newObj);
+  return newObj;
 };

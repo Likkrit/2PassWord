@@ -17,6 +17,23 @@ var popUp = {
       }
     });
   },
+
+  getItemsFromBackground: function(url) {
+    var port = chrome.runtime.connect({
+      name: "getItems"
+    });
+    port.postMessage({
+      url: url
+    });
+    port.onMessage.addListener(function(result) {
+      if (result.msg == 'ok') {
+        popUp.render(result.items);
+      }
+      else{
+        popUp.showTip('error!');
+      }
+    });
+  },
   getItemJSONFromPopUp: function(id) {
     console.log(this.items);
     for (var i = 0; i < this.items.length; i++) {
@@ -25,15 +42,6 @@ var popUp = {
       }
     }
     return null;
-  },
-  getItemsFromBackground: function(url) {
-    chrome.runtime.sendMessage({
-        type: "getItems",
-        url: url
-      },
-      function(response) {
-        popUp.render(response);
-      });
   },
   // 获取条目详情
   getItemFromPopUp: function(dataId) {
@@ -99,7 +107,7 @@ var popUp = {
         popUp.getItemsFromBackground();
       }
       else{
-        popUp.showTip('error');
+        popUp.showTip('Network error!');
       }
     });
   },
@@ -118,13 +126,13 @@ var popUp = {
         popUp.getItemsFromBackground();
       }
       else{
-        popUp.showTip('error');
+        popUp.showTip('Network error!');
       }
     });
   },
 
   showTip : function(type){
-    if(type == 'error'){
+    if(type){
       $('.ui.dimmer .ui.header').removeClass('green').addClass('red');
       $('.ui.dimmer i.icon').removeClass('checkmark').addClass('remove');
       $('.dimmer.text').text('Network error!');

@@ -1,20 +1,39 @@
 
 // 消息传递函数
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   // if (sender.tab) {}  来自content script  sender.tab.url
-  if (request.type == "getItems") {
-    sendResponse(background.getItems(request.url));
+  // if (request.type == "getItems") {
+    // sendResponse(background.getItems(request.url));
   // } else if (request.type == "getItemDetail") {
   //   var a = background.getItemDetail(request.dataId);
   //   sendResponse(a);
-  }
-});
+  // }
+// });
 
 var connecting;
 // 消息传递通道
 chrome.runtime.onConnect.addListener(function(port) {
   connecting = true;
-  if (port.name == "addItem") {
+  if (port.name == "getItems") {
+    port.onMessage.addListener(function(request) {
+      background.getItems(request.url, function(result) {
+        if (connecting){
+          if(result.msg == 'ok'){
+            port.postMessage({
+              msg: "ok",
+              items: result.items
+            });
+          }
+          else{
+            port.postMessage({
+              msg: "error"
+            });
+          }
+        }
+      });
+    });
+  }
+  else if (port.name == "addItem") {
     port.onMessage.addListener(function(request) {
       background.addItem(request.newItem, function(result) {
         if (connecting){
@@ -107,7 +126,11 @@ var background = {
     return a;
   },
   // 获取指定tab url的账户列表，列表根据url排序过
-  getItems: function(url) {
+  getItems: function(url,callback) {
+    if(this.items.length === 0){
+      this.pullItems(callback);
+      return;
+    }
     if (url) {
       var items = [];
       var temp = clones(this.items);
@@ -122,9 +145,10 @@ var background = {
           items.push(temp[i]);
         }
       }
-      return items;
+      callback({msg:'ok',items:items});
+      return;
     }
-    return this.items;
+    callback({msg:'ok',items:this.items});
   },
   // 从服务器刷新列表
   pullItems: function(callback) {
@@ -170,7 +194,8 @@ var background = {
         }
         that.items = items.reverse();
         console.log('success');
-        callback({msg:'ok'});
+
+        callback({msg:'ok',items:that.items});
       },
       error:function(err){
         callback({msg:err});

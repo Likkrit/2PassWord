@@ -1,7 +1,4 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
+// @see https://github.com/likkrit
 
 var popUp = {
   url: '',
@@ -21,6 +18,7 @@ var popUp = {
     });
   },
   getItemJSONFromPopUp: function(id) {
+    console.log(this.items);
     for (var i = 0; i < this.items.length; i++) {
       if (this.items[i].id == id) {
         return JSON.stringify(this.items[i]);
@@ -46,9 +44,7 @@ var popUp = {
     }
   },
   // 从服务器重新抓取数据
-  refreshItems: function() {
-    document.querySelector('.record strong').innerHTML = "?";
-
+  pullItems: function() {
     var port = chrome.runtime.connect({
       name: "pullItems"
     });
@@ -56,33 +52,24 @@ var popUp = {
       data: 'go'
     });
     port.onMessage.addListener(function(result) {
-      console.log(result);
       if (result.msg == 'ok') {
-        document.querySelector(".successTip").className = "successTip";
-        setTimeout(function() {
-          document.querySelector(".successTip").className = "successTip hide";
-          popUp.render(result.items);
-        }, 700);
+        popUp.render(result.items);
       }
     });
   },
+
   // 显示条目
   render: function(response) {
-    var itemStr = '',
-      availableNum = 0;
+    var itemStr = '';
     response = response || [];
     popUp.items = response;
     for (var i = 0; i < response.length; i++) {
-      /*if (response[i].available) {
-        availableNum++;
-
-        itemStr += '<div class="item available" data-id=' + response[i].id + '>';
-      } else {
-        itemStr += '<div class="item" data-id=' + response[i].id + '>';
-      }*/
-
       itemStr += '<div class="item" data-id=' + response[i].id + '>';
-      itemStr += '<div class="right floated content"><div class="ui button">Add</div></div>';
+      if (response[i].available)
+        itemStr += '<div class="right floated content"><div class="ui positive button insert">Add</div></div>';
+      else {
+        itemStr += '<div class="right floated content"><div class="ui button insert">Add</div></div>';
+      }
       itemStr += '<div class="content">';
       itemStr += '<div class="header">';
       itemStr += response[i].name;
@@ -93,23 +80,9 @@ var popUp = {
       itemStr += '</div>';
       itemStr += '</div>';
       itemStr += '</div>';
-
-      /*
-      itemStr += '<span class="name">' + response[i].name + '</span>';
-      itemStr += '<span class="username">' + response[i].userName + '</span>';
-      if (response[i].inputId1 && response[i].inputId2 && response[i].available) {
-        itemStr += '<div class="insert-box"><span class="button insert">填入</span></div>';
-      } else if (response[i].inputId1 && response[i].inputId2) {
-        itemStr += '<div class="insert-box"><span class="button button-default insert">填入</span></div>';
-      }
-      itemStr += '</div>'; */
     }
     document.querySelector('#items').innerHTML = itemStr;
 
-    // if(availableNum)
-    document.querySelector('.record strong').innerHTML = i;
-
-    // document.querySelector('.box .items').style.opacity = 1;
   },
   // 增加一个条目
   addItem: function(newItem) {
@@ -119,17 +92,11 @@ var popUp = {
     port.postMessage({
       newItem: newItem
     });
-
     port.onMessage.addListener(function(result) {
-      console.log(result);
       if (result.msg == 'ok') {
-        document.querySelector(".successTip").className = "successTip";
-        setTimeout(function() {
-          document.querySelector(".successTip").className = "successTip hide";
+        popUp.showTip();
           // 重新拿数据
-          popUp.getItemsFromBackground(popUp.url);
-          popUp.outDetailPage();
-        }, 700);
+        popUp.getItemsFromBackground();
       }
     });
   },
@@ -144,42 +111,44 @@ var popUp = {
     });
     port.onMessage.addListener(function(result) {
       if (result.msg == 'ok') {
-        document.querySelector(".successTip").className = "successTip";
-        setTimeout(function() {
-          document.querySelector(".successTip").className = "successTip hide";
-          // 重新拿数据
-          popUp.getItemsFromBackground(popUp.url);
-          popUp.outDetailPage();
-        }, 700);
+        popUp.showTip();
+        popUp.getItemsFromBackground();
       }
     });
   },
-  enterDetailPage: function(obj) {
-    popUp.renderItemDetail(obj);
-    document.querySelector(".title-text").style.display = "none";
-    document.querySelector(".title-add-item").style.display = "none";
-    document.querySelector(".title-back").style.display = "inline";
 
-    document.querySelector(".items").style.display = "none";
-    document.querySelector(".item-detail").style.display = "block";
+  showTip : function(){
+    $('#page form').removeClass('loading');
+    $('.ui.dimmer')
+      .dimmer('show')
+    ;
+    setTimeout(function() {
+      $('.ui.dimmer')
+        .dimmer('hide')
+      ;
+      popUp.renderPage({
+        name: '',
+        userName: '',
+        passWord: '',
+        inputId1: '',
+        inputId2: ''
+      });
+      $('#page')
+        .transition('hide');
+      $('#items')
+        .transition('fade right');
+      $('#add')
+        .css({
+          'visibility': 'visible'
+        });
+      $('#back')
+        .css({
+          'visibility': 'hidden'
+        });
+
+    }, 1000);
   },
-
-  outDetailPage: function() {
-    popUp.renderItemDetail({
-      name: '',
-      userName: '',
-      passWord: '',
-      inputId1: '',
-      inputId2: ''
-    });
-
-    document.querySelector(".title-text").style.display = "";
-    document.querySelector(".title-add-item").style.display = "inline-block";
-    document.querySelector(".title-back").style.display = "none";
-    document.querySelector(".items").style.display = "block";
-    document.querySelector(".item-detail").style.display = "none";
-  },
-  renderItemDetail: function(obj) {
+  renderPage: function(obj) {
     document.querySelector("[name=id]").value = obj.id || '';
     document.querySelector("[name=name]").value = obj.name || '';
     document.querySelector("[name=username]").value = obj.userName || '';

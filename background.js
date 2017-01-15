@@ -83,7 +83,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 
 var background = {
   items: [],
-  key : '',
+  key : localStorage.privateKey,
   // url : '/collect-******',
   getDatabase : function(){
     var a = CryptoJS.MD5(background.key).toString().toUpperCase();
@@ -108,6 +108,7 @@ var background = {
       }
       return items;
     }
+    return this.items;
   },
   // 从服务器刷新列表
   pullItems: function(callback) {
@@ -150,9 +151,7 @@ var background = {
             "inputId2": inputId2,
           };
           items.push(newItem);
-
         }
-
         that.items = items.reverse();
         callback();
       }
@@ -178,8 +177,7 @@ var background = {
       method: 'PATCH',
       data: JSON.stringify(data),
       success: function(resp) {
-        that.pullItems();
-        callback();
+        that.pullItems(callback);
         console.log('success');
       }
     });
@@ -192,8 +190,7 @@ var background = {
       // url: "/collect-******/data/" + itemId + ".json",
       method: 'DELETE',
       success: function(resp) {
-        that.pullItems();
-        callback();
+        that.pullItems(callback);
         console.log('success');
       },
       error: function(err) {
@@ -271,3 +268,4 @@ var clones = function(obj) {
   newObj = JSON.parse(newObj);
   return newObj;
 };
+background.pullItems();

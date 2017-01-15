@@ -1,184 +1,149 @@
 <!doctype html>
 <html>
 
-<head>
-  <title>Set Page Color Popup</title>
-  <link rel="stylesheet" href="./js/semantic/semantic.css">
-  <script type="text/javascript" src="./js/jquery.min.js"></script>
-  <script type="text/javascript" src="./js/semantic/semantic.js"></script>
-  <script src="popup_bind.js"></script>
-  <script src="popup.js"></script>
-  <style>
-    body {
-      overflow-y: hidden;
-      height: 41.4rem;
-    }
+  <head>
+    <title>2PassWord Popup</title>
+    <link rel="stylesheet" href="./js/semantic/semantic.css">
+    <script type="text/javascript" src="./js/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/semantic/semantic.js"></script>
+    <script src="popup_bind.js"></script>
+    <script src="popup.js"></script>
+    <style>
+      body {
+        overflow-y: hidden;
+        height: 38.4rem;
+      }
+      .body {
+        overflow-y: scroll;
+        height: 35rem;
+      }
+      #header {
+        padding: 1.2rem 0.5rem;
+        width: 100%;
+        font-size: 1.3rem;
+        background: #e0e0e0;
+        line-height: 1rem;
+        height: 3.4rem;
+      }
+      #header .title {
+        text-align: center;
+      }
+      .ui.list:first-child {
+        padding-top: 0.21428571em;
+      }
+      .ui.list .item {
+        padding-left: 0.7em;
+      }
+      .title .icon {
+        cursor: pointer;
+      }
+      #add {
+        float: right;
+      }
+      #back {
+        float: left;
+        visibility: hidden;
+      }
+      #page {
+        padding: 1rem;
+      }
+      .actions {
+        text-align: right;
+      }
+    </style>
+  </head>
 
-    .body {
-      overflow-y: scroll;
-      height: 38rem;
-    }
-
-    #header {
-      padding: 1.2rem 0.5rem;
-      width: 100%;
-      font-size: 1.3rem;
-      background: #e0e0e0;
-      line-height: 1rem;
-      height: 3.4rem;
-    }
-
-    #header .title {
-      text-align: center;
-    }
-
-    #header .record {
-      padding-right: 6px;
-      font-size: 12px;
-      line-height: 18px;
-      vertical-align: bottom;
-      display: table-cell;
-      text-align: right;
-      color: #848484;
-      cursor: pointer;
-    }
-
-    #header .record strong {
-      font-size: 18px;
-      font-weight: normal;
-      color: #333;
-      margin-right: 4px;
-    }
-
-    #title-add-item {
-      display: inline-block;
-      padding: 0 10px;
-      color: #000;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    .ui.list:first-child {
-      padding-top: 0.21428571em;
-    }
-
-    .ui.list .item {
-      padding-left: 0.7em;
-    }
-
-    .hide {
-      display: none!important;
-    }
-
-    #add {
-      cursor: pointer;
-    }
-
-    #page {
-      padding: 1rem;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="container">
-    <div id="header">
-      <div class="title">
-        <span class="title-text">2PassWord</span>
-        <i id="add" class="add square icon" style="float:right"></i>
-        <span class="title-back hide"><i class="fa fa-arrow-left" aria-hidden="true"></i></span>
-        <span class="title-add-item hide"><i class="fa fa-plus" aria-hidden="true"></i><span>
-                </div>
-                <div class="record hide"><strong>0</strong>条</div>
+  <body>
+    <div class="container">
+      <div id="header">
+        <div class="title">
+          <i id="back" class="angle left icon"></i>
+          <span class="title-text">2PassWord</span>
+          <i id="add" class="plus square outline icon"></i>
         </div>
-
-
-        <div class="body">
-          <div id="items" class="ui middle aligned divided selection list">
-            <div class="item">
-              <div class="right floated content">
-                <div class="ui button">Add</div>
-              </div>
-              <div class="content">
-                <div class="header">New York City</div>
-                <div class="meta">
-                  <p>Input your link address here.</p>
-                </div>
+      </div>
+      <div class="body">
+        <div id="items" class="ui middle aligned divided selection list transition hidden">
+          <div class="item">
+            <div class="right floated content">
+              <div class="ui button">Add</div>
+            </div>
+            <div class="content">
+              <div class="header">New York City</div>
+              <div class="meta">
+                <p>Input your link address here.</p>
               </div>
             </div>
-            <div class="item">
-              <div class="right floated content">
-                <div class="ui button">Add</div>
-              </div>
-              <div class="content">
-                Lindsay
+          </div>
+          <div class="item">
+            <div class="right floated content">
+              <div class="ui button">Add</div>
+            </div>
+            <div class="content">
+              Test
+            </div>
+          </div>
+        </div>
+        <div id="page" class="ui transition hidden">
+          <div class="ui page inverted dimmer">
+            <div class="content">
+              <div class="center">
+                <h3 class="ui green icon header">
+                  <i class="checkmark icon"></i>
+                  Success Message!
+                </h3>
               </div>
             </div>
+          </div>
+          <form class="ui form">
+            <div class="inline field">
+              <label class="four wide field">ID</label>
+              <input class="eleven wide field" type="text" name="id" placeholder="ID">
+            </div>
+            <div class="inline field">
+              <label class="four wide field">Name</label>
+              <input class="eleven wide field" type="text" name="name" placeholder="Name">
+            </div>
+            <div class="inline field">
+              <label class="four wide field">UserName</label>
+              <input class="eleven wide field" type="text" name="username" placeholder="UserName">
+            </div>
+            <div class="inline field">
+              <label class="four wide field">PassWord</label>
+              <input class="eleven wide field" type="password" name="password" placeholder="PassWord">
+            </div>
+            <div class="inline field">
+              <label class="four wide field">Other</label>
+              <input class="eleven wide field" type="text" name="other" placeholder="Other">
+            </div>
+            <div class="inline field">
+              <label class="four wide field">host</label>
+              <input class="eleven wide field" type="text" name="host" placeholder="host">
+            </div>
+            <div class="inline field">
+              <label class="four wide field">Input1</label>
+              <input class="eleven wide field" type="text" name="input1" placeholder="Input1">
+            </div>
+            <div class="inline field">
+              <label class="four wide field">Input2</label>
+              <input class="eleven wide field" type="text" name="input2" placeholder="Input2">
+            </div>
+            <div class="actions field">
 
-
-
-  </div>
-
-
-
-
-                <form id="page" class="ui form transition hidden">
-                  <div class="inline field">
-                    <label class="three wide field">ID</label>
-                    <input class="twelve wide field" type="text" name="id" placeholder="ID">
-                  </div>
-                  <div class="inline field">
-                    <label class="three wide field">Name</label>
-                    <input class="twelve wide field" type="text" name="name" placeholder="Name">
-                  </div>
-                  <div class="inline field">
-                    <label class="three wide field">UserName</label>
-                    <input class="twelve wide field" type="text" name="username" placeholder="UserName">
-                  </div>
-                  <div class="inline field">
-                    <label class="three wide field">PassWord</label>
-                    <input class="twelve wide field" type="password" name="password" placeholder="PassWord">
-                  </div>
-                  <div class="inline field">
-                    <label class="three wide field">Other</label>
-                    <input class="twelve wide field" type="text" name="other" placeholder="Other">
-                  </div>
-                  <div class="inline field">
-                    <label class="three wide field">host</label>
-                    <input class="twelve wide field" type="text" name="host" placeholder="host">
-                  </div>
-                  <div class="inline field">
-                    <label class="three wide field">Input1</label>
-                    <input class="twelve wide field" type="text" name="input1" placeholder="Input1">
-                  </div>
-                  <div class="inline field">
-                    <label class="three wide field">Input2</label>
-                    <input class="twelve wide field" type="text" name="input2" placeholder="Input2">
-                  </div>
-                  <div class="actions field">
-                    <div class="ui positive right labeled icon button right floated">
-                      Yep
-                      <i class="checkmark icon"></i>
-                    </div>
-                    <div class="ui black deny button right floated">
-                      Nope
-                    </div>
-                  </div>
-                </form>
-
-
-
-
-  <div class="successTip hide">
-    <i class="fa fa-check" aria-hidden="true"></i>
-  </div>
-
-  </div>
-
-
-
-
-
-</body>
-
+              <div id="cancel" class="ui black deny button">
+                No
+              </div>
+              <div id="delete" class="ui red deny button">
+                Delete
+              </div>
+              <div id="sumit" class="ui positive right labeled icon button">
+                Yes
+                <i class="checkmark icon"></i>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

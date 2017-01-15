@@ -98,6 +98,9 @@ var popUp = {
           // 重新拿数据
         popUp.getItemsFromBackground();
       }
+      else{
+        popUp.showTip('error');
+      }
     });
   },
 
@@ -114,10 +117,29 @@ var popUp = {
         popUp.showTip();
         popUp.getItemsFromBackground();
       }
+      else{
+        popUp.showTip('error');
+      }
     });
   },
 
-  showTip : function(){
+  showTip : function(type){
+    if(type == 'error'){
+      $('.ui.dimmer .ui.header').removeClass('green').addClass('red');
+      $('.ui.dimmer i.icon').removeClass('checkmark').addClass('remove');
+      $('.dimmer.text').text('Network error!');
+
+      $('#page form').removeClass('loading');
+      $('.ui.dimmer')
+        .dimmer('show')
+      ;
+      return;
+    }
+
+    $('.ui.dimmer .ui.header').removeClass('red').addClass('green');
+    $('.ui.dimmer i.icon').removeClass('remove').addClass('checkmark');
+    $('.dimmer.text').text('Success Message!');
+
     $('#page form').removeClass('loading');
     $('.ui.dimmer')
       .dimmer('show')
@@ -145,7 +167,6 @@ var popUp = {
         .css({
           'visibility': 'hidden'
         });
-
     }, 1000);
   },
   renderPage: function(obj) {

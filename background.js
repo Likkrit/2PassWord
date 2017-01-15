@@ -16,20 +16,36 @@ chrome.runtime.onConnect.addListener(function(port) {
   connecting = true;
   if (port.name == "addItem") {
     port.onMessage.addListener(function(request) {
-      background.addItem(request.newItem, function() {
-        if (connecting)
-          port.postMessage({
-            msg: "ok"
-          });
+      background.addItem(request.newItem, function(result) {
+        if (connecting){
+          if(result.msg == 'ok'){
+            port.postMessage({
+              msg: "ok"
+            });
+          }
+          else{
+            port.postMessage({
+              msg: "error"
+            });
+          }
+        }
       });
     });
   } else if (port.name == "deleteItem") {
     port.onMessage.addListener(function(request) {
-      background.deleteItem(request.itemId, function() {
-        if (connecting)
-          port.postMessage({
-            msg: "ok"
-          });
+      background.deleteItem(request.itemId, function(result) {
+        if (connecting){
+          if(result.msg == 'ok'){
+            port.postMessage({
+              msg: "ok"
+            });
+          }
+          else{
+            port.postMessage({
+              msg: "error"
+            });
+          }
+        }
       });
     });
   } else if (port.name == "pullItems") {
@@ -153,7 +169,11 @@ var background = {
           items.push(newItem);
         }
         that.items = items.reverse();
-        callback();
+        console.log('success');
+        callback({msg:'ok'});
+      },
+      error:function(err){
+        callback({msg:err});
       }
     });
   },
@@ -178,7 +198,9 @@ var background = {
       data: JSON.stringify(data),
       success: function(resp) {
         that.pullItems(callback);
-        console.log('success');
+      },
+      error: function(err) {
+        callback({msg:err});
       }
     });
   },
@@ -191,10 +213,9 @@ var background = {
       method: 'DELETE',
       success: function(resp) {
         that.pullItems(callback);
-        console.log('success');
       },
       error: function(err) {
-        console.log(err);
+        callback({msg:err});
       }
     });
   }

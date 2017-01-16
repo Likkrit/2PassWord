@@ -3,6 +3,10 @@
   <head>
     <title>2PassWord Settings</title>
     <style media="screen">
+      body,
+      html {
+        height: auto!important;
+      }
       h1.ui.center.header {
         margin-top: 2em;
         margin-bottom: 3em;
@@ -98,9 +102,14 @@
         <div></div>
       </div>
     </div>
-    <div class="ui page dimmer">
+    <div class="ui page inverted dimmer">
       <div class="content">
-        <div class="center">Success!</div>
+        <div class="center">
+          <h3 class="ui green icon header">
+            <i class="checkmark icon"></i>
+            <span class="dimmer text">Success Message!</span>
+          </h3>
+        </div>
       </div>
     </div>
   </body>

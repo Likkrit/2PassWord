@@ -133,7 +133,7 @@ var background = {
   // url : '/collect-******',
   getDatabase : function(){
     var a = CryptoJS.MD5(background.key).toString().toUpperCase();
-    a = 'http://' + localStorage.url + 'collect-'+ a.slice(a.length - 7);
+    a = 'http://' + localStorage.url + '/collect-'+ a.slice(a.length - 7);
     return a;
   },
   // 获取指定tab url的账户列表，列表根据url排序过

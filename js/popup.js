@@ -4,19 +4,6 @@ var popUp = {
   url: '',
   items: [],
   // 从当前数据中拿出制定id的条目
-  sendKey : function(key){
-    var port = chrome.runtime.connect({
-      name: "sendKey"
-    });
-    port.postMessage({
-      key: key
-    });
-    port.onMessage.addListener(function(result) {
-      if (result.msg == 'ok') {
-        popUp.render(result.items);
-      }
-    });
-  },
 
   getItemsFromBackground: function(url) {
     var port = chrome.runtime.connect({
@@ -65,7 +52,6 @@ var popUp = {
       }
     });
   },
-
   // 显示条目
   render: function(response) {
     var itemStr = '';

@@ -1,106 +1,108 @@
 <!doctype html>
 <html>
+  <head>
+    <title>2PassWord Settings</title>
+    <style media="screen">
+      h1.ui.center.header {
+        margin-top: 2em;
+        margin-bottom: 3em;
+      }
 
-<head>
-  <title>2PassWord Settings</title>
-  <style media="screen">
-    h1.ui.center.header {
-      margin-top: 2em;
-      margin-bottom: 3em;
-    }
-  </style>
-  <link rel="stylesheet" href="./js/semantic/semantic.css">
-  <script type="text/javascript" src="./js//jquery.min.js"></script>
-  <script type="text/javascript" src="./js/semantic/semantic.js"></script>
-  <script type="text/javascript" src="./js/options.js"></script>
-</head>
-
-<body>
-  <h1 class="ui center aligned header">2PassWord Settings</h1>
-  <div class="ui container">
-    <div class="ui relaxed items">
-      <div class="item">
-        <div class="content">
-          <h3 class="header">Introduction</h3>
-          <div class="description">
-            <p>You can use this extension to help you to remember all the password between defferent website<br>Even help you to input your password instead.</p>
-          </div>
-        </div>
-      </div>
-      <div class="item">
-        <div class="content">
-          <h3 class="header">Wilddog</h3>
-          <div class="ui left pointing label">32</div>
-          <div class="meta">
-            <p>Input your link address here.</p>
-          </div>
-          <div class="ui labeled input fluid">
-            <div class="ui label">
-              http://
+    </style>
+    <link rel="stylesheet" href="./js/semantic/semantic.css">
+    <script type="text/javascript" src="./js//jquery.min.js"></script>
+    <script type="text/javascript" src="./js/semantic/semantic.js"></script>
+    <script type="text/javascript" src="./js/options.js"></script>
+  </head>
+  <body>
+    <h1 class="ui center aligned header">2PassWord Settings</h1>
+    <div class="ui container">
+      <div class="ui relaxed items">
+        <div class="item">
+          <div class="content">
+            <h3 class="header">Introduction</h3>
+            <div class="description">
+              <p>You can use this extension to help you to remember all the password between defferent website<br>Even help you to input your password instead.</p>
             </div>
-            <input name="wilddog" type="text" placeholder="mysite.com">
           </div>
         </div>
-      </div>
-      <div class="item">
-        <div class="content">
-          <a class="header">Password</a>
-          <div class="meta">
-            use DES encryption to protect your password safety.
+        <div class="item">
+          <div class="content">
+            <h3 class="header">Wilddog</h3>
+            <div class="ui left pointing label">32</div>
+            <div class="meta">
+              <p>Input your link address here.</p>
+            </div>
+            <div class="ui labeled input fluid">
+              <div class="ui label">
+                http://
+              </div>
+              <input name="wilddog" type="text" placeholder="mysite.com">
+            </div>
           </div>
+        </div>
+        <div class="item">
+          <div class="content">
+            <a class="header">Password</a>
+            <div class="meta">
+              use DES encryption to protect your password safety.
+            </div>
 
+            <div class="ui segment">
 
-          <div class="ui segment">
-
-            <div class="field">
-              <div class="extra">
-                <div class="ui input">
-                  <input type="password" placeholder="Your password here...">
+              <div class="field">
+                <div class="extra">
+                  <div class="ui input">
+                    <input type="password" placeholder="Your password here...">
+                  </div>
+                </div>
+                <div class="ui toggle checkbox extra">
+                  <input type="checkbox" name="remember" tabindex="0" class="hidden">
+                  <label>Remember my password</label>
                 </div>
               </div>
-              <div class="ui toggle checkbox extra">
-                <input type="checkbox" name="remember" tabindex="0" class="hidden">
-                <label>Remember my password</label>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="item" style="display:none">
+          <div class="ui small image">
+            <img _src="http://semantic-ui.com/examples/assets/images/wireframe/image.png">
+          </div>
+          <div class="content">
+            <a class="header">Content Header</a>
+            <div class="meta">
+              <a>Date</a>
+              <a>Category</a>
+            </div>
+            <div class="description">
+              A description which may flow for several lines and give context to the content.
+            </div>
+            <div class="extra">
+              <div class="ui right floated primary button">
+                Primary
+                <i class="right chevron icon"></i>
               </div>
+              <div class="ui label">Limited</div>
             </div>
           </div>
-
         </div>
-      </div>
 
-      <div class="item" style="display:none">
-        <div class="ui small image">
-          <img _src="http://semantic-ui.com/examples/assets/images/wireframe/image.png">
-        </div>
-        <div class="content">
-          <a class="header">Content Header</a>
-          <div class="meta">
-            <a>Date</a>
-            <a>Category</a>
-          </div>
-          <div class="description">
-            A description which may flow for several lines and give context to the content.
-          </div>
-          <div class="extra">
-            <div class="ui right floated primary button">
-              Primary
-              <i class="right chevron icon"></i>
-            </div>
-            <div class="ui label">Limited</div>
+        <div class="item">
+          <div class="content">
+            <div class="positive ui right floated button">Save</div>
+            <p></p>
           </div>
         </div>
+        <div></div>
       </div>
-
-      <div class="item">
-        <div class="content">
-          <div class="positive ui right floated button">Save</div>
-          <p></p>
-        </div>
-      </div>
-      <div></div>
     </div>
-  </div>
-</body>
-
+    <div class="ui page dimmer">
+      <div class="content">
+        <div class="center">Success!</div>
+      </div>
+    </div>
+  </body>
 
 </html>

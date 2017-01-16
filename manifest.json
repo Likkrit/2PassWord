@@ -6,7 +6,7 @@
     "activeTab",  "http://*/*", "https://*/*", "http://*/"
   ],
   "background": {
-    "scripts": ["./js/des/tripledes.js","./js/des/mode-ecb.js","./js/reqwest.min.js","background.js"],
+    "scripts": ["./js/des/tripledes.js","./js/des/mode-ecb.js","./js/reqwest.min.js","./js/background.js"],
     "persistent": true
   },
   "options_page": "options.html",

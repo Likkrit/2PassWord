@@ -1,4 +1,14 @@
 
+
+
+document.onkeydown = function(event) {
+  var e = event || window.event || arguments.callee.caller.arguments[0];
+  if (e && e.keyCode == 90 && (e.ctrlKey || e.metaKey)) {
+    console.log(document.activeElement.attributes);
+    document.activeElement.style.background = 'rgba(255,0,0,.2)';
+  }
+};
+
 item.inputId1 = item.inputId1 || "";
 item.inputId2 = item.inputId2 || "";
 

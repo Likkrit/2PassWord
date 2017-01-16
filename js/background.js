@@ -10,6 +10,18 @@
   // }
 // });
 
+
+  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (sender.tab) {
+      if (request.type == "getInput") {
+        localStorage.pageInput1 = request.input1;
+        localStorage.pageInput2 = request.input2;
+        sendResponse({msg:'ok'});
+      }
+    }
+  });
+
+
 var connecting;
 // 消息传递通道
 chrome.runtime.onConnect.addListener(function(port) {
@@ -81,11 +93,10 @@ chrome.runtime.onConnect.addListener(function(port) {
     port.onMessage.addListener(function(request) {
       background.key = request.key;
       localStorage.privateKey = request.key;
-      background.pullItems(function() {
+      background.pullItems(function(result) {
         if (connecting)
           port.postMessage({
-            msg: "ok",
-            items: background.items
+            msg: result.msg
           });
       });
     });

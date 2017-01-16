@@ -5,9 +5,25 @@ $(document).ready(function() {
   // var divs = document.querySelector('body');
   // divs.addEventListener('click', click);
 
-
   // 初始化，显示列表页
-  if ($('#items').hasClass('hidden')) {
+  if(localStorage.pageAdding){
+    popUp.renderPage({
+      id: new Date().getTime(),
+      inputId1 : localStorage.pageInput1 || '',
+      inputId2 : localStorage.pageInput2 || '',
+    });
+    $('#page')
+      .transition('scale');
+    $('#add')
+      .css({
+        'visibility': 'hidden'
+      });
+    $('#back')
+      .css({
+        'visibility': 'visible'
+      });
+  }
+  else if ($('#items').hasClass('hidden')) {
     $('#items')
       .transition({
         animation: 'fade',
@@ -15,10 +31,35 @@ $(document).ready(function() {
       });
   }
 
+
+  $('.search.link')
+    .popup({
+      position : 'top center',
+    })
+  ;
+
+  // input框 搜索按钮点击时
+  $('.get-input').on('click',function(){
+    localStorage.pageAdding = true;
+    chrome.tabs.executeScript(null, {
+      file: "./js/content_script_get_input.js",
+      allFrames: true
+    });
+    window.close();
+  });
+
+  // host框 按钮点击时
+  $('.get-host').on('click',function(){
+    if (chrome && chrome.tabs)
+      chrome.tabs.getSelected(function(tab) {
+        $("[name=host]").val(tab.url.replace(/https?:\/\//,'') || '')
+      });
+  })
+
   // 增加按钮点击时
   $('#add').on('click', function() {
     popUp.renderPage({
-      id: new Date().getTime()
+      id: new Date().getTime(),
     });
     $('#page')
       .transition('scale');
@@ -35,6 +76,8 @@ $(document).ready(function() {
   });
   // 取消按钮点击时
   $('#cancel').on('click', function() {
+    localStorage.removeItem('pageAdding');
+    localStorage.removeItem('pageInput2');
     popUp.renderPage({
       name: '',
       userName: '',
@@ -57,6 +100,8 @@ $(document).ready(function() {
   });
   // 后退按钮点击时
   $('#back').on('click', function() {
+    localStorage.removeItem('pageAdding');
+    localStorage.removeItem('pageInput2');
     popUp.renderPage({
       name: '',
       userName: '',
@@ -113,7 +158,7 @@ $(document).ready(function() {
       allFrames: true
     });
     chrome.tabs.executeScript(null, {
-      file: "content_script.js",
+      file: "./js/content_script.js",
       allFrames: true
     });
     window.close();
@@ -154,7 +199,7 @@ $(document).ready(function() {
 
 
   // 获取当前标签页URL
-  if(chrome && chrome.tabs)
+  if (chrome && chrome.tabs)
     chrome.tabs.getSelected(function(tab) {
       popUp.url = tab.url || "";
       popUp.getItemsFromBackground(popUp.url);

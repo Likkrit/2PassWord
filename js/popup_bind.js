@@ -66,11 +66,11 @@ $(document).ready(function() {
   $('.get-host').on('click', function() {
     if (chrome && chrome.tabs)
       chrome.tabs.getSelected(function(tab) {
-        $("[name=host]").val(tab.url.replace(/https?:\/\//, '') || '');
+        $("[name=host]").val(tab.url.replace(/https?:\/\/([\w\.\-:]+)\/.*/ig, '$1') || '');
       });
   });
   $('.open-host').on('click', function() {
-    $('[name=host]').val() ? window.open('http://'+$('[name=host]').val()) : null;
+    $('[name=host]').val() ? window.open('http://' + $('[name=host]').val()) : null;
   });
   // 增加按钮点击时
   $('#add').on('click', function() {

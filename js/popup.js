@@ -1,11 +1,34 @@
 // @see https://github.com/likkrit
 
 var popUp = {
-  url: '',
-  items: [],
-  // 从当前数据中拿出制定id的条目
-
+  // 拿出指定id的条目
+  getItem: function(id) {
+    var port = chrome.runtime.connect({
+      name: "getItem"
+    });
+    port.postMessage({
+      id: id
+    });
+    port.onMessage.addListener(function(result) {
+      // 获取成功后进入page页面
+      if (result.msg == 'ok') {
+        $('#page').transition('scale');
+        $('#items').transition('hide');
+        $('#add').css({
+          'visibility': 'hidden'
+        });
+        $('#back').css({
+          'visibility': 'visible'
+        });
+        popUp.renderPage(result.item);
+      } else {
+        popUp.showTip('error!');
+      }
+    });
+  },
   getItemsFromBackground: function(url) {
+    $('#items .dimmer').dimmer('is active') ? null : $('#items .dimmer').dimmer('show');
+
     var port = chrome.runtime.connect({
       name: "getItems"
     });
@@ -15,46 +38,24 @@ var popUp = {
     port.onMessage.addListener(function(result) {
       if (result.msg == 'ok') {
         popUp.render(result.items);
-      }
-      else{
+      } else {
+        $('#items .dimmer').dimmer('is active') ? $('#items .dimmer').dimmer('hide') : null;
         popUp.showTip('error!');
       }
     });
   },
-  getItemJSONFromPopUp: function(id) {
-    console.log(this.items);
-    for (var i = 0; i < this.items.length; i++) {
-      if (this.items[i].id == id) {
-        return JSON.stringify(this.items[i]);
-      }
-    }
-    return null;
-  },
-  // 获取条目详情
-  getItemFromPopUp: function(dataId) {
-    for (var i = 0; i < popUp.items.length; i++) {
-      if (dataId == popUp.items[i].id) {
-        return (popUp.items[i]);
-      }
-    }
-  },
-  // 从服务器重新抓取数据
-  pullItems: function() {
-    var port = chrome.runtime.connect({
-      name: "pullItems"
+  insertContentScript: function(id) {
+    chrome.runtime.sendMessage({
+      type: "insertContentScript",
+      id: id
     });
-    port.postMessage({
-      data: 'go'
-    });
-    port.onMessage.addListener(function(result) {
-      if (result.msg == 'ok') {
-        popUp.render(result.items);
-      }
-    });
+    window.close();
   },
+
   // 显示条目
   render: function(response) {
-    var itemStr = '';
+    var oriItemStr = document.querySelector('#items').innerHTML;
+    var itemStr = '<div class="ui inverted dimmer active"><div class="ui text loader">Loading</div></div>';
     response = response || [];
     popUp.items = response;
     for (var i = 0; i < response.length; i++) {
@@ -75,8 +76,16 @@ var popUp = {
       itemStr += '</div>';
       itemStr += '</div>';
     }
-    document.querySelector('#items').innerHTML = itemStr;
+    if (response.length === 0){
+      itemStr += '<div class="none_tip center"><h3 class="ui green icon header"><i class="checkmark icon"></i><span class="dimmer text">Success Message!</span></h3></div>'
+      document.querySelector('#items').innerHTML = itemStr;
 
+    }
+    else if (oriItemStr != itemStr) {
+      document.querySelector('#items').innerHTML = itemStr;
+    }
+
+    $('#items .dimmer').dimmer('is active') ? $('#items .dimmer').dimmer('hide') : null;
   },
   // 增加一个条目
   addItem: function(newItem) {
@@ -89,59 +98,59 @@ var popUp = {
     port.onMessage.addListener(function(result) {
       if (result.msg == 'ok') {
         popUp.showTip();
-          // 重新拿数据
-        popUp.getItemsFromBackground();
-      }
-      else{
+        // 重新拿数据
+        if (chrome && chrome.tabs)
+          chrome.tabs.getSelected(function(tab) {
+            popUp.getItemsFromBackground(tab.url || "");
+          });
+      } else {
         popUp.showTip('Network error!');
       }
     });
   },
 
   // 删除一个条目
-  deleteItem: function(itemId) {
+  deleteItem: function(id) {
     var port = chrome.runtime.connect({
       name: "deleteItem"
     });
     port.postMessage({
-      itemId: itemId
+      id: id
     });
     port.onMessage.addListener(function(result) {
       if (result.msg == 'ok') {
         popUp.showTip();
-        popUp.getItemsFromBackground();
-      }
-      else{
+        // 重新拿数据
+        if (chrome && chrome.tabs)
+          chrome.tabs.getSelected(function(tab) {
+            popUp.getItemsFromBackground(tab.url || "");
+          });
+      } else {
         popUp.showTip('Network error!');
       }
     });
   },
-
-  showTip : function(type){
-    if(type){
-      $('.ui.dimmer .ui.header').removeClass('green').addClass('red');
-      $('.ui.dimmer i.icon').removeClass('checkmark').addClass('remove');
-      $('.dimmer.text').text('Network error!');
-
+  showTip: function(type) {
+    // 错误类型
+    if (type) {
+      $('.page.dimmer .ui.header').removeClass('green').addClass('red');
+      $('.page.dimmer i.icon').removeClass('checkmark').addClass('remove');
+      $('.page.dimmer.text').text('Network error!');
       $('#page form').removeClass('loading');
-      $('.ui.dimmer')
-        .dimmer('show')
-      ;
+      $('.page.dimmer').dimmer('show');
+      setTimeout(function() {
+        $('.page.dimmer').dimmer('hide');
+      }, 1000);
       return;
     }
-
-    $('.ui.dimmer .ui.header').removeClass('red').addClass('green');
-    $('.ui.dimmer i.icon').removeClass('remove').addClass('checkmark');
-    $('.dimmer.text').text('Success Message!');
+    $('.page.dimmer .ui.header').removeClass('red').addClass('green');
+    $('.page.dimmer i.icon').removeClass('remove').addClass('checkmark');
+    $('.page.dimmer.text').text('Success Message!');
 
     $('#page form').removeClass('loading');
-    $('.ui.dimmer')
-      .dimmer('show')
-    ;
+    $('.page.dimmer').dimmer('show');
     setTimeout(function() {
-      $('.ui.dimmer')
-        .dimmer('hide')
-      ;
+      $('.page.dimmer').dimmer('hide');
       popUp.renderPage({
         name: '',
         userName: '',
@@ -149,18 +158,14 @@ var popUp = {
         inputId1: '',
         inputId2: ''
       });
-      $('#page')
-        .transition('hide');
-      $('#items')
-        .transition('fade right');
-      $('#add')
-        .css({
-          'visibility': 'visible'
-        });
-      $('#back')
-        .css({
-          'visibility': 'hidden'
-        });
+      $('#page').transition('hide');
+      $('#items').transition('fade right');
+      $('#add').css({
+        'visibility': 'visible'
+      });
+      $('#back').css({
+        'visibility': 'hidden'
+      });
     }, 1000);
   },
   renderPage: function(obj) {

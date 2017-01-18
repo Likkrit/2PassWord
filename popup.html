@@ -51,36 +51,45 @@
       .actions {
         text-align: right;
       }
-      .open-host{
-        cursor: pointer;
-      }
       ::-webkit-scrollbar {
         width: 12px;
-        height: 12px
+        height: 12px;
       }
       ::-webkit-scrollbar-button:vertical {
-        display: none
+        display: none;
       }
       ::-webkit-scrollbar-track:vertical {
         /*background-color: #000*/
-        background: #f8f8f8
+        background: #f8f8f8;
       }
       ::-webkit-scrollbar-track-piece {
         /*background: #FFF*/
-        background: #f8f8f8
+        background: #f8f8f8;
       }
       ::-webkit-scrollbar-thumb:vertical {
         background-color: #8E8E8E;
-        border-radius: 5px
+        border-radius: 5px;
       }
       ::-webkit-scrollbar-thumb:vertical:hover {
-        background-color: #3B3B3B
+        background-color: #3B3B3B;
       }
       ::-webkit-scrollbar-corner:vertical {
-        background-color: #535353
+        background-color: #535353;
       }
       ::-webkit-scrollbar-resizer:vertical {
-        background-color: #FF6E00
+        background-color: #FF6E00;
+      }
+      #items .ui.dimmer{
+        height: 35rem!important;
+      }
+      #items .none_tip{
+        display: flex;
+        height: 35rem;
+        justify-content: center;
+        flex-direction: column;
+      }
+      #items.dimmed.dimmable:not(body) {
+        overflow: visible;
       }
     </style>
   </head>
@@ -95,7 +104,32 @@
         </div>
       </div>
       <div class="body">
-        <div id="items" class="ui middle aligned divided selection list transition hidden">
+        <div id="items" class="ui middle aligned divided selection list dimmable dimmed">
+          <div class="ui inverted dimmer active">
+            <div class="ui text loader">Loading</div>
+          </div>
+          <div class="item" data-id="1484644018925">
+            <div class="right floated content">
+              <div class="ui button insert">Add</div>
+            </div>
+            <div class="content">
+              <div class="header">LeanCloud</div>
+              <div class="meta">
+                <p>tmcsdsb@163.com</p>
+              </div>
+            </div>
+          </div>
+          <div class="item" data-id="1484644018925">
+            <div class="right floated content">
+              <div class="ui button insert">Add</div>
+            </div>
+            <div class="content">
+              <div class="header">LeanCloud</div>
+              <div class="meta">
+                <p>tmcsdsb@163.com</p>
+              </div>
+            </div>
+          </div>
         </div>
         <div id="page" class="ui transition hidden">
           <form class="ui form">
@@ -113,7 +147,11 @@
             </div>
             <div class="inline field">
               <label class="four wide field">PassWord</label>
-              <input class="eleven wide field" type="password" name="password" placeholder="PassWord">
+              <div class="ui icon input eleven wide field">
+                <input type="password" name="password" placeholder="PassWord">
+                <i class="unhide link icon"></i>
+              </div>
+
             </div>
             <div class="inline field">
               <label class="four wide field">Other</label>
@@ -122,23 +160,25 @@
             <div class="inline field">
               <label class="four wide field open-host">host</label>
               <div class="ui icon input eleven wide field">
-              <input type="text" name="host" placeholder="host">
-              <i class="world link icon get-host"></i></div>
+                <input type="text" name="host" placeholder="host">
+                <i class="world link icon get-host"></i>
+              </div>
             </div>
-
 
             <div class="inline field">
               <label class="four wide field">Input1</label>
               <div class="ui icon input eleven wide field">
-              <input type="text" name="input1" placeholder="Input1">
-              <i class="search link icon get-input" data-content="在页面获取输入框"></i></div>
+                <input type="text" name="input1" placeholder="Input1">
+                <i class="search link icon get-input" data-content="在页面获取输入框"></i>
+              </div>
             </div>
             <div class="inline field">
               <label class="four wide field">Input2</label>
 
               <div class="ui icon input eleven wide field">
-              <input type="text" name="input2" placeholder="Input2">
-              <i class="search link icon get-input" data-content="在页面获取输入框"></i></div>
+                <input type="text" name="input2" placeholder="Input2">
+                <i class="search link icon get-input" data-content="在页面获取输入框"></i>
+              </div>
 
             </div>
             <div class="actions field">

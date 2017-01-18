@@ -18,29 +18,18 @@ $(document).ready(function() {
       other: localStorage.pageOther || '',
       host: localStorage.pageHost || ''
     });
-    $('#page')
-      .transition('scale');
-    $('#add')
-      .css({
-        'visibility': 'hidden'
-      });
-    $('#back')
-      .css({
-        'visibility': 'visible'
-      });
-  } else if ($('#items').hasClass('hidden')) {
-    $('#items')
-      .transition({
-        animation: 'fade',
-        duration: 600
-      });
-  }
-
-  // tooltip提示初始化
-  $('.search.link')
-    .popup({
-      position: 'top center',
+    $('#page').transition('scale');
+    $('#add').css({
+      'visibility': 'hidden'
     });
+    $('#back').css({
+      'visibility': 'visible'
+    });
+  }
+  // tooltip提示初始化
+  $('.search.link').popup({
+    position: 'top center',
+  });
 
   // input框 搜索按钮点击时
   $('.get-input').on('click', function() {
@@ -61,7 +50,6 @@ $(document).ready(function() {
     window.close();
   });
 
-
   // host框 按钮点击时
   $('.get-host').on('click', function() {
     if (chrome && chrome.tabs)
@@ -77,18 +65,14 @@ $(document).ready(function() {
     popUp.renderPage({
       id: new Date().getTime(),
     });
-    $('#page')
-      .transition('scale');
-    $('#items')
-      .transition('hide');
-    $('#add')
-      .css({
-        'visibility': 'hidden'
-      });
-    $('#back')
-      .css({
-        'visibility': 'visible'
-      });
+    $('#page').transition('scale');
+    $('#items').transition('hide');
+    $('#add').css({
+      'visibility': 'hidden'
+    });
+    $('#back').css({
+      'visibility': 'visible'
+    });
   });
 
   // 取消按钮点击时
@@ -119,62 +103,30 @@ $(document).ready(function() {
       inputId1: '',
       inputId2: ''
     });
-    $('#page')
-      .transition('hide');
-    $('#items')
-      .transition('fade right');
-    $('#add')
-      .css({
-        'visibility': 'visible'
-      });
-    $('#back')
-      .css({
-        'visibility': 'hidden'
-      });
+    $('#page').transition('hide');
+    $('#items').transition('show');
+    // .transition('fade right');
+    $('#add').css({
+      'visibility': 'visible'
+    });
+    $('#back').css({
+      'visibility': 'hidden'
+    });
   };
 
   // 单个条目点击时
   $('#items').on('click', '.item', function(event) {
     event.stopPropagation();
-    var dataId = $(this).attr('data-id');
-    var item = popUp.getItemFromPopUp(dataId);
-    if (item) {
-      $('#page')
-        .transition('scale');
-      $('#items')
-        .transition('hide');
-      $('#add')
-        .css({
-          'visibility': 'hidden'
-        });
-      $('#back')
-        .css({
-          'visibility': 'visible'
-        });
-      popUp.renderPage(item);
-    }
+    popUp.getItem($(this).attr('data-id'));
   });
 
   // 插入按钮点击时
   $('#items').on('click', '.insert', function(event) {
     event.stopPropagation();
-    var dataId = $(this).parent().parent().attr('data-id');
-    dataId = $(this).parent().parent().data('id');
-    // var dataId = e.target.getAttribute("data-id") || e.target.parentNode.getAttribute("data-id") || e.target.parentNode.parentNode.getAttribute("data-id");
-    var code = "window.item='" + popUp.getItemJSONFromPopUp(dataId) + "';item=JSON.parse(item);";
-    chrome.tabs.executeScript(null, {
-      code: code,
-      allFrames: true
-    });
-    chrome.tabs.executeScript(null, {
-      file: "./js/content_script.js",
-      allFrames: true
-    });
-    window.close();
+    popUp.insertContentScript($(this).parent().parent().data('id'));
   });
 
-
-  // 保存按钮 点击事件
+  // 提交按钮 点击事件
   $('#sumit').on('click', function() {
     $('#page form').addClass('loading');
     popUp.addItem({
@@ -189,28 +141,26 @@ $(document).ready(function() {
     });
   });
 
-
   // 删除按钮 点击时
   $('#delete').on('click', function() {
     $('#page form').addClass('loading');
     popUp.deleteItem(document.querySelector("[name=id]").value);
   });
 
-
   // 密码框 鼠标移入移出事件
   var passwordInput = document.querySelector("[name=password]");
-  passwordInput.addEventListener('mouseover', function() {
+  document.querySelector(".icon.unhide").addEventListener('mouseover', function() {
+    $(this).removeClass('unhide').addClass('hide');
     passwordInput.type = "text";
   });
-  passwordInput.addEventListener('mouseout', function() {
+  document.querySelector(".icon.unhide").addEventListener('mouseout', function() {
+    $(this).removeClass('hide').addClass('unhide');
     passwordInput.type = "password";
   });
-
 
   // 获取当前标签页URL
   if (chrome && chrome.tabs)
     chrome.tabs.getSelected(function(tab) {
-      popUp.url = tab.url || "";
-      popUp.getItemsFromBackground(popUp.url);
+      popUp.getItemsFromBackground(tab.url || "");
     });
 });

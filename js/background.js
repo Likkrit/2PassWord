@@ -1,42 +1,69 @@
-
 // 消息传递函数
 // chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  // if (sender.tab) {}  来自content script  sender.tab.url
-  // if (request.type == "getItems") {
-    // sendResponse(background.getItems(request.url));
-  // } else if (request.type == "getItemDetail") {
-  //   var a = background.getItemDetail(request.dataId);
-  //   sendResponse(a);
-  // }
+// if (sender.tab) {}  来自content script  sender.tab.url
+// if (request.type == "getItems") {
+// sendResponse(background.getItems(request.url));
+// } else if (request.type == "getItemDetail") {
+//   var a = background.getItemDetail(request.dataId);
+//   sendResponse(a);
+// }
 // });
 
 
-  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if (sender.tab) {
-      if (request.type == "getInput") {
-        localStorage.pageInput1 = request.input1;
-        localStorage.pageInput2 = request.input2;
-        sendResponse({msg:'ok'});
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (sender.tab) {
+    if (request.type == "getInput") {
+      localStorage.pageInput1 = request.input1;
+      localStorage.pageInput2 = request.input2;
+      sendResponse({
+        msg: 'ok'
+      });
+    }
+  }
+  if (request.type == "insertContentScript" && request.id) {
+    var item = null;
+    for (var i = 0; i < background.items.length; i++) {
+      if (background.items[i].id == request.id) {
+        item = JSON.stringify(background.items[i]);
       }
     }
-  });
+    var code = "window.item='" + item + "';item=JSON.parse(item);";
+    chrome.tabs.executeScript(null, {
+      code: code,
+      allFrames: true
+    });
+    chrome.tabs.executeScript(null, {
+      file: "./js/content_script.js",
+      allFrames: true
+    });
+  }
+});
 
 
 var connecting;
 // 消息传递通道
 chrome.runtime.onConnect.addListener(function(port) {
   connecting = true;
-  if (port.name == "getItems") {
+  if (port.name == "getItem") {
+    port.onMessage.addListener(function(request) {
+      var item = background.getItem(request.id);
+      if (connecting) {
+        port.postMessage({
+          msg: "ok",
+          item: item
+        });
+      }
+    });
+  } else if (port.name == "getItems") {
     port.onMessage.addListener(function(request) {
       background.getItems(request.url, function(result) {
-        if (connecting){
-          if(result.msg == 'ok'){
+        if (connecting) {
+          if (result.msg == 'ok') {
             port.postMessage({
               msg: "ok",
               items: result.items
             });
-          }
-          else{
+          } else {
             port.postMessage({
               msg: "error"
             });
@@ -44,17 +71,15 @@ chrome.runtime.onConnect.addListener(function(port) {
         }
       });
     });
-  }
-  else if (port.name == "addItem") {
+  } else if (port.name == "addItem") {
     port.onMessage.addListener(function(request) {
       background.addItem(request.newItem, function(result) {
-        if (connecting){
-          if(result.msg == 'ok'){
+        if (connecting) {
+          if (result.msg == 'ok') {
             port.postMessage({
               msg: "ok"
             });
-          }
-          else{
+          } else {
             port.postMessage({
               msg: "error"
             });
@@ -64,14 +89,13 @@ chrome.runtime.onConnect.addListener(function(port) {
     });
   } else if (port.name == "deleteItem") {
     port.onMessage.addListener(function(request) {
-      background.deleteItem(request.itemId, function(result) {
-        if (connecting){
-          if(result.msg == 'ok'){
+      background.deleteItem(request.id, function(result) {
+        if (connecting) {
+          if (result.msg == 'ok') {
             port.postMessage({
               msg: "ok"
             });
-          }
-          else{
+          } else {
             port.postMessage({
               msg: "error"
             });
@@ -89,7 +113,7 @@ chrome.runtime.onConnect.addListener(function(port) {
           });
       });
     });
-  }else if (port.name == "sendKey") {
+  } else if (port.name == "sendKey") {
     port.onMessage.addListener(function(request) {
       background.key = request.key;
       localStorage.privateKey = request.key;
@@ -129,16 +153,25 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 
 var background = {
   items: [],
-  key : localStorage.privateKey,
+  key: localStorage.privateKey,
   // url : '/collect-******',
-  getDatabase : function(){
+  getDatabase: function() {
     var a = CryptoJS.MD5(background.key).toString().toUpperCase();
-    a = 'http://' + localStorage.url + '/2password-'+ a.slice(a.length - 7);
+    a = 'http://' + localStorage.url + '/2password-' + a.slice(a.length - 7);
     return a;
   },
+  // 获取指定id 的对象
+  getItem: function(id) {
+    for (var i = 0; i < this.items.length; i++) {
+      if (id == this.items[i].id) {
+        return (this.items[i]);
+      }
+    }
+    return {};
+  },
   // 获取指定tab url的账户列表，列表根据url排序过
-  getItems: function(url,callback) {
-    if(this.items.length === 0){
+  getItems: function(url, callback) {
+    if (this.items.length === 0) {
       this.pullItems(callback);
       return;
     }
@@ -156,15 +189,21 @@ var background = {
           items.push(temp[i]);
         }
       }
-      callback({msg:'ok',items:items});
+      callback({
+        msg: 'ok',
+        items: items
+      });
       return;
     }
-    callback({msg:'ok',items:this.items});
+    callback({
+      msg: 'ok',
+      items: this.items
+    });
   },
   // 从服务器刷新列表
   pullItems: function(callback) {
     var that = this;
-    callback = callback || function(){};
+    callback = callback || function() {};
     reqwest({
       url: background.getDatabase() + "/.json",
       // url: "/collect-******/data.json?" + new Date().getTime(),
@@ -205,18 +244,23 @@ var background = {
         that.items = items.reverse();
         console.log('success');
 
-        callback({msg:'ok',items:that.items});
+        callback({
+          msg: 'ok',
+          items: that.items
+        });
       },
-      error:function(err){
-        callback({msg:err});
+      error: function(err) {
+        callback({
+          msg: err
+        });
       }
     });
   },
   // 增加一个条目（需要增加的条目数组, 回调函数）
   addItem: function(newItem, callback) {
     var packed, packedEncryped, data = {},
-        that = this,
-        id = newItem.id || new Date().getTime();
+      that = this,
+      id = newItem.id || new Date().getTime();
     packed = newItem.userName + ',' + newItem.passWord + ',' + newItem.other + ',' + newItem.inputId1 + ',' + newItem.inputId2;
     packedEncryped = DES.encrypt(packed, background.key);
 
@@ -238,22 +282,26 @@ var background = {
         that.pullItems(callback);
       },
       error: function(err) {
-        callback({msg:err});
+        callback({
+          msg: err
+        });
       }
     });
   },
   // 删除列表（条目id, 回调函数）
-  deleteItem: function(itemId, callback) {
+    deleteItem: function(id, callback) {
     var that = this;
     reqwest({
-      url: background.getDatabase() + "/data/" + itemId + ".json",
+      url: background.getDatabase() + "/data/" + id + ".json",
       // url: "/collect-******/data/" + itemId + ".json",
       method: 'DELETE',
       success: function(resp) {
         that.pullItems(callback);
       },
       error: function(err) {
-        callback({msg:err});
+        callback({
+          msg: err
+        });
       }
     });
   }

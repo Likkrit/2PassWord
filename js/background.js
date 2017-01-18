@@ -133,7 +133,7 @@ var background = {
   // url : '/collect-******',
   getDatabase : function(){
     var a = CryptoJS.MD5(background.key).toString().toUpperCase();
-    a = 'http://' + localStorage.url + '/collect-'+ a.slice(a.length - 7);
+    a = 'http://' + localStorage.url + '/2password-'+ a.slice(a.length - 7);
     return a;
   },
   // 获取指定tab url的账户列表，列表根据url排序过
@@ -166,24 +166,23 @@ var background = {
     var that = this;
     callback = callback || function(){};
     reqwest({
-      url: background.getDatabase() + "/data.json?" + new Date().getTime(),
+      url: background.getDatabase() + "/.json",
       // url: "/collect-******/data.json?" + new Date().getTime(),
       method: 'GET',
       success: function(response) {
+        response = response && response.data ? response.data : [];
         var i, temp, decrypted, name, host, updateTime, userName, passWord, other, inputId1, inputId2, newItem,
           items = [];
         for (i in response) {
           user = pw = other = '';
-          temp = decodeURIComponent(response[i]);
-          temp = JSON.parse(temp);
+          // temp = decodeURIComponent(response[i]);
 
-          name = temp.name || '';
-          host = temp.host || '';
-          updateTime = temp.updateTime || '';
+          name = response[i].name || '';
+          host = response[i].host || '';
+          updateTime = response[i].updateTime || '';
 
-          temp = DES.decrypt(temp.items, background.key) || '';
+          temp = DES.decrypt(response[i].z, background.key) || '';
           temp = temp.split(',');
-
           userName = temp[0] || '';
           passWord = temp[1] || '';
           other = temp[2] || '';
@@ -216,19 +215,22 @@ var background = {
   // 增加一个条目（需要增加的条目数组, 回调函数）
   addItem: function(newItem, callback) {
     var packed, packedEncryped, data = {},
-      that = this;
-    var now = newItem.id || new Date().getTime();
+        that = this,
+        id = newItem.id || new Date().getTime();
     packed = newItem.userName + ',' + newItem.passWord + ',' + newItem.other + ',' + newItem.inputId1 + ',' + newItem.inputId2;
     packedEncryped = DES.encrypt(packed, background.key);
-    newItem = {
-      name: newItem.name,
-      host: newItem.host,
-      updateTime: new Date().getTime(),
-      items: packedEncryped
-    };
-    data[now] = encodeURIComponent(JSON.stringify(newItem));
+
+    var _data_name = "data/" + id + "/name";
+    var _data_host = "data/" + id + "/host";
+    var _data_updateTime = "data/" + id + "/updateTime";
+    var _data_z = "data/" + id + "/z";
+    data[_data_name] = newItem.name;
+    data[_data_host] = newItem.host;
+    data[_data_updateTime] = new Date().getTime();
+    data[_data_z] = packedEncryped;
+
     reqwest({
-      url: background.getDatabase() + "/data.json",
+      url: background.getDatabase() + "/.json",
       // url: "/collect-******/data.json",
       method: 'PATCH',
       data: JSON.stringify(data),

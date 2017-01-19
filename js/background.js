@@ -157,7 +157,7 @@ var background = {
   // url : '/collect-******',
   getDatabase: function() {
     var a = CryptoJS.MD5(background.key).toString().toUpperCase();
-    a = 'http://' + localStorage.url + '/2password-' + a.slice(a.length - 7);
+    a = 'http://' + localStorage.url + '/2password-' + a.slice(a.length - 6);
     return a;
   },
   // 获取指定id 的对象
@@ -220,7 +220,7 @@ var background = {
           host = response[i].host || '';
           updateTime = response[i].updateTime || '';
 
-          temp = DES.decrypt(response[i].z, background.key) || '';
+          temp = AES.decrypt(response[i].z, background.key) || '';
           temp = temp.split(',');
           userName = temp[0] || '';
           passWord = temp[1] || '';
@@ -262,7 +262,7 @@ var background = {
       that = this,
       id = newItem.id || new Date().getTime();
     packed = newItem.userName + ',' + newItem.passWord + ',' + newItem.other + ',' + newItem.inputId1 + ',' + newItem.inputId2;
-    packedEncryped = DES.encrypt(packed, background.key);
+    packedEncryped = AES.encrypt(packed, background.key);
 
     var _data_name = "data/" + id + "/name";
     var _data_host = "data/" + id + "/host";
@@ -334,6 +334,36 @@ var DES = {
   }
 };
 
+var AES = {
+  encrypt: function(message, key) {
+    // aes加密解密 js与java版
+    // http://www.jb51.net/article/89647.htm
+    // http://stackoverflow.com/questions/16600509/aes-encrypt-in-cryptojs-and-decrypt-in-coldfusion
+    // http://www.cnblogs.com/liyingying/p/6259756.html
+    keyHex = CryptoJS.MD5(key).toString().slice(0,16);
+    var iv  = CryptoJS.MD5(key).toString().slice(16);
+    keyHex = CryptoJS.enc.Utf8.parse(keyHex);
+    iv  = CryptoJS.enc.Utf8.parse(iv);
+    var encrypted = CryptoJS.AES.encrypt(message, keyHex, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    return encrypted.toString();
+  },
+  decrypt: function(message, key) {
+    keyHex = CryptoJS.MD5(key).toString().slice(0,16);
+    var iv  = CryptoJS.MD5(key).toString().slice(16);
+    keyHex = CryptoJS.enc.Utf8.parse(keyHex);
+    iv  = CryptoJS.enc.Utf8.parse(iv);
+    var decrypted = CryptoJS.AES.decrypt(message, keyHex, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    return decrypted.toString(CryptoJS.enc.Utf8);
+  }
+};
 
 var reqwesJ = function(url, openType, successCallback, errorCallback) {
   var xmlhttp = null;

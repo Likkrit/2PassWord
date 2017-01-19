@@ -77,7 +77,7 @@ var popUp = {
       itemStr += '</div>';
     }
     if (response.length === 0){
-      itemStr += '<div class="none_tip center"><h3 class="ui green icon header"><i class="checkmark icon"></i><span class="dimmer text">Success Message!</span></h3></div>'
+      itemStr += '<div class="none_tip center"><h3 class="ui grey icon header empty"><i class="sticky note outline icon"></i><span class="dimmer text">Empty List</span></h3></div>'
       document.querySelector('#items').innerHTML = itemStr;
 
     }

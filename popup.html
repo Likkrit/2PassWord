@@ -23,6 +23,7 @@
         width: 100%;
         font-size: 1.3rem;
         background: #e0e0e0;
+        background: #F2F3F5;
         line-height: 1rem;
         height: 3.4rem;
       }
@@ -30,7 +31,12 @@
         text-align: center;
       }
       .ui.list:first-child {
-        padding-top: 0.21428571em;
+        /*padding-top: 0.21428571em;*/
+      }
+      .ui.list,
+      ol.ui.list,
+      ul.ui.list {
+        margin: 0;
       }
       .ui.list .item {
         padding-left: 0.7em;
@@ -79,10 +85,19 @@
       ::-webkit-scrollbar-resizer:vertical {
         background-color: #FF6E00;
       }
-      #items .ui.dimmer{
+      #items .ui.dimmer {
         height: 35rem!important;
+        z-index: -1;
       }
-      #items .none_tip{
+      #items .item {
+        opacity: 1;
+        -webkit-transition: all 0.5s linear;
+        transition: all 0.5s linear;
+      }
+      #items.dimmed .item {
+        opacity: 0.3;
+      }
+      #items .none_tip {
         display: flex;
         height: 35rem;
         justify-content: center;
@@ -90,6 +105,9 @@
       }
       #items.dimmed.dimmable:not(body) {
         overflow: visible;
+      }
+      .empty.icon {
+        opacity: 0.7;
       }
     </style>
   </head>
@@ -108,28 +126,7 @@
           <div class="ui inverted dimmer active">
             <div class="ui text loader">Loading</div>
           </div>
-          <div class="item" data-id="1484644018925">
-            <div class="right floated content">
-              <div class="ui button insert">Add</div>
-            </div>
-            <div class="content">
-              <div class="header">LeanCloud</div>
-              <div class="meta">
-                <p>tmcsdsb@163.com</p>
-              </div>
-            </div>
-          </div>
-          <div class="item" data-id="1484644018925">
-            <div class="right floated content">
-              <div class="ui button insert">Add</div>
-            </div>
-            <div class="content">
-              <div class="header">LeanCloud</div>
-              <div class="meta">
-                <p>tmcsdsb@163.com</p>
-              </div>
-            </div>
-          </div>
+
         </div>
         <div id="page" class="ui transition hidden">
           <form class="ui form">

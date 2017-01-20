@@ -135,7 +135,7 @@ var popUp = {
     if (type) {
       $('.page.dimmer .ui.header').removeClass('green').addClass('red');
       $('.page.dimmer i.icon').removeClass('checkmark').addClass('remove');
-      $('.page.dimmer.text').text('Network error!');
+      $('.page .dimmer.text').text('Network error!');
       $('#page form').removeClass('loading');
       $('.page.dimmer').dimmer('show');
       setTimeout(function() {
@@ -145,7 +145,7 @@ var popUp = {
     }
     $('.page.dimmer .ui.header').removeClass('red').addClass('green');
     $('.page.dimmer i.icon').removeClass('remove').addClass('checkmark');
-    $('.page.dimmer.text').text('Success Message!');
+    $('.page .dimmer.text').text('Success Message!');
 
     $('#page form').removeClass('loading');
     $('.page.dimmer').dimmer('show');

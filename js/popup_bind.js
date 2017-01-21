@@ -161,6 +161,6 @@ $(document).ready(function() {
   // 获取当前标签页URL
   if (chrome && chrome.tabs)
     chrome.tabs.getSelected(function(tab) {
-      popUp.getItemsFromBackground(tab.url || "");
+      popUp.getItems(tab.url || "");
     });
 });

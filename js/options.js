@@ -1,7 +1,9 @@
 $(document).ready(function() {
   $('.ui.checkbox').checkbox();
   $('[name=wilddog]').val(localStorage.url || '');
-  $('[type=password]').val(localStorage.privateKey || '');
+  localStorage.privateKey ? $('[type=password]').attr('placeholder','change password...?') : null;
+
+
   $('[name=wilddog]').on('input', function() {
     var a = $(this).val().replace(/^https?:\/\//ig, '');
     a = a.split('/')[0];
@@ -12,13 +14,12 @@ $(document).ready(function() {
     if (that.hasClass('loading'))
       return;
     localStorage.url = $('[name=wilddog]').val();
-    localStorage.privateKey = $('[type=password]').val();
     that.addClass('loading disabled');
     var port = chrome.runtime.connect({
       name: "sendKey"
     });
     port.postMessage({
-      key: localStorage.privateKey
+      key: $('[type=password]').val()
     });
     port.onMessage.addListener(function(result) {
       that.removeClass('loading disabled');

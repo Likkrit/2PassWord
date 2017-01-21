@@ -26,7 +26,7 @@ var popUp = {
       }
     });
   },
-  getItemsFromBackground: function(url) {
+  getItems: function(url) {
     $('#items .dimmer').dimmer('is active') ? null : $('#items .dimmer').dimmer('show');
 
     var port = chrome.runtime.connect({
@@ -57,7 +57,7 @@ var popUp = {
     var oriItemStr = document.querySelector('#items').innerHTML;
     var itemStr = '<div class="ui inverted dimmer active"><div class="ui text loader">Loading</div></div>';
     response = response || [];
-    popUp.items = response;
+    // popUp.items = response;
     for (var i = 0; i < response.length; i++) {
       itemStr += '<div class="item" data-id=' + response[i].id + '>';
       if (response[i].available)
@@ -70,7 +70,7 @@ var popUp = {
       itemStr += response[i].name;
       itemStr += '</div>';
       itemStr += '<div class="meta"><p>';
-      itemStr += response[i].userName;
+      itemStr += response[i].userName || '';
       itemStr += '</p>';
       itemStr += '</div>';
       itemStr += '</div>';
@@ -101,7 +101,7 @@ var popUp = {
         // 重新拿数据
         if (chrome && chrome.tabs)
           chrome.tabs.getSelected(function(tab) {
-            popUp.getItemsFromBackground(tab.url || "");
+            popUp.getItems(tab.url || "");
           });
       } else {
         popUp.showTip('Network error!');
@@ -123,7 +123,7 @@ var popUp = {
         // 重新拿数据
         if (chrome && chrome.tabs)
           chrome.tabs.getSelected(function(tab) {
-            popUp.getItemsFromBackground(tab.url || "");
+            popUp.getItems(tab.url || "");
           });
       } else {
         popUp.showTip('Network error!');

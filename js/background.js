@@ -115,8 +115,8 @@ chrome.runtime.onConnect.addListener(function(port) {
     });
   } else if (port.name == "sendKey") {
     port.onMessage.addListener(function(request) {
-      background.key = request.key;
-      localStorage.privateKey = request.key;
+      if(request.key)
+        background.setKey(request.key);
       background.pullItems(function(result) {
         if (connecting)
           port.postMessage({
@@ -153,21 +153,41 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 
 var background = {
   items: [],
-  key: localStorage.privateKey,
-  // url : '/collect-******',
+  lockKey : '14789',
+  getKey : function(){
+    return AES.decrypt(localStorage.privateKey,this.lockKey);
+  },
+  setKey : function(key){
+    localStorage.privateKey = AES.encrypt(key,this.lockKey);
+  },
   getDatabase: function() {
-    var a = CryptoJS.MD5(background.key).toString().toUpperCase();
-    a = 'http://' + localStorage.url + '/2password-' + a.slice(a.length - 6);
-    return a;
+    var path = CryptoJS.MD5(this.getKey()).toString().toUpperCase();
+    return 'http://' + localStorage.url + '/2password-' + path.slice(path.length - 6);
   },
   // 获取指定id 的对象
   getItem: function(id) {
     for (var i = 0; i < this.items.length; i++) {
       if (id == this.items[i].id) {
-        return (this.items[i]);
+        var item = this.decode(this.items[i].z);
+        item.id = this.items[i].id;
+        item.name = this.items[i].name || '';
+        item.host = this.items[i].host || '';
+        item.updateTime = this.items[i].updateTime || '';
+        return item;
       }
     }
     return {};
+  },
+  decode : function(z){
+    var decodeStr = AES.decrypt(z, this.getKey()) || '';
+    decodeStr = decodeStr.split(',');
+    return {
+      "userName": decodeStr[0] || '',
+      "passWord": decodeStr[1] || '',
+      "other": decodeStr[2] || '',
+      "inputId1": decodeStr[3] || '',
+      "inputId2": decodeStr[4] || '',
+    };
   },
   // 获取指定tab url的账户列表，列表根据url排序过
   getItems: function(url, callback) {
@@ -176,18 +196,22 @@ var background = {
       return;
     }
     if (url) {
-      var items = [];
-      var temp = clones(this.items);
-      for (var i = 0; i < temp.length; i++) {
-        if (url.indexOf(temp[i].name) > 0 || url.indexOf(temp[i].host) > 0) {
-          temp[i].available = true;
-          items.push(temp[i]);
+      var activeItem,items = [];
+      var newItems = clones(this.items);
+      for (var i = 0; i < newItems.length; i++) {
+        if (url.indexOf(newItems[i].name) > 0 || url.indexOf(newItems[i].host) > 0) {
+          activeItem = this.decode(newItems[i].z);
+          activeItem.id = newItems[i].id;
+          activeItem.name = newItems[i].name || '';
+          activeItem.host = newItems[i].host || '';
+          activeItem.updateTime = newItems[i].updateTime || '';
+          activeItem.available = true;
+          items.push(activeItem);
+          newItems.splice(i,1);
         }
       }
-      for (i = 0; i < temp.length; i++) {
-        if (!temp[i].available) {
-          items.push(temp[i]);
-        }
+      for (i = 0; i < newItems.length; i++) {
+          items.push(newItems[i]);
       }
       callback({
         msg: 'ok',
@@ -213,37 +237,11 @@ var background = {
         var i, temp, decrypted, name, host, updateTime, userName, passWord, other, inputId1, inputId2, newItem,
           items = [];
         for (i in response) {
-          user = pw = other = '';
-          // temp = decodeURIComponent(response[i]);
-
-          name = response[i].name || '';
-          host = response[i].host || '';
-          updateTime = response[i].updateTime || '';
-
-          temp = AES.decrypt(response[i].z, background.key) || '';
-          temp = temp.split(',');
-          userName = temp[0] || '';
-          passWord = temp[1] || '';
-          other = temp[2] || '';
-          inputId1 = temp[3] || '';
-          inputId2 = temp[4] || '';
-
-          newItem = {
-            "id": i,
-            "name": name,
-            "host": host,
-            "updateTime": updateTime,
-            "userName": userName,
-            "passWord": passWord,
-            "other": other,
-            "inputId1": inputId1,
-            "inputId2": inputId2,
-          };
-          items.push(newItem);
+          response[i].id = i;
+          items.push(response[i]);
         }
         that.items = items.reverse();
         console.log('success');
-
         callback({
           msg: 'ok',
           items: that.items
@@ -262,7 +260,7 @@ var background = {
       that = this,
       id = newItem.id || new Date().getTime();
     packed = newItem.userName + ',' + newItem.passWord + ',' + newItem.other + ',' + newItem.inputId1 + ',' + newItem.inputId2;
-    packedEncryped = AES.encrypt(packed, background.key);
+    packedEncryped = AES.encrypt(packed, this.getKey());
 
     var _data_name = "data/" + id + "/name";
     var _data_host = "data/" + id + "/host";
@@ -305,7 +303,6 @@ var background = {
       }
     });
   }
-
 };
 
 // DES函数封装
@@ -334,6 +331,7 @@ var DES = {
   }
 };
 
+// AES函数封装
 var AES = {
   encrypt: function(message, key) {
     // aes加密解密 js与java版
@@ -362,40 +360,6 @@ var AES = {
       padding: CryptoJS.pad.Pkcs7
     });
     return decrypted.toString(CryptoJS.enc.Utf8);
-  }
-};
-
-var reqwesJ = function(url, openType, successCallback, errorCallback) {
-  var xmlhttp = null;
-  openType = openType || 'GET';
-  successCallback = successCallback || function(responseText) {};
-  errorCallback = errorCallback || function(errorCode) {};
-  if (window.XMLHttpRequest) {
-    xmlhttp = new XMLHttpRequest();
-  } else if (window.ActiveXObject) {
-    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-  }
-  if (xmlhttp !== null) {
-    xmlhttp.onreadystatechange = function() {
-      if (xmlhttp.readyState == 4) {
-        if (xmlhttp.status == 200) {
-          var responseData = null;
-          try {
-            responseData = JSON.parse(xmlhttp.responseText);
-          } catch (e) {
-            errorCallback(99);
-            return;
-          }
-          successCallback(responseData);
-        } else {
-          errorCallback(xmlhttp.status);
-        }
-      } else {}
-    };
-    xmlhttp.open(openType, url, true);
-    xmlhttp.send(null);
-  } else {
-    errorCallback(0);
   }
 };
 

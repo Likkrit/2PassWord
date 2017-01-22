@@ -50,7 +50,6 @@ var popUp = {
       type: "unLock",
       lockKey: lockKey
     }, function(response) {
-      init();
     });
   },
 
@@ -204,14 +203,26 @@ function getStatus(callback) {
 
 function init() {
   // 获取当前标签页URL
-  console.log('init');
   if (chrome && chrome.tabs) {
     chrome.tabs.getSelected(function(tab) {
       getStatus(function(response) {
         switch (response.msg) {
+          // 如果background的状态是加载完毕的时候，拉取background里的items
           case 'loaded':
-            // 如果background的状态是加载完毕的时候，拉取background里的items
+          if(localStorage.h5lock == 2 || (localStorage.h5lock == 1 && !response.unlocked)){
+            new H5lock({
+              container: 'h5lock',
+              unlock: function(lockKey) {
+                $('.h5lock_container').dimmer('hide');
+                popUp.unLock(lockKey);
+                popUp.getItems(tab.url || "");
+              }
+            }).init();
+            $('.h5lock_container').dimmer('show');
+          }
+          else{
             popUp.getItems(tab.url || "");
+          }
             break;
           case 'noKey':
           case 'noUrl':
@@ -224,18 +235,6 @@ function init() {
             setTimeout(function() {
               init();
             }, 1500);
-            break;
-          case 'lock':
-            // 如果是锁屏状态，则渲染解锁界面
-            new H5lock({
-              container: 'h5lock',
-              unlock: function(lockKey) {
-                $('.h5lock_container').dimmer('hide');
-                popUp.unLock(lockKey);
-              }
-            }).init();
-            $('.h5lock_container').dimmer('show');
-
             break;
           case 'network error':
             // 如果网络错误，则主动尝试一次网络请求，如果失败提示错误信息

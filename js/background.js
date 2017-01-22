@@ -43,7 +43,9 @@
     // popup 获取当前状态
     else if (request.type == "getStatus") {
       sendResponse({
-        msg: z.status
+        msg: z.status,
+        unlocked : (background.lockKey && localStorage.h5lock_password) || (!background.lockKey && !localStorage.h5lock_password)
+        //已解锁 （有lockKey 且 有password）或者 （lockKey为空 且 没有password）
       });
     }
   });
@@ -128,13 +130,7 @@
     // 程序初始化，判断程序当前状态
     init: function() {
       if (localStorage.url && localStorage.privateKey) {
-        // 有锁 且当前没有解锁密码时
         z.status = 'loading';
-        if (localStorage.passwordxx && this.lockKey == '') {
-          this.lockKey = '';
-          z.status = 'lock';
-          return;
-        }
         // 如果当前数组为空，则进行拉取操作，否则状态设置为已经就绪
         z.items.length == 0 ? this.pullItems() : z.status = 'loaded';
       } else if (!localStorage.url) {
@@ -144,7 +140,7 @@
       }
     },
     notAccess: function() {
-      return !(localStorage.privateKey && localStorage.url && z.status != 'lock');
+      return !(localStorage.privateKey && localStorage.url);
     },
     // 通过锁屏密码来获取自定义密码，锁屏密码错误将返回
     getKey: function() {
@@ -152,18 +148,17 @@
     },
     // 使用lockKey将自定义密码加密后储存在localStorage中
     setKey: function(key, lockKey) {
-      lockKey = lockKey || '';
+      lockKey = lockKey || this.lockKey;
       localStorage.privateKey = AES.encrypt(key, lockKey);
     },
     // 重新设置锁屏密码，并重新加密自定义密码，需要this.lockKey已经正确的情况下，否则会清空自定义密码
     resetLockKey: function(newLockKey) {
-      this.setKey(this.getKey(), newLockKey);
+      localStorage.privateKey = AES.encrypt(this.getKey(), newLockKey);
       this.lockKey = newLockKey;
     },
     // 输入了密码进行解锁操作，这里不判断锁屏密码是否正确，密码不正确将解密不了字段，但是不影响正常进入
     unLock: function(lockKey) {
       this.lockKey = lockKey;
-      this.init();
     },
     // 获取数据库的路径
     getDatabase: function() {

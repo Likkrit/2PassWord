@@ -5,7 +5,6 @@ $(document).ready(function() {
 
   // 输入框正则匹配事件
   $('[name=wilddog]').on('input', function() {
-    return;
     var a = $(this).val().replace(/^https?:\/\//ig, '');
     // a = a.split('/')[0];
     a = a.replace(/\s/ig, '');
@@ -60,6 +59,7 @@ $(document).ready(function() {
         $('.h5lock_container').dimmer('hide');
         $('.reset_h5lock').text('更改手势密码');
         $('.remove_h5lock').show();
+        localStorage.h5lock = 1;
         chrome.runtime.sendMessage({
           type: "resetLockKey",
           lockKey: lockKey
@@ -78,54 +78,42 @@ $(document).ready(function() {
         lockKey: ''
       },
       function(response) {
-        localStorage.removeItem('passwordxx');
+        localStorage.removeItem('h5lock_password');
+        localStorage.removeItem('h5lock');
         $('.remove_h5lock').hide();
         $('.reset_h5lock').text('添加手势密码');
       });
   });
 
-  //init
-  if(localStorage.passwordxx){
-    $('.reset_h5lock').text('更改手势密码');
-    $('.remove_h5lock').show();
-  }
+  init();
+
 });
 
-// 获取状态
-function getStatus(callback) {
-  chrome.runtime.sendMessage({
-    type: "getStatus",
-  }, function(response) {
-    callback(response);
-  });
-}
-getStatus(function(response) {
-  switch (response.msg) {
-    case 'lock':
-      // 如果是锁屏状态，则渲染解锁界面
-      // 初始化函数
-      $('.h5lock_container').dimmer({
-        closable: false,
-      }).dimmer('show');
-      //则渲染解锁界面
-      new H5lock({
-        container: 'h5lock',
-        backgroundStyle: 'transparent',
-        fillStyle: '#ffffff',
-        strokeStyle: '#ffffff',
-        // 解锁成功后 回调函数
-        unlock: function(lockKey) {
-          $('.h5lock_container').dimmer('hide');
-          $('.reset_h5lock').text('更改手势密码');
-          $('.remove_h5lock').show();
-          chrome.runtime.sendMessage({
-            type: "unLock",
-            lockKey: lockKey
-          });
-        }
-      }).init();
-      break;
-    default:
-      break;
+function init(){
+  if(localStorage.h5lock_password){
+    $('.reset_h5lock').text('更改手势密码');
+    $('.remove_h5lock').show();
+    // 如果是锁屏状态，则渲染解锁界面
+    // 初始化函数
+    $('.h5lock_container').dimmer({
+      closable: false,
+    }).dimmer('show');
+    //则渲染解锁界面
+    new H5lock({
+      container: 'h5lock',
+      backgroundStyle: 'transparent',
+      fillStyle: '#ffffff',
+      strokeStyle: '#ffffff',
+      // 解锁成功后 回调函数
+      unlock: function(lockKey) {
+        $('.h5lock_container').dimmer('hide');
+        $('.reset_h5lock').text('更改手势密码');
+        $('.remove_h5lock').show();
+        chrome.runtime.sendMessage({
+          type: "unLock",
+          lockKey: lockKey
+        });
+      }
+    }).init();
   }
-});
+}

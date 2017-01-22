@@ -139,7 +139,7 @@
                     this.pswObj.spassword = this.pswObj.fpassword;
                     document.getElementById('h5title').innerHTML = '密码保存成功';
                     this.drawStatusPoint(this.successStyle);
-                    window.localStorage.setItem('passwordxx', this.pswObj.spassword);
+                    window.localStorage.setItem('h5lock_password', this.pswObj.spassword);
                     this.resetFunc(password);
                 } else { // 第二次输入不一致，清空
                   document.getElementById('h5title').innerHTML = '两次不一致，重新输入';
@@ -176,7 +176,7 @@
             init();
         }
         H5lock.prototype.updatePassword = function(){
-            window.localStorage.removeItem('passwordxx');
+            window.localStorage.removeItem('h5lock_password');
             this.pswObj = {};
             // document.getElementById('title').innerHTML = '绘制解锁图案';
             this.reset();
@@ -205,9 +205,9 @@
         }
         H5lock.prototype.init = function() {
             this.initDom();
-            this.pswObj = window.localStorage.getItem('passwordxx') ? {
+            this.pswObj = window.localStorage.getItem('h5lock_password') ? {
                 step: 2,
-                spassword: window.localStorage.getItem('passwordxx')
+                spassword: window.localStorage.getItem('h5lock_password')
             } : {};
             if(this.type != "unlock"){
               this.pswObj = {};

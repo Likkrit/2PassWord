@@ -4,6 +4,7 @@ $(document).ready(function() {
   // 冒泡 注册插入点击事件
   // var divs = document.querySelector('body');
   // divs.addEventListener('click', click);
+  init();
 
   // 初始化，显示列表页
   if (localStorage.pageAdding) {
@@ -19,6 +20,7 @@ $(document).ready(function() {
       host: localStorage.pageHost || ''
     });
     $('#page').transition('scale');
+    $('#items').transition('hide');
     $('#add').css({
       'visibility': 'hidden'
     });
@@ -26,6 +28,7 @@ $(document).ready(function() {
       'visibility': 'visible'
     });
   }
+
   // tooltip提示初始化
   $('.search.link').popup({
     position: 'top center',
@@ -62,6 +65,7 @@ $(document).ready(function() {
   });
   // 增加按钮点击时
   $('#add').on('click', function() {
+    
     popUp.renderPage({
       id: new Date().getTime(),
     });
@@ -158,9 +162,5 @@ $(document).ready(function() {
     passwordInput.type = "password";
   });
 
-  // 获取当前标签页URL
-  if (chrome && chrome.tabs)
-    chrome.tabs.getSelected(function(tab) {
-      popUp.getItems(tab.url || "");
-    });
+
 });

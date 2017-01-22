@@ -1,6 +1,5 @@
 <!doctype html>
 <html>
-
   <head>
     <meta name="2PassWord" content="" charset="utf-8">
     <title>2PassWord Popup</title>
@@ -9,6 +8,8 @@
     <script type="text/javascript" src="./js/semantic/semantic.js"></script>
     <script src="./js/popup_bind.js"></script>
     <script src="./js/popup.js"></script>
+    <script type="text/javascript" src="./js/des/aes.js"></script>
+    <script src="./js/h5lock/H5lock.js"></script>
     <style>
       body {
         overflow-y: hidden;
@@ -103,15 +104,21 @@
         justify-content: center;
         flex-direction: column;
       }
+      #h5lock {
+        display: flex;
+        height: 35rem;
+        justify-content: center;
+        flex-direction: column;
+      }
       #items.dimmed.dimmable:not(body) {
         overflow: visible;
       }
       .empty.icon {
         opacity: 0.7;
       }
+
     </style>
   </head>
-
   <body>
     <div class="container">
       <div id="header">
@@ -121,12 +128,15 @@
           <i id="add" class="plus square outline icon"></i>
         </div>
       </div>
+      <div class="ui h5lock_container ui inverted dimmer">
+        <div id="h5lock"></div>
+      </div>
       <div class="body">
-        <div id="items" class="ui middle aligned divided selection list dimmable dimmed">
+        <div id="items" class="dimmable dimmed">
           <div class="ui inverted dimmer active">
             <div class="ui text loader">Loading</div>
           </div>
-
+          <div class="box ui middle aligned divided selection list"></div>
         </div>
         <div id="page" class="ui transition hidden">
           <form class="ui form">

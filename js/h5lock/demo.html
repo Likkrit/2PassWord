@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>H5lock插件模拟APP手势9宫格滑动解锁效果</title>
+    <style type="text/css">
+        .title {color: #22C3AA;}
+    </style>
+</head>
+<body>
+<span style="display:none;">
+</span>
+<div id="h5lock"> </div>
+<script src="H5lock.js"></script>
+<script>
+var opt = {
+  width: 320, // lock wrap width
+  height: 320, // lock wrap height
+  container: 'h5lock', // the id attribute of element
+  backgroundStyle : '#305066',
+  unlock : function(){
+    console.log(1);
+  },
+};
+var lock = new H5lock(opt);
+lock.init();
+</script>
+</body>
+</html>

@@ -74,7 +74,6 @@ function innerHTML() {
 }
 
 document.onclick = function(e) {
-  console.log(e);
   if (e.target.tagName == 'INPUT'){
     e.target.type == 'password' ? currentInput = 'input2' : currentInput = 'input1'
     showTip();

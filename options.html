@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
   <head>
+    <meta name="2PassWord" content="" charset="utf-8">
     <title>2PassWord Settings</title>
     <style media="screen">
       body,
@@ -11,12 +12,13 @@
         margin-top: 2em;
         margin-bottom: 3em;
       }
-
     </style>
     <link rel="stylesheet" href="./js/semantic/semantic.css">
-    <script type="text/javascript" src="./js//jquery.min.js"></script>
+    <script type="text/javascript" src="./js/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/des/aes.js"></script>
     <script type="text/javascript" src="./js/semantic/semantic.js"></script>
     <script type="text/javascript" src="./js/options.js"></script>
+    <script type="text/javascript" src="./js/h5lock/H5lock.js"></script>
   </head>
   <body>
     <h1 class="ui center aligned header">2PassWord Settings</h1>
@@ -50,9 +52,7 @@
             <div class="meta">
               use AES encryption to protect your password safety.
             </div>
-
             <div class="ui segment">
-
               <div class="field">
                 <div class="extra">
                   <div class="ui input">
@@ -61,10 +61,19 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
-
+        <div class="item">
+          <div class="content">
+            <a class="header">H5Lock Password</a>
+              <div class="field">
+                <div class="extra">
+                  <div class="ui button reset_h5lock">添加手势密码</div>
+                  <div class="ui red deny button remove_h5lock" style="display:none;">删除手势密码</div>
+                </div>
+            </div>
+          </div>
+        </div>
         <div class="item" style="display:none">
           <div class="ui small image">
             <img _src="http://semantic-ui.com/examples/assets/images/wireframe/image.png">
@@ -95,6 +104,11 @@
           </div>
         </div>
         <div></div>
+      </div>
+    </div>
+    <div class="ui page dimmer h5lock_container">
+      <div class="content">
+        <div class="center"><div id="h5lock"></div></div>
       </div>
     </div>
     <div class="ui page inverted dimmer">

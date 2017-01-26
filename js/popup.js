@@ -209,7 +209,7 @@ function init() {
         switch (response.msg) {
           // 如果background的状态是加载完毕的时候，拉取background里的items
           case 'loaded':
-          if(localStorage.h5lock == 2 || (localStorage.h5lock == 1 && !response.unlocked)){
+          if(localStorage.h5lock == 2 || (localStorage.h5lock == 1 && response.locked)){
             new H5lock({
               container: 'h5lock',
               unlock: function(lockKey) {
@@ -240,7 +240,8 @@ function init() {
             // 如果网络错误，则主动尝试一次网络请求，如果失败提示错误信息
             popUp.pullItems(function(result) {
               if (result.msg == 'ok') {
-                popUp.getItems(tab.url || "");
+                init();
+                // popUp.getItems(tab.url || "");
               } else {
                 $('#items .dimmer').dimmer('is active') ? null : $('#items .dimmer').dimmer('show');
                 $('#items .dimmer').dimmer('is active') ? $('#items .dimmer').dimmer('hide') : null;

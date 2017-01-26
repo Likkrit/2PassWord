@@ -44,8 +44,8 @@
     else if (request.type == "getStatus") {
       sendResponse({
         msg: z.status,
-        unlocked : (background.lockKey && localStorage.h5lock_password) || (!background.lockKey && !localStorage.h5lock_password)
-        //已解锁 （有lockKey 且 有password）或者 （lockKey为空 且 没有password）
+        locked : (!background.lockKey && localStorage.h5lock_password)
+        //已上锁 （没有lockKey 且 有password）
       });
     }
   });
@@ -392,6 +392,5 @@
     }
   });
   window.z = z;
-  window.background = background;
   background.init();
 })();

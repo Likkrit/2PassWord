@@ -314,33 +314,6 @@
       return newObj;
     }
   };
-
-  // DES函数封装
-  var DES = {
-    encrypt: function(message, key) {
-      // des加密解密 js与java版
-      // https://gist.github.com/ufologist/5581486
-      // https://www.douban.com/note/276592520/
-      var keyHex = CryptoJS.enc.Utf8.parse(key);
-      var encrypted = CryptoJS.DES.encrypt(message, keyHex, {
-        mode: CryptoJS.mode.ECB,
-        padding: CryptoJS.pad.Pkcs7
-      });
-      return encrypted.toString();
-    },
-    decrypt: function(ciphertext, key) {
-      var keyHex = CryptoJS.enc.Utf8.parse(key);
-
-      var decrypted = CryptoJS.DES.decrypt({
-        ciphertext: CryptoJS.enc.Base64.parse(ciphertext)
-      }, keyHex, {
-        mode: CryptoJS.mode.ECB,
-        padding: CryptoJS.pad.Pkcs7
-      });
-      return decrypted.toString(CryptoJS.enc.Utf8);
-    }
-  };
-
   // AES函数封装
   var AES = {
     encrypt: function(message, key) {

@@ -3,112 +3,107 @@
   <head>
     <meta name="2PassWord" content="" charset="utf-8">
     <title>2PassWord Settings</title>
-    <style media="screen">
+    <link rel="stylesheet" href="./js/semantic/semantic.css">
+    <script type="text/javascript" src="./js/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/aes/aes.js"></script>
+    <script type="text/javascript" src="./js/semantic/semantic.js"></script>
+    <script type="text/javascript" src="./js/options.js"></script>
+    <script type="text/javascript" src="./js/h5lock/H5lock.js"></script>
+    <style>
       body,
       html {
         height: auto!important;
       }
       h1.ui.center.header {
         margin-top: 2em;
-        margin-bottom: 3em;
+        margin-bottom: 2em;
+      }
+      .introduce{
+        margin-bottom: 2em;
       }
     </style>
-    <link rel="stylesheet" href="./js/semantic/semantic.css">
-    <script type="text/javascript" src="./js/jquery.min.js"></script>
-    <script type="text/javascript" src="./js/des/aes.js"></script>
-    <script type="text/javascript" src="./js/semantic/semantic.js"></script>
-    <script type="text/javascript" src="./js/options.js"></script>
-    <script type="text/javascript" src="./js/h5lock/H5lock.js"></script>
   </head>
   <body>
     <h1 class="ui center aligned header">2PassWord Settings</h1>
     <div class="ui container">
-      <div class="ui relaxed items">
-        <div class="item">
-          <div class="content">
-            <h3 class="header">Introduction</h3>
-            <div class="description">
-              <p>You can use this extension to help you to remember all the password between defferent website<br>Even help you to input your password instead.</p>
-            </div>
+      <div class="introduce">
+        <div class="content">
+          <h3 class="header">关于2PassWord</h3>
+          <div class="description">
+            <p>2PassWord是一个管理和自动填写账号密码的浏览器插件，它使用你自己的实时后端云(BaaS)作为数据库，来保存不同的网站的账号密码。</p>
           </div>
         </div>
-        <div class="item">
-          <div class="content">
-            <h3 class="header">FireBase or Wilddog Database address</h3>
-            <div class="meta">
-              <p>Input your Database address here.</p>
-            </div>
-            <div class="ui labeled input fluid">
-              <div class="ui label">
-                http://
+      </div>
+
+      <div class="ui top attached tabular menu">
+        <a class="item active" data-tab="first">基础设置</a>
+        <a class="item" data-tab="second">手势密码</a>
+      </div>
+      <div class="ui bottom attached tab segment active" data-tab="first">
+        <div class="ui relaxed items">
+
+          <div class="item">
+            <div class="content">
+              <h3 class="header">数据库配置</h3>
+              <div class="meta">
+                <p>在下面输入Google FireBase 或者 野狗云 的地址：</p>
               </div>
-              <input name="wilddog" type="text" placeholder="******.firebaseio.com">
+              <div class="ui labeled input fluid">
+                <div class="ui label">
+                  https://
+                </div>
+                <input name="wilddog" type="text" placeholder="******.firebaseio.com/***">
+              </div>
             </div>
           </div>
-        </div>
-        <div class="item">
-          <div class="content">
-            <a class="header">Password</a>
-            <div class="meta">
-              use AES encryption to protect your password safety.
-            </div>
-            <div class="ui segment">
+          <div class="item">
+            <div class="content">
+              <a class="header">自定义密码</a>
+              <div class="meta">
+                使用AES加密方式来保护你的原始数据不被窃据。
+              </div>
               <div class="field">
                 <div class="extra">
                   <div class="ui input">
-                    <input type="password" placeholder="Input your custom password">
+                    <input type="password" placeholder="输入你的自定义密码">
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <div class="item">
+            <div class="content">
+              <div class="positive ui right floated button">Save</div>
+              <p></p>
+            </div>
+          </div>
+          <div></div>
         </div>
-        <div class="item">
-          <div class="content">
-            <a class="header">H5Lock Password</a>
+      </div>
+      <div class="ui bottom attached tab segment" data-tab="second">
+        <div class="ui relaxed items">
+          <div class="item">
+            <div class="content">
+              <a class="header">H5Lock Password</a>
+              <div class="meta">
+                通过手势密码进一步加密自定义密码，增加安全性。
+              </div>
               <div class="field">
                 <div class="extra">
                   <div class="ui button reset_h5lock">添加手势密码</div>
                   <div class="ui red deny button remove_h5lock" style="display:none;">删除手势密码</div>
                 </div>
-            </div>
-          </div>
-        </div>
-        <div class="item" style="display:none">
-          <div class="ui small image">
-            <img _src="http://semantic-ui.com/examples/assets/images/wireframe/image.png">
-          </div>
-          <div class="content">
-            <a class="header">Content Header</a>
-            <div class="meta">
-              <a>Date</a>
-              <a>Category</a>
-            </div>
-            <div class="description">
-              A description which may flow for several lines and give context to the content.
-            </div>
-            <div class="extra">
-              <div class="ui right floated primary button">
-                Primary
-                <i class="right chevron icon"></i>
               </div>
-              <div class="ui label">Limited</div>
             </div>
           </div>
         </div>
-
-        <div class="item">
-          <div class="content">
-            <div class="positive ui right floated button">Save</div>
-            <p></p>
-          </div>
-        </div>
-        <div></div>
       </div>
     </div>
     <div class="ui page dimmer h5lock_container">
       <div class="content">
-        <div class="center"><div id="h5lock"></div></div>
+        <div class="center">
+          <div id="h5lock"></div>
+        </div>
       </div>
     </div>
     <div class="ui page inverted dimmer">
@@ -122,5 +117,4 @@
       </div>
     </div>
   </body>
-
 </html>

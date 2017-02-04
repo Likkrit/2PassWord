@@ -1,12 +1,12 @@
 {
   "name": "2PassWord",
-  "description": "一个能够记录你的账号密码，并且能自动填写表单的Chrome插件，它能帮你省去输入账号密码的时间",
-  "version": "0.2",
+  "description": "轻松便捷地管理和自动填写网站的账号密码。",
+  "version": "0.2.4",
   "permissions": [
     "activeTab",  "http://*/*", "https://*/*", "http://*/"
   ],
   "background": {
-    "scripts": ["./js/des/tripledes.js","./js/des/aes.js","./js/des/mode-ecb.js","./js/reqwest.min.js","./js/background.js"],
+    "scripts": ["./js/aes/aes.js","./js/reqwest.min.js","./js/background.js"],
     "persistent": true
   },
   "options_page": "options.html",

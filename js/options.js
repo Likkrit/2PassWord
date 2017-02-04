@@ -1,8 +1,15 @@
 $(document).ready(function() {
   $('.ui.checkbox').checkbox();
+  $('.menu .item')
+  .tab()
   $('[name=wilddog]').val(localStorage.url || '');
-  localStorage.privateKey ? $('[type=password]').attr('placeholder', 'change password...?') : null;
+  localStorage.privateKey ? $('[type=password]').attr('placeholder', '输入新密码') : null;
+  bind();
+  init();
 
+});
+
+function bind() {
   // 输入框正则匹配事件
   $('[name=wilddog]').on('input', function() {
     var a = $(this).val().replace(/^https?:\/\//ig, '');
@@ -84,13 +91,10 @@ $(document).ready(function() {
         $('.reset_h5lock').text('添加手势密码');
       });
   });
+}
 
-  init();
-
-});
-
-function init(){
-  if(localStorage.h5lock_password){
+function init() {
+  if (localStorage.h5lock_password) {
     $('.reset_h5lock').text('更改手势密码');
     $('.remove_h5lock').show();
     // 如果是锁屏状态，则渲染解锁界面

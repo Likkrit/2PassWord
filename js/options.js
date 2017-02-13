@@ -49,6 +49,8 @@ function bind() {
       setTimeout(function() {
         $('.inverted.dimmer')
           .dimmer('hide');
+          // hack 设置手势密码bug
+          $('.h5lock_container').dimmer('hide');
       }, 1000);
     });
   });

@@ -1,7 +1,7 @@
 {
   "name": "2PassWord",
   "description": "轻松便捷地管理和自动填写网站的账号密码。",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "permissions": [
     "activeTab",  "http://*/*", "https://*/*", "http://*/"
   ],

@@ -27,14 +27,33 @@
         allFrames: true
       });
     }
+    // openContentPopup
+    else if (request.type == "openContentPopup") {
+      var code = "try{document.body.removeChild(document.querySelector('.tpw_iframe'));}catch(e){};window.tpw_offset='" + JSON.stringify(request.offset) +"';tpw_offset=JSON.parse(tpw_offset);";
+      chrome.tabs.executeScript(null, {
+        code: code,
+        allFrames: false
+      });
+      chrome.tabs.executeScript(null, {
+        file: "./js/content_script_popup.js",
+        allFrames: false
+      });
+    }
+    // closeContentPopup
+    else if (request.type == "closeContentPopup") {
+      var code = "try{document.body.removeChild(document.querySelector('.tpw_iframe'));}catch(e){}";
+      chrome.tabs.executeScript(null, {
+        code: code,
+        allFrames: true
+      });
+    }
     // unlock
     else if (request.type == "unLock") {
       background.unLock(request.lockKey);
       sendResponse({
         msg: 'ok'
       });
-    }
-    else if (request.type == "resetLockKey") {
+    } else if (request.type == "resetLockKey") {
       background.resetLockKey(request.lockKey);
       sendResponse({
         msg: 'ok'
@@ -44,8 +63,8 @@
     else if (request.type == "getStatus") {
       sendResponse({
         msg: z.status,
-        locked : (!background.lockKey && localStorage.h5lock_password)
-        //已上锁 （没有lockKey 且 有password）
+        locked: (!background.lockKey && localStorage.h5lock_password)
+          //已上锁 （没有lockKey 且 有password）
       });
     }
   });
@@ -348,20 +367,28 @@
   // 当一个标签加载完成时，此事件触发
   // 用于显示当前浏览标签是否有记录下的用户名密码
   chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if (changeInfo.status != "loading") {
-      return false;
-    }
-    var url = tab.url || "";
-    if (!z.items)
-      return;
-    for (var i = 0; i < z.items.length; i++) {
-      if (z.items[i].name && url.indexOf(z.items[i].name) > 0 || url.indexOf(z.items[i].host) > 0) {
-        chrome.browserAction.setIcon({
-          path: "images/page_64.png",
-          tabId: tabId
+    switch (changeInfo.status) {
+      case 'complete':
+        chrome.tabs.executeScript(null, {
+          file: "./js/content_icons.js",
+          allFrames: true
         });
-        return;
-      }
+        break;
+      case 'loading':
+        var url = tab.url || "";
+        if (!z.items)
+          return;
+        for (var i = 0; i < z.items.length; i++) {
+          if (z.items[i].name && url.indexOf(z.items[i].name) > 0 || url.indexOf(z.items[i].host) > 0) {
+            chrome.browserAction.setIcon({
+              path: "images/page_64.png",
+              tabId: tabId
+            });
+            return;
+          }
+        }
+        break;
+      default:
     }
   });
   window.z = z;

@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="2PassWord" content="" charset="utf-8">
+    <title>2PassWord Popup</title>
+    <link rel="stylesheet" href="popupfilltab.css">
+    <style>
+      #contentdiv {
+        width: 326px;
+      }
+      #popupcontainer {
+        padding-bottom: 30px;
+        height: 200px;
+      }
+      #lptabpopup {
+        width: 310px;
+      }
+      #lptabpopupmore {
+        display: table;
+        width: 310px;
+      }
+      #lptabpopup .img {
+        background-image: url("data:image/gif;base64,R0lGODlhEAAQAIcAAAAAAExnf1BpgWR0iHZ6hHeBkX+GkYiOmpeaopucoaSlqqWmqrm9w7q+xL+/wry/xcXGyc3Oz9HS1NPU1tnZ2d/h4+Di5OLj5uPl5+Tk5OXm6O7u7+7v8O/w8e/w8vDw8fHx8vLy8/Pz8/Pz9PT09fX19fX29vb29vf39/f3+Pj4+Pj4+fn5+vr6+/v7/Pz8/P39/f7+/v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAAAQABAAAAiQAAEIHEiw4MAFCBEmQCjBIIAFMiLK8CBjA4QIBiFu2Fgh4oYJDgpq5Chxw4KCCiqSlKigIAKVGyowYNDgAYGCB2BWsHABgwYDBQvA/CCiBAoVBQoOUNlBhAkVLV4MKCigIgenK1zAiCGgYICKIEhAhRExgFcZHEKcYEG27NkOI1K0aCvDLMEAePPqteuwr8CAADs=");
+        background-size: 16px 16px;
+        background-repeat: no-repeat;
+        background-position: center center;
+        padding: 2px 10px;
+      }
+      #lptabpopup tr:hover,
+      #lptabpopupmore tr:hover {
+        /*cursor: pointer;*/
+      }
+      .expander {
+        display: none;
+      }
+      #lptabpopup .expander .img {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA0ElEQVQ4T6WSAQ3CQAxFmQLACTgYCpAAKAAHIAEcDAXgACSAAySAAvhv6ZLmcqxHaNJclvX9tv+uGvwZ1Q98rdqb8umZSGCk4q1yozwql2nDSGAvYP0NRiwSeFvHlc7GdZ/YOqEA+w5t75lBwBfluGSCs4rm1hkxpsCHu7KOBHZmYOob30xz7ROg08LIl07MbDsqEG7hnADXdnLFwIDcfzb8LQBjDiZ1Me2D/QQ5OL263gm82xQWwX4CL3DQD55uUXQesALQQ9kUkVYUPeVQ6wMfKSQRE3iWtAAAAABJRU5ErkJggg==");
+        background-size: 16px 16px;
+        background-repeat: no-repeat;
+        background-position: center center;
+        padding: 2px 10px;
+        opacity: 0.5;
+      }
+      #lptabpopup td:hover .expander  {
+        display: block;
+      }
+
+      #lptabpopup .expander:hover .img {
+        opacity: 1;
+      }
+      .shortenstr,
+      .subtext {
+        width: 250px;
+      }
+      #moreDiv{
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="contentdiv">
+      <div id="headerdiv" class="bg40dialog">
+        <div id="SB_iconbox" class="super40height bg40header" role="navigation">
+          <a id="SB_addico_a" draggable="false" class="super40icon floatleft tooltip40superlong"><input id="SB_addico_img" type="button" aria-label="保存站点信息" class="bg40header super40icon_icon SB_addico_img">
+            <span>保存密码到库</span>
+          </a>
+          <a id="SB_siteico_a" draggable="false" class="super40icon floatleft tooltip40superlong"><input id="SB_siteico_img" type="button" aria-label="站点" class="bg40header super40icon_icon SB_siteico_active">
+            <span>密码已保存</span>
+          </a>
+          <a id="SB_ffico_a" draggable="false" class="super40icon floatleft tooltip40superlong"><input id="SB_ffico_img" type="button" aria-label="表单填写" class="bg40header super40icon_icon SB_ffico_img">
+            <span>表单填写配置</span>
+          </a>
+          <a id="SB_genico_a" draggable="false" class="super40icon floatleft tooltip40superlong"><input id="SB_genico_img" type="button" aria-label="生成" class="bg40header super40icon_icon SB_genico_img">
+            <span>生成</span>
+          </a>
+          <a id="SB_nevico_a" draggable="false" class="super40icon floatleft tooltip40superlong"><input id="SB_nevico_img" type="button" aria-label="未启用" class="bg40header super40icon_icon SB_nevico_img">
+            <span>禁用</span>
+          </a>
+          <a id="SB_closeico_a" draggable="false" class="super40icon floatright tooltip40super"><input id="SB_closeico_img" type="button" aria-label="关闭" class="bg40header super40icon_icon SB_closeico_img">
+            <span>关闭</span>
+          </a>
+        </div>
+        <div id="SB_titlebox" class="super40height bg40title super40title unselectable">
+          <span id="SB_titlebox_txt" draggable="false" class="super40title">站点</span>
+        </div>
+      </div>
+      <div>
+        <div id="popupcontainer">
+          <table id="lptabpopup">
+            <tr aid="8767575147778626578" sitename="piaolianwang.com" username="fdsfdsf" class="popuprow">
+              <td aid="8767575147778626578" class="">
+                <span class="img"></span>
+                <span class="popcell shortenstr">fdsfdsf</span>
+                <span expander="true" class="expander">
+                  <span class="img"></span>
+                </span>
+                <p class="subtext">piaolianwang.com</p>
+              </td>
+            </tr>
+            <tr aid="8767575147778626578" sitename="piaolianwang.com" username="fdsfdsf" class="popuprow">
+              <td aid="8767575147778626578" class="">
+                <span class="img"></span>
+                <span class="popcell shortenstr">fdsfdsf</span>
+                <span expander="true" class="expander">
+                  <span class="img"></span>
+                </span>
+                <p class="subtext">piaolianwang.com</p>
+              </td>
+            </tr>
+            <tr aid="8767575147778626578" sitename="piaolianwang.com" username="fdsfdsf" class="popuprow">
+              <td aid="8767575147778626578" class="">
+                <span class="img"></span>
+                <span class="popcell shortenstr">fdsfdsf</span>
+                <span expander="true" class="expander">
+                  <span class="img"></span>
+                </span>
+                <p class="subtext">piaolianwang.com</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div id="moreDiv">
+        <table id="lptabpopupmore">
+          <tr class="row">
+            <td>编辑</td>
+          </tr>
+          <tr class="row">
+            <td>复制用户名</td>
+          </tr>
+          <tr class="row">
+            <td>复制密码</td>
+          </tr>
+          <tr class="row">
+            <td>复制网址</td>
+          </tr>
+          <tr class="row">
+            <td>删除</td>
+          </tr>
+          <tr class="row">
+            <td>返回</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </body>
+  <script src="./js/contentPopup.js" charset="utf-8"></script>
+  
+</html>

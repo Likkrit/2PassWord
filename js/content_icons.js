@@ -1,40 +1,88 @@
 function contentIcons() {
-  this.icons = [];
-
-  // 创建icons style节点
+  // 创建style
   var styleNode = document.createElement("style");
   styleNode.setAttribute("type", "text/css");
-  styleNode.appendChild(document.createTextNode('[data-class*="tpw_icon"]{opacity: .6;} [data-class*="tpw_icon"]:hover{opacity: 1;}'));
+  var icon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAvElEQVQ4T2NkoBAwIukXALL9gViBgJkPgPIbgfgDSB2yAQVAfj+RDioEqpuAbkADUKAeiB0JGLIfKN8IxCD1KC6AGYDsqgtANf+B2BDJUBCfaAM2QDUGkGMAcpjA/Qx1EVEugHkJZDlcA7EGgKJSHi0wHwL5D4g1wAGoEISRwQEgB4SJCkSQZns0Aw6SYgDICyCMDEDOJ8oL6E5HMwfsDayxQHFSBmUmUIJBdzq6C0DeWAATRE626AqJ4gMAKh82EQu8MAEAAAAASUVORK5CYII=';
+  var icon1 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASCAYAAABSO15qAAAAAXNSR0IArs4c6QAAAPhJREFUOBHlU70KgzAQPlMhEvoQTg6OPoOjT+JWOnRqkUKHgqWP4OQbOPokTk6OTkVULNSLVc62oJmbIdzd95NcuGjX2/3YVI/Ts+t0WLE2ut5xsQ0O+90F6UxFjAI8qNcEGONia08e6MNONYwCS7EQAizLmtG' +
+    'UDEzTBNd1fxsYhjEBnHPQNG3KKTYV34F8ec/zwHEciOMYyrIE3/ehKAqIoggo9inGXKmFXwbyBkmSQJqmUNe15IRhCG3byphitm1/eUzDM4qR0TTNjEixGdAnSi3keS5vSk2UDKqqgizLqB4YzvassiKhGtZ/jDMtLOnHz7TE+yf8BaDZXA509yeBAAAAAElFTkSuQmCC';
+  styleNode.appendChild(document.createTextNode('[class*="tpw_icon"]{background-image: url("' + icon + '")!important;background-position: 98% 50%!important;background-repeat: no-repeat!important;}'));
   document.body.appendChild(styleNode);
-
-  // 判断是否有form input，有则将入监听事件
-  var addListener = false;
-  var ff = document.forms[0];
-  if (!ff || !ff.elements) {
-    return;
-  }
-  for (var i = 0; i < ff.elements.length; i++) {
-    var ee = ff.elements[i];
-    if ("INPUT" == ee.tagName) {
-      addListener = true;
-      this.createIcon(ee);
-    };
-  }
-  if (addListener) {
-    console.log('addIconsListener');
-    var that = this;
-    setInterval(function() {
-      that.iconsListener();
-    }, 800);
-  }
+  this.inputsNum = 0;
+  this.iframesNum = 0;
+  this.domNodeFind();
+  var that = this;
+  // 事件绑定
+  document.addEventListener('mousemove', function(e) {
+    if (!that.inputCheck(e.target)) return;
+    if (that.mouseOnIcon(e)) {
+      e.target.style.cursor = 'pointer';
+    } else {
+      e.target.style.cursor = 'auto';
+    }
+  });
+  document.addEventListener('click', function(e) {
+    if (!that.inputCheck(e.target)) return;
+    if (that.mouseOnIcon(e)) {
+      that.iconClick(e);
+    }
+  });
+  document.addEventListener('DOMNodeInserted', function() {
+    that.domNodeFind();
+  }, false);
 
 }
-
-// 获取input元素靠右对齐的绝对路径
-contentIcons.prototype.offset = function(ele) {
-  if (!ele) {
-    return;
+contentIcons.prototype.domNodeFind = function() {
+    var iframes = document.getElementsByTagName('iframe');
+    if (this.iframesNum != iframes.length) {
+      var lengthOffset = 0;
+      for (var i = 0; i < iframes.length; i++) {
+        if (iframes[i].className == 'tpw_iframe')
+          lengthOffset = -1;
+      }
+      if (iframes.length + lengthOffset != this.iframesNum) {
+        console.log('插入一次脚本');
+        this.iframesNum = iframes.length;
+        chrome.runtime.sendMessage({
+          type: "insertContentIconsScript",
+          allFrames: true
+        });
+      }
+    }
+    iframes = [];
+    var inputs = document.getElementsByTagName('input');
+    if (this.inputsNum != inputs.length) {
+      for (i = 0; i < inputs.length; i++) {
+        if (inputs[i].className.indexOf('tpw_icon') <= 0 && this.inputCheck(inputs[i])) {
+          inputs[i].className = inputs[i].className + ' tpw_icon';
+          console.log('加入了一个图标');
+        }
+      }
+      this.inputsNum = inputs.length;
+    }
+    inputs = [];
   }
+  // 输入框类型检测
+contentIcons.prototype.inputCheck = function(ele) {
+    if (ele.nodeName == 'INPUT' && ele.attributes["type"])
+      if (ele.attributes["type"].value == 'text' || ele.attributes["type"].value == 'password' || ele.attributes["type"].value == 'email')
+        return true;
+    return false;
+  }
+  // 鼠标是否在input的图标上
+contentIcons.prototype.mouseOnIcon = function(e) {
+    var borderWidth = parseInt(getComputedStyle(e.target, null).borderWidth);
+    var left = ((e.target.offsetWidth - borderWidth * 2) - 16) * 0.98;
+    var right = ((e.target.offsetWidth - borderWidth * 2) - 16) * 0.98 + 16;
+    var top = ((e.target.offsetHeight - borderWidth * 2) - 18) * 0.5;
+    var bottom = ((e.target.offsetHeight - borderWidth * 2) - 18) * 0.5 + 18;
+    if (e.offsetX > left && e.offsetX <= right && e.offsetY > top && e.offsetY <= bottom)
+      return true;
+    else
+      return false
+  }
+  // 获取位于input元素98% 50%位置的绝对坐标
+contentIcons.prototype.offset = function(ele) {
+  if (!ele) return;
   var oldEle = ele;
   var top = ele.offsetTop;
   var left = ele.offsetLeft;
@@ -56,87 +104,22 @@ contentIcons.prototype.offset = function(ele) {
   }
 }
 
-// 创建并插入icon
-contentIcons.prototype.createIcon = function(ele) {
-  var dataClass = 'tpw_icon_' + Math.round(Math.random() * 100000);
-  ele.className = ele.className + ' ' + dataClass;
-  var iconStyle = this.offset(ele);
-  var icon = document.createElement('div');
-  var attr = document.createAttribute("data-class");
-  attr.nodeValue = dataClass;
-  icon.setAttributeNode(attr);
-  icon.style.top = iconStyle.top + 'px';
-  icon.style.left = iconStyle.left + 'px';
-  var newIconArr = {
-    dataClass: dataClass,
-    top: iconStyle.top,
-    left: iconStyle.left
-  }
-  this.icons.push(newIconArr);
-  icon.style.position = 'absolute';
-  icon.style.width = '16px';
-  icon.style.height = '18px';
-  icon.style.backgroundRepeat = 'no-repeat';
-  icon.style.cursor = 'pointer';
-  icon.style.zIndex = '999999';
-  icon.style.backgroundImage = "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASCAYAAABSO15qAAAAAXNSR0IArs4c6QAAAPhJREFUOBHlU70KgzAQPlMhEvoQTg6OPoOjT+JWOnRqkUKHgqWP4OQbOPokTk6OTkVULNSLVc62oJmbIdzd95NcuGjX2/3YVI/Ts+t0WLE2ut5xsQ0O+90F6UxFjAI8qNcEGONia08e6MNONYwCS7EQAizLmtG" +
-    "UDEzTBNd1fxsYhjEBnHPQNG3KKTYV34F8ec/zwHEciOMYyrIE3/ehKAqIoggo9inGXKmFXwbyBkmSQJqmUNe15IRhCG3byphitm1/eUzDM4qR0TTNjEixGdAnSi3keS5vSk2UDKqqgizLqB4YzvassiKhGtZ/jDMtLOnHz7TE+yf8BaDZXA509yeBAAAAAElFTkSuQmCC')";
-  var that = this;
-  icon.onclick = function(e) {
-    that.iconClick(e);
-  };
-  document.body.appendChild(icon);
-};
-// icon点击事件
+// 点击事件
 contentIcons.prototype.iconClick = function(e) {
   var offset = {
     left: 0,
     top: 0
   };
   offset = this.offset(e.target);
-  if (self.frameElement) {
-    var frameOffset = self.frameElement.getBoundingClientRect()
-    offset.left += frameOffset.left;
-    offset.top += frameOffset.top + self.parent.document.body.scrollTop;
-  }
   offset.top += 21;
   chrome.runtime.sendMessage({
     type: "openContentPopup",
-    offset: offset
+    offset: offset,
+    mousePoint: {
+      x: e.x,
+      y: e.y
+    },
+    iframe: top != self ? true : false
   });
-  // console.log(e.target.attributes['data-class'].value);
 };
-// icons监听事件
-contentIcons.prototype.iconsListener = function() {
-  for (var i = 0; i < this.icons.length; i++) {
-    var ele = document.querySelector('.' + this.icons[i].dataClass);
-    if (this.offset(ele).top != this.icons[i].top || this.offset(ele).left != this.icons[i].left) {
-      this.adjustIconPosition(this.icons[i].dataClass);
-    }
-  }
-};
-// 校正icon位置
-contentIcons.prototype.adjustIconPosition = function(dataClass) {
-  // 选择input框
-  var ele = document.querySelector('.' + dataClass);
-  var newIconStyle = this.offset(ele);
-  // 选择icon框
-  var iconEle = document.querySelector('[data-class=' + dataClass + ']');
-  if (!iconEle) {
-    return;
-  }
-  console.log('adjust to:' + newIconStyle.top + ' ' + newIconStyle.left);
-
-  // 更新样式
-  iconEle.style.top = newIconStyle.top + 'px';
-  iconEle.style.left = newIconStyle.left + 'px';
-  //更新本地数组
-  for (var i = 0; i < this.icons.length; i++) {
-    if (this.icons[i].dataClass == dataClass) {
-      this.icons[i].top = newIconStyle.top;
-      this.icons[i].left = newIconStyle.left;
-    }
-  }
-};
-
-var contentIcons = new contentIcons();
+var icons = icons ? icons : new contentIcons();

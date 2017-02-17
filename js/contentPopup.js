@@ -78,6 +78,7 @@ var contentPopup = {
 };
 function eventFire(){
   document.querySelector('#SB_closeico_img').addEventListener('click',function(){
+    window.close();
     chrome.runtime.sendMessage({
       type: "closeContentPopup"
     });

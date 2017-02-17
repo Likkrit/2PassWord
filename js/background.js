@@ -26,10 +26,22 @@
         file: "./js/content_script.js",
         allFrames: true
       });
+    } else if (request.type == "insertContentIconsScript") {
+      setTimeout(function() {
+        chrome.tabs.executeScript(null, {
+          file: "./js/content_icons.js",
+          allFrames: request.allFrames ? true : false
+        });
+      }, 300);
     }
     // openContentPopup
     else if (request.type == "openContentPopup") {
-      var code = "try{document.body.removeChild(document.querySelector('.tpw_iframe'));}catch(e){};window.tpw_offset='" + JSON.stringify(request.offset) +"';tpw_offset=JSON.parse(tpw_offset);";
+      var code = '';
+      code += "window.tpw_iframe=" + request.iframe + ";";
+      code += "window.tpw_offset='" + JSON.stringify(request.offset) + "';";
+      code += "window.tpw_mousePoint='" + JSON.stringify(request.mousePoint) + "';";
+      code += "tpw_offset=JSON.parse(tpw_offset);";
+      code += "tpw_mousePoint=JSON.parse(tpw_mousePoint);";
       chrome.tabs.executeScript(null, {
         code: code,
         allFrames: false
@@ -367,12 +379,15 @@
   // 当一个标签加载完成时，此事件触发
   // 用于显示当前浏览标签是否有记录下的用户名密码
   chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+    if (!changeInfo || !changeInfo.status || !tab || !/^https?/i.test(tab.url)) return;
     switch (changeInfo.status) {
       case 'complete':
-        chrome.tabs.executeScript(null, {
-          file: "./js/content_icons.js",
-          allFrames: true
-        });
+        setTimeout(function() {
+          chrome.tabs.executeScript(null, {
+            file: "./js/content_icons.js",
+            allFrames: false
+          });
+        }, 300);
         break;
       case 'loading':
         var url = tab.url || "";

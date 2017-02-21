@@ -63,9 +63,16 @@ contentIcons.prototype.domNodeFind = function() {
   }
   // 输入框类型检测
 contentIcons.prototype.inputCheck = function(ele) {
-    if (ele.nodeName == 'INPUT' && ele.attributes["type"])
-      if (ele.attributes["type"].value == 'text' || ele.attributes["type"].value == 'password' || ele.attributes["type"].value == 'email')
+    if (ele.nodeName == 'INPUT' && ele.attributes["type"]) {
+      if ((ele.attributes["type"].name && ele.attributes["type"].name.indexOf('search') >= 0) ||
+        (ele.className && ele.className.indexOf('search') >= 0) ||
+        (ele.id && ele.id.indexOf('search') >= 0))
+        return false;
+      if (ele.attributes["type"].value == 'text' ||
+        ele.attributes["type"].value == 'password' ||
+        ele.attributes["type"].value == 'email')
         return true;
+    }
     return false;
   }
   // 鼠标是否在input的图标上
@@ -82,44 +89,85 @@ contentIcons.prototype.mouseOnIcon = function(e) {
   }
   // 获取位于input元素98% 50%位置的绝对坐标
 contentIcons.prototype.offset = function(ele) {
-  if (!ele) return;
-  var oldEle = ele;
-  var top = ele.offsetTop;
-  var left = ele.offsetLeft;
-  while (ele.offsetParent) {
-    ele = ele.offsetParent;
-    if (window.navigator.userAgent.indexOf('MSTE 8') > -1) {
-      top += ele.offsetTop;
-      left += ele.offsetLeft;
-    } else {
-      top += ele.offsetTop + ele.clientTop;
-      left += ele.offsetLeft + ele.clientLeft;
+    if (!ele) return;
+    var oldEle = ele;
+    var top = ele.offsetTop;
+    var left = ele.offsetLeft;
+    while (ele.offsetParent) {
+      ele = ele.offsetParent;
+      if (window.navigator.userAgent.indexOf('MSTE 8') > -1) {
+        top += ele.offsetTop;
+        left += ele.offsetLeft;
+      } else {
+        top += ele.offsetTop + ele.clientTop;
+        left += ele.offsetLeft + ele.clientLeft;
+      }
+    }
+    left = (left + oldEle.offsetWidth - 16 - (0.3 * 16));
+    top = (top + (oldEle.offsetHeight - 18) / 2);
+    return {
+      left: left,
+      top: top
     }
   }
-  left = (left + oldEle.offsetWidth - 16 - (0.3 * 16));
-  top = (top + (oldEle.offsetHeight - 18) / 2);
-  return {
-    left: left,
-    top: top
+  // 获取位于input元素0 0位置的绝对坐标
+contentIcons.prototype.offsetTL = function(ele) {
+    if (!ele) return;
+    var top = ele.offsetTop;
+    var left = ele.offsetLeft;
+    while (ele.offsetParent) {
+      ele = ele.offsetParent;
+      if (window.navigator.userAgent.indexOf('MSTE 8') > -1) {
+        top += ele.offsetTop;
+        left += ele.offsetLeft;
+      } else {
+        top += ele.offsetTop + ele.clientTop;
+        left += ele.offsetLeft + ele.clientLeft;
+      }
+    }
+    return {
+      left: left,
+      top: top
+    }
   }
-}
-
-// 点击事件
+  // 点击事件
 contentIcons.prototype.iconClick = function(e) {
   var offset = {
     left: 0,
     top: 0
   };
+  var offsetTL = {
+    left: e.offsetX + this.offsetTL(e.target),
+    top: e.offsetY + this.offsetTL(e.target),
+  };
   offset = this.offset(e.target);
   offset.top += 21;
+
+  // 获取input字段
+  var ele = e.target;
+  var forms = [];
+  var targetForm = ele.form ? ele.form.elements : document.getElementsByTagName('input');
+
+  if (targetForm.length > 0) {
+    for (var i = 0; i < targetForm.length; i++) {
+      var inputParm = {
+        value: targetForm[i].value,
+        name: targetForm[i].name,
+        type: targetForm[i].type,
+      }
+      if (inputParm.type == 'text' ||
+        inputParm.type == 'password' ||
+        inputParm.type == 'email' ||
+        inputParm.name == 'email')
+        forms.push(inputParm);
+    }
+  }
+  // 获取input字段
   chrome.runtime.sendMessage({
     type: "openContentPopup",
     offset: offset,
-    mousePoint: {
-      x: e.x,
-      y: e.y
-    },
-    iframe: top != self ? true : false
+    iframe: top != self ? true : false,
+    saveForms: forms
   });
 };
 var icons = icons ? icons : new contentIcons();

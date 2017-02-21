@@ -3,7 +3,8 @@
   <head>
     <meta name="2PassWord" content="" charset="utf-8">
     <title>2PassWord Popup</title>
-    <link rel="stylesheet" href="popupfilltab.css">
+    <link rel="stylesheet" href="css/popupfilltab.css">
+    <link rel="stylesheet" href="css/buttons.css">
     <style>
       #contentdiv {
         width: 326px;
@@ -41,10 +42,9 @@
         padding: 2px 10px;
         opacity: 0.5;
       }
-      #lptabpopup td:hover .expander  {
+      #lptabpopup td:hover .expander {
         display: block;
       }
-
       #lptabpopup .expander:hover .img {
         opacity: 1;
       }
@@ -52,9 +52,24 @@
       .subtext {
         width: 250px;
       }
-      #moreDiv{
+      #moreDiv {
+        padding-bottom: 30px;
+      }
+      #lptabpopupsave,
+      #moreDiv {
         display: none;
       }
+      #lptabpopupsave {
+        height: 219px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -ms-overflow-y: auto;
+        -ms-overflow-x: hidden;
+      }
+      .saveinput {
+        width: 280px;
+      }
+
     </style>
   </head>
   <body>
@@ -120,6 +135,56 @@
           </table>
         </div>
       </div>
+
+      <div id="lptabpopupsave" style="background-color: rgb(242, 244, 245);">
+        <div class="savesitediv">
+          <p style="background-color: rgb(242, 244, 245);">
+            <a href="#" class="tooltipgen1" tabindex="-1" draggable="false">
+              <span>这是此网页的名称或者网址。</span>
+              <label for="name" style="background-color: rgb(242, 244, 245);">名称：</label>
+            </a>
+          </p>
+          <a href="#" class="tooltipgen2" tabindex="-1" draggable="false">
+            <span>这是此网页的名称或者网址。</span><input class="saveinput" spellcheck="false" type="text" id="name" value="google.com"></a>
+        </div>
+        <div id="groupdiv" class="savesitediv">
+          <p style="background-color: rgb(242, 244, 245);">
+            <a href="#" class="tooltipgen1" tabindex="-1" draggable="false">
+              <span>Select a folder in your LastPass Vault to place this website. [Optional]</span>
+              <label for="u" style="background-color: rgb(242, 244, 245);">文件夹:</label>
+            </a>
+          </p>
+          <a href="#" class="tooltipgen2" tabindex="-1" draggable="false">
+            <span>Select a folder in your LastPass Vault to place this website. [Optional]</span><input class="saveinput" spellcheck="false" type="text" id="group" value="" role="textfield" aria-haspopup="true" autocomplete="off" style="margin-right: 0px; text-overflow: ellipsis; white-space: nowrap;"></a>
+        </div>
+        <div class="savesitediv">
+          <p style="background-color: rgb(242, 244, 245);">
+            <a href="#" class="tooltipgen1" tabindex="-1" draggable="false">
+              <span>你用什么登录此网站。</span>
+              <label for="u" style="background-color: rgb(242, 244, 245);">用户名：</label>
+            </a>
+          </p>
+          <a href="#" class="tooltipgen2" tabindex="-1" draggable="false">
+            <span>你用什么登录此网站。</span><input class="saveinput" spellcheck="false" type="text" id="u"></a>
+        </div>
+        <div class="savesitediv" style="padding-bottom: 8px;">
+          <p style="background-color: rgb(242, 244, 245);">
+            <a href="#" class="tooltipgen1_40" tabindex="-1" draggable="false">
+              <span>您用来登录此网站的密码。</span>
+              <label for="p" style="background-color: rgb(242, 244, 245);">密码：</label>
+            </a>
+          </p>
+          <a href="#" class="tooltipgen2" tabindex="-1" draggable="false">
+            <span>您用来登录此网站的密码。</span><input class="saveinput" spellcheck="false" type="password" id="p" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"></a>
+        </div><hr>
+        <div class="savesitediv wrap2btns btnnomargshift" style="padding-bottom: 10px; padding-top: 6px; background-color: rgb(242, 244, 245);">
+          <div class="wrapinner">
+            <button class="nbtn btn_mini" id="savecancel">取消</button>
+            <button class="nbtn rbtn btn_mini" id="savesubmit">保存站点信息</button>
+          </div>
+        </div>
+      </div>
+
       <div id="moreDiv">
         <table id="lptabpopupmore">
           <tr class="row">
@@ -134,16 +199,13 @@
           <tr class="row">
             <td>复制网址</td>
           </tr>
-          <tr class="row">
-            <td>删除</td>
-          </tr>
-          <tr class="row">
-            <td>返回</td>
+          <tr class="row" action='closemore'>
+            <td action="closemore">返回</td>
           </tr>
         </table>
       </div>
     </div>
   </body>
   <script src="./js/contentPopup.js" charset="utf-8"></script>
-  
+
 </html>

@@ -17,7 +17,8 @@
           item = JSON.stringify(background.getItem(request.id));
         }
       }
-      var code = "window.item='" + item + "';item=JSON.parse(item);";
+      var code = "try{document.body.removeChild(document.querySelector('.tpw_iframe'));}catch(e){}";
+      code += "window.item='" + item + "';item=JSON.parse(item);";
       chrome.tabs.executeScript(null, {
         code: code,
         allFrames: true
@@ -39,9 +40,9 @@
       var code = '';
       code += "window.tpw_iframe=" + request.iframe + ";";
       code += "window.tpw_offset='" + JSON.stringify(request.offset) + "';";
-      code += "window.tpw_mousePoint='" + JSON.stringify(request.mousePoint) + "';";
       code += "tpw_offset=JSON.parse(tpw_offset);";
-      code += "tpw_mousePoint=JSON.parse(tpw_mousePoint);";
+      localStorage.tpw_saveForms = JSON.stringify(request.saveForms);
+      // code += "tpw_offsetTL=JSON.parse(tpw_offsetTL);";
       chrome.tabs.executeScript(null, {
         code: code,
         allFrames: false
@@ -407,5 +408,6 @@
     }
   });
   window.z = z;
+  window.background = background;
   background.init();
 })();

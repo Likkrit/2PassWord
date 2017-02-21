@@ -417,7 +417,7 @@ input#mindigits{
 .saveinput{
   width: 300px;
   height: 30px;
-  background-color:#fff !important;
+  /*background-color:#fff !important;*/
   color:#000 !important;
   padding-left: 5px;
 /* 29th drive styling has squared off boxes...

@@ -1,7 +1,7 @@
 /* popup table css */
 /* was: td {  */
-.popuprow, #lptabpopup tr, #lptabpopupformfills tr, #lptabpopupmore tr, #lptabpopupmore html\:tr { 
-  font-size:14px; 
+.popuprow, #lptabpopup tr, #lptabpopupformfills tr, #lptabpopupmore tr, #lptabpopupmore html\:tr {
+  font-size:14px;
   font-family: Arial, Helvetica sans-serif; font-weight:normal;   /* nolonger bold */
   z-index:10000;
   overflow:auto;
@@ -12,7 +12,13 @@
   margin:1px;
   padding:0;
 }
-
+.popuprow{
+  opacity: 0.5;
+}
+.popuprow.available{
+  opacity: 1;
+  font-weight: bold!important;
+}
 .popuprow td, #lptabpopup td, #lptabpopupformfills td, #lptabpopupmore td {
   border: 1px solid transparent;
 }
@@ -21,13 +27,13 @@
   line-height:20px;  /* override default firefox css */
 }
 .tablecellfirefox {
-  display:block; 
+  display:block;
 }
 
 
 /* was td:hover {  */
 /* original, based on combobox.css:
-** #lptabpopup tr:hover, #lptabpopup html\:tr:hover, #lptabpopupformfills tr:hover, #lptabpopupformfills html\:tr:hover, #lptabpopupnever tr:hover, #lptabpopupnever html\:tr:hover, #lptabpopupmore tr:hover, #lptabpopupmore html\:tr:hover { 
+** #lptabpopup tr:hover, #lptabpopup html\:tr:hover, #lptabpopupformfills tr:hover, #lptabpopupformfills html\:tr:hover, #lptabpopupnever tr:hover, #lptabpopupnever html\:tr:hover, #lptabpopupmore tr:hover, #lptabpopupmore html\:tr:hover {
 ** background: #0399d4 !important;
 **         background: -webkit-gradient(linear, left top, left bottom, from(#04acec), to(#0186ba)) !important;
 **         color: #fff !important;
@@ -36,19 +42,23 @@
 **         text-shadow: 0 1px 1px rgba(0, 0, 0, .1);
 ** }
 */
-/* implement the new, aseptic 29thdrive hover */ 
-#lptabpopup tr:hover, #lptabpopup html\:tr:hover, #lptabpopupformfills tr:hover, #lptabpopupformfills html\:tr:hover, #lptabpopupmore tr:hover, #lptabpopupmore html\:tr:hover { 
-background: #fff !important;
+/* implement the new, aseptic 29thdrive hover */
+#lptabpopup tr:hover, #lptabpopup html\:tr:hover, #lptabpopupformfills tr:hover, #lptabpopupformfills html\:tr:hover, #lptabpopupmore tr:hover, #lptabpopupmore html\:tr:hover {
+/*background: #fff !important;*/
+        background: rgba(0, 0, 0, 0.03);
+
+        opacity: 1;
         color: #000 !important;
         -webkit-border-radius: 0;
         -moz-border-radius: 0;
         text-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+
         border: 1px solid #d6d6d6;
 }
 /* turns out, you have to set outline on the td, not the tr */
-#lptabpopup td:hover, #lptabpopup html\:td:hover, #lptabpopupformfills td:hover, #lptabpopupformfills html\:td:hover, #lptabpopupmore td:hover, #lptabpopupmore html\:td:hover { 
-        outline: 1px solid gray;
-        outline-offset: 1px;
+#lptabpopup td:hover, #lptabpopup html\:td:hover, #lptabpopupformfills td:hover, #lptabpopupformfills html\:td:hover, #lptabpopupmore td:hover, #lptabpopupmore html\:td:hover {
+        /*outline: 1px solid gray;*/
+        /*outline-offset: 1px;*/
 }
 
 #lptabpopupmore{
@@ -88,7 +98,7 @@ table, html\:table {
   /* background: -webkit-gradient(linear, left top, left bottom, from(#a9a9a9), to(#7a7a7a)); /* for webkit browsers */
   /* color: #e7e5e5; */
 /*
-body #main { margin:1px; 
+body #main { margin:1px;
   background: #fff !important;
   font-weight: bold;
   color: #000 !important;
@@ -99,7 +109,7 @@ body #main { margin:1px;
   overflow:hidden;
   border-color: #000 !important;
   border-style: solid !important;
-  border-width: 2px; 
+  border-width: 2px;
 }
 */
 /* next rule for a:link, a:visited is required for overlap with IE-internal stylesheet.  I hate this. */
@@ -145,7 +155,7 @@ a {
   color: #e7e5e5;
   text-decoration:none;
 }
-a:focus { 
+a:focus {
 background: #0399d4 !important; /* for non-css3 browsers */
         background: -webkit-gradient(linear, left top, left bottom, from(#04acec), to(#0186ba)) !important; /* for webkit browsers */
         color: #fff !important;
@@ -159,7 +169,7 @@ border-top: solid 2px black;
 }
 
 .tablerow_sep {
-  height:4px; 
+  height:4px;
   line-height:4px;
   border-top: solid 2px black;
   display:table-row;
@@ -168,7 +178,7 @@ border-top: solid 2px black;
 #askMsgDiv {
   margin:5px;  /* this seems right */
 }
-.divtext { font-size:14px; 
+.divtext { font-size:14px;
   font-family: Arial, Helvetica, sans-serif; font-weight:normal;  /* bold looks like shouting */
   z-index:10000;
   overflow:auto;
@@ -181,8 +191,8 @@ border-top: solid 2px black;
 .divtext:hover {
 /* keep in sync with 29th drive hover style
 ** .divtext:hover {
-**      background: #0399d4 !important; 
-**      background: -webkit-gradient(linear, left top, left bottom, from(#04acec), to(#0186ba)) !important; 
+**      background: #0399d4 !important;
+**      background: -webkit-gradient(linear, left top, left bottom, from(#04acec), to(#0186ba)) !important;
 **      color: #fff !important;
 **      -webkit-border-radius: 0;
 **      -moz-border-radius: 0;
@@ -241,7 +251,7 @@ border-top: solid 2px black;
 #exttable {
   font-size:11px;  /* might be too small, but hard to squeeze everything in */
 }
-#exttable td, #exttable html\:td { font-size:11px; 
+#exttable td, #exttable html\:td { font-size:11px;
   font-family: Arial, Helvetica, sans-serif; font-weight:bold;
   z-index:10000;
   overflow: auto;
@@ -256,14 +266,14 @@ border-top: solid 2px black;
   display:inline;
 }
 /* color reused from tooltip.  can't think of anything better
-** .highlight {  
+** .highlight {
 **   background: #9FDAEE !important;
 **   vertical-align:top;
 **   color: #000 !important;
 ** }
 */
 /* 29th drive mockup underlines instead of highlight */
-.highlight {  
+.highlight {
   text-decoration:underline !important;
   vertical-align:top;
 }
@@ -294,7 +304,7 @@ border-top: solid 2px black;
         text-decoration:none !important;
         border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
         box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
-        -moz-transition-property:opacity; -moz-transition-duration:1s; -webkit-transition-property:opacity; -webkit-transition-duration:1s; 
+        -moz-transition-property:opacity; -moz-transition-duration:1s; -webkit-transition-property:opacity; -webkit-transition-duration:1s;
         z-index: 100;
 }
 
@@ -313,7 +323,7 @@ border-top: solid 2px black;
         text-decoration:none !important;
         border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
         box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
-        -moz-transition-property:opacity; -moz-transition-duration:1s; -webkit-transition-property:opacity; -webkit-transition-duration:1s; 
+        -moz-transition-property:opacity; -moz-transition-duration:1s; -webkit-transition-property:opacity; -webkit-transition-duration:1s;
         z-index: 100;
 }
 
@@ -334,14 +344,14 @@ border-top: solid 2px black;
         margin-left: 0;
         font-family: Arial, Helvetica, sans serif;
         font-weight: normal;
-        font-size:12px; 
+        font-size:12px;
         opacity:1;
 }
 .tooltipright:hover span, .tooltipright:hover html\:span {
         margin-left: 0;
         font-family: Arial, Helvetica, sans serif;
         font-weight: normal;
-        font-size:12px; 
+        font-size:12px;
         opacity:1;
 }
 
@@ -351,18 +361,18 @@ border-top: solid 2px black;
 
 /* next class is for the SPAN container containing visual cue/arrow on site/formfill rows.  was originally 'expando' */
 .expander {
-  padding-left:2px; 
-  padding-right:2px; 
+  padding-left:2px;
+  padding-right:2px;
   float:right;
 }
 /* can't figure out a good way to make this align vertically, otherwise */
 /* these numbers are only good for arrow.png
 .expander img {
-  padding-top: 5px;  
+  padding-top: 5px;
   padding-bottom: 5px;
 } */
 .expander img {  /* for 16x16 */
-  padding-top: 1px;  
+  padding-top: 1px;
 }
 #lptabpopuptitlespan{
   padding-left:10px;
@@ -399,14 +409,14 @@ input#mindigits{
         text-decoration:none !important;
         border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
         box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
-        -moz-transition-property:opacity; -moz-transition-duration:1s; -webkit-transition-property:opacity; -webkit-transition-duration:1s; 
+        -moz-transition-property:opacity; -moz-transition-duration:1s; -webkit-transition-property:opacity; -webkit-transition-duration:1s;
         z-index: 100;
 }
 .tooltiphelp:hover #tthelp {
         margin-left: 0;
         font-family: Arial, Helvetica, sans serif;
         font-weight: normal;
-        font-size:12px; 
+        font-size:12px;
         overflow:auto;
         opacity:1;
 }
@@ -459,11 +469,11 @@ input#mindigits{
 }
 
 
-#lptabnavbarbtn { 
+#lptabnavbarbtn {
   background: #bbb;
   width:100%; position:absolute; left:0px; bottom:0px; margin: 0px; border-spacing: 0;
 }
-#lptabnavbarbtn:hover { 
+#lptabnavbarbtn:hover {
   background: #aaa;
 }
 #lptabnavbarbtn div {
@@ -476,7 +486,7 @@ input#mindigits{
   white-space:nowrap;
   display:inline-block;
 }
-#lptabnavbarbtn span, #lptabnavbarbtn html\:span { 
+#lptabnavbarbtn span, #lptabnavbarbtn html\:span {
   color:white;
   padding-left:10px;
 }
@@ -497,9 +507,9 @@ input#mindigits{
   cursor:pointer;
   color:#d32d27;
   font-size:12px;
-  font-family: Arial, Helvetica, sans-serif; 
+  font-family: Arial, Helvetica, sans-serif;
   font-weight:light;
-  
+
 }
 .genselectdiv{
   padding-bottom:2px;
@@ -810,7 +820,7 @@ border-top-color: #000;
 /**************** for generate and save-a-site iframe ****************/
 /* tooltipgen1 : show above and to the left-side of parent
 ** tooltipgen2 : show below and to the right-side of parent
-** tooltipgen3: show to the right 
+** tooltipgen3: show to the right
 */
 .tooltipgen1, .tooltipgen2, .tooltipgen3,
 .tooltipgen1_40, .tooltipgen2_40, .tooltipgen3_40
@@ -875,7 +885,7 @@ transition-delay:1s; visibility: visible;
 .tooltipgen1 span:after,
 .tooltipgen1 html\:span:after,
 .tooltipgen1_40 span:after,
-.tooltipgen1_40 html\:span:after 
+.tooltipgen1_40 html\:span:after
 {
 content: "";
 position: absolute;
@@ -1030,7 +1040,7 @@ transition-delay:1s; visibility: visible;
 }
 #superbox_nav {
   height:30px;
-  border: 1px solid #c3c3c3;  /* final */  
+  border: 1px solid #c3c3c3;  /* final */
 }
 #superbox_savesite_txt_span {
   padding-left:5px;
@@ -1113,7 +1123,7 @@ color:#404040;
   padding-right:10px;
 }
 
-/****************  styling for the password generate tab ********/ 
+/****************  styling for the password generate tab ********/
 
 #normalwidth{width:90%;}
 
@@ -1146,7 +1156,7 @@ color:#404040;
 }
 
 /* next class is for label/descriptive text in the generate password subtab only */
-.gendivtab { 
+.gendivtab {
   overflow:auto;
   padding-left:10px;
   padding-right:10px;
@@ -1154,7 +1164,7 @@ color:#404040;
   background-color:#e6e6e6;  /* final */
   color:#000;
 }
-.gendivtext { font-size:12px; 
+.gendivtext { font-size:12px;
   background-color:#e6e6e6;  /* final */
   color:#000;
   font-family: Arial, Helvetica, sans-serif; font-weight:normal;
@@ -1169,13 +1179,13 @@ color:#404040;
   color: #000 !important;
   text-decoration: none;
 /* need this line due to conflict with IE internal stylesheet */
-  font-weight:bold !important; 
+  font-weight:bold !important;
   font-size:12px;  /* same as for .gendivtext */
   padding-top:4px;  /* spacing above the major text items */
 }
 .genselect {
   font-family: Arial, Helvetica, sans-serif; font-weight:bold;
-  font-size:12px; 
+  font-size:12px;
   background-color:#e6e6e6;  /* final */
   color:#000;
   border-radius:0px;  /* this is not being honored */
@@ -1195,7 +1205,7 @@ color:#404040;
   background-color:#fff !important;
   color:#000 !important;
 }
-/****************  end styling for the password generate tab ********/ 
+/****************  end styling for the password generate tab ********/
 
 /* turns out, you need the border after all to look right
 */
@@ -1213,7 +1223,7 @@ color:#404040;
   color:#000;
   padding-left:10px;
   text-align:left;
-  font-size:14px; 
+  font-size:14px;
   height:100%;
   font-family: Arial, Helvetica, sans-serif; font-weight:bold;
   width:100%;  /* for firefox */
@@ -1260,7 +1270,7 @@ color:#404040;
 
 /* stylized scrolls inside the iframe */
 /* these rules are for webkit only.  firefox cannot style the scrollbar.
-** turns out, you can only change the colors with IE CSS rules.  
+** turns out, you can only change the colors with IE CSS rules.
 ** https://css-tricks.com/custom-scrollbars-in-webkit/
 */
 
@@ -1293,7 +1303,7 @@ color:#404040;
   color:#000;
 /*  padding-left:10px; */
   text-align:left;
-  font-size:14px; 
+  font-size:14px;
   height:100%;
   width:100%;  /* firefox needs this */
   font-family: Arial, Helvetica, sans-serif; font-weight:bold;
@@ -1301,8 +1311,8 @@ color:#404040;
 /**************** end rules for the never/disable tab **************/
 
 
-.headtext { 
-  font-size:14px; 
+.headtext {
+  font-size:14px;
   font-family: Arial, Helvetica, sans-serif; font-weight:bold;  /* vs font-weight:normal in .divtext, .bodytext */
   overflow:auto;
   margin-left:10px;
@@ -1312,8 +1322,8 @@ color:#404040;
   padding:0;
   text-align:left;
 }
-.bodytext { 
-  font-size:14px; 
+.bodytext {
+  font-size:14px;
   font-family: Arial, Helvetica, sans-serif; font-weight:normal;
   overflow:auto;
   margin-left:10px;
@@ -1333,7 +1343,7 @@ color:#404040;
   color:#000;
   padding-left:10px;
   text-align:left;
-  font-size:14px; 
+  font-size:14px;
   height:100%;
   width:100%;  /* firefox needs this */
   font-family: Arial, Helvetica, sans-serif; font-weight:bold;
@@ -1397,13 +1407,13 @@ color:#404040;
 /* these contain styles from the original iframe */
 #contentdiv {
   border-style:solid;
-  border-color:#4c4c4c; 
+  border-color:#4c4c4c;
   border-width:2px;   /* 1px loses corners? */
-  border-radius:4px 4px; 
-  -moz-border-radius: 4px; 
-  -webkit-border-radius: 4px; 
-  box-shadow: 1px rgba(200, 200, 200, 0.5); 
-  -webkit-box-shadow: 1px 1px rgba(200, 200, 200, 0.5); 
+  border-radius:4px 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  box-shadow: 1px rgba(200, 200, 200, 0.5);
+  -webkit-box-shadow: 1px 1px rgba(200, 200, 200, 0.5);
   -moz-box-shadow: 1px 1px rgba(200, 200, 200, 0.5);
   /* these are from the old body style */
   background: #fff !important;
@@ -1417,13 +1427,13 @@ color:#404040;
 
 #main {  /* firefox specific */
   border-style:solid;
-  border-color:#4c4c4c; 
+  border-color:#4c4c4c;
   border-width:2px;   /* 1px loses corners? */
-  border-radius:4px 4px; 
-  -moz-border-radius: 4px; 
-  -webkit-border-radius: 4px; 
-  box-shadow: 1px rgba(200, 200, 200, 0.5); 
-  -webkit-box-shadow: 1px 1px rgba(200, 200, 200, 0.5); 
+  border-radius:4px 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  box-shadow: 1px rgba(200, 200, 200, 0.5);
+  -webkit-box-shadow: 1px 1px rgba(200, 200, 200, 0.5);
   -moz-box-shadow: 1px 1px rgba(200, 200, 200, 0.5);
   /* these are from the old body style */
   background: #fff !important;
@@ -1452,7 +1462,7 @@ body {
 ** it was needed at one point in time for firefox */
 /*
 #moreDiv{
-  width:100%; 
+  width:100%;
 }
 */
 
@@ -1463,7 +1473,7 @@ body {
   color:#000;
   padding-left:10px;
   text-align:left;
-  font-size:14px; 
+  font-size:14px;
   height:100%;
   width:100%;  /* firefox needs this */
   font-family: Arial, Helvetica, sans-serif; font-weight:bold;
@@ -1671,22 +1681,22 @@ html\:span {
 
 .super40lefticon {
   float: left;
-  padding: 7px !important; 
-  opacity:1; 
+  padding: 7px !important;
+  opacity:1;
   filter:alpha(opacity=100);
   border:0px;
 }
 .super40trayicon {
-  padding: 7px !important; 
-  opacity:1; 
+  padding: 7px !important;
+  opacity:1;
   filter:alpha(opacity=100);
   border:0px;
   display:block;
 }
 .super40righticon {
-  float: right; 
-  padding: 7px !important; 
-  opacity:1; 
+  float: right;
+  padding: 7px !important;
+  opacity:1;
   filter:alpha(opacity=100);
   border:0px;
 }
@@ -1723,7 +1733,7 @@ html\:span {
   height:40px;
   width:40px;
 }
-a:visited.super40icon, 
+a:visited.super40icon,
 a:focus.super40icon {
   /* likely replace with tooltip styles */
   background: #d32d27 !important;
@@ -1851,7 +1861,7 @@ a:focus.super40icon {
        only screen and (-webkit-min-device-pixel-ratio: 2),
        only screen and (min-device-pixel-ratio: 2) {
 
-    .SB_addico_img { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAF1JREFUWAljZCATrOfg/I+sNfDHd0ZkPrFsJmIV0krdqANGQ2A0BEZDYDQERkOAEb1Wo1Wlg8vc0SgY8BAgqxUDik/0tDPaIsKVygmJD3gaGHXAaAiMhsBoCIyGAAB3zAn98O2tJwAAAABJRU5ErkJggg==); 
+    .SB_addico_img { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAF1JREFUWAljZCATrOfg/I+sNfDHd0ZkPrFsJmIV0krdqANGQ2A0BEZDYDQERkOAEb1Wo1Wlg8vc0SgY8BAgqxUDik/0tDPaIsKVygmJD3gaGHXAaAiMhsBoCIyGAAB3zAn98O2tJwAAAABJRU5ErkJggg==);
       background-size: 16px 16px;
       background-repeat: no-repeat;
     }
@@ -1893,7 +1903,7 @@ a:focus.super40icon {
       background-size: 16px 16px;
       background-repeat: no-repeat;
     }
- 
+
     .SB_nevico_active,
     .SB_nevico_img:hover { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAAAAXNSR0IArs4c6QAAAyxJREFUWAm9mDtoFFEUhp0YND6RKJpFJeIDRSzEFzaKGBJ8RhRs0qmFdhYBEW1sFIQUItooCpJCxEZ8BAtBJFGwUlDUIGghmsVoIb4fyfqdMHf3ztk7M3dnlz3wc+89j//8Ozu7Z3aDcRVaoVCYSkk72AYWgRyYDb6DIfABDIDbQRAMstbWELAcXAe/ga8NkngAjK9aDSRzwBUwArLaKwp3ZhZD8WrwLmt3R90pfA0VCaJgL/jhIBPXC3AatINloBnMB+vAQXAL/AQuk9hkLzEkbgR/HCxP8MlNmmrk5cB54OK55kPQSvFHoO0kjsouK92ouQTymozz8UQxJDxURXKTdiUWxQSpOxNyfWGVG9a2UQ7rnaUEOu3McH/EmZzipNaIMJQi5pM5hOv9MhoCDeCZSrxRlujhgEOLEFp5u/fJRllHhJLgJpXwj/PSSJLHgZo4ESuknPhN1Sf6Ygn2qIRej76RFOoTRYRCVqk+3zhPLBJxeKkSdhWDHhtqU0UYGnLfqF5bxmI4J6mAzJMppjBtJddbhHCRf071O2a+F1pUs/dMTpmmqSYiSDqsEoc5b4bjufKbo57KLUaIjHLbZJynWkYRwptX5DkjxKwmPmo2cWsVIoRS8wdGgL4C+gpF9FQpQrj0rZA3QvSlmkuzpkj38FADEcK0WHGXLgQN9Edqq0qWu72iT4euN2d49NzpNDFpchbYdqEYZEOgViLkkdM2eW4pPZ9w6LCj7OW7pFXEsNZERMh1VfXpE3/RCDaC1yqpl3MtRayBT8a/bbuLIsyGaJedEbOXKTo2wEydz0rNLPAW2PbYWUtGAJ7amWqfVcR0ePoVlxzbnELESVBuJnmI0fYVR5YrsYQ6PVCFuydWhAmQtAO4fsfcw7/W5CWt5E0DJ4C8AG13cfj96CLxEJCHI5c9wNkNVoKZIoi1CSwAe8Bl8Bm4bADnjKQXURajoA3EEdpN/tqHhP1FYhPKGvk4KFwI+hLIfUJDJO336ZeaA9EGIG9JJTZM8lFQ+uaM6RTE+GPdkM4juB3ILJLhJZNU7pNfQIan/C3RD+6ARzwcjbDWxxDXWJ9OdejyH9r769nLftR/AAAAAElFTkSuQmCC);
       background-size: 16px 16px;
@@ -1911,7 +1921,7 @@ a:focus.super40icon {
       background-repeat: no-repeat;
     }
 
-    .wrench_img { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAxFJREFUWAmtl0toU0EUhs1NSDHgG/GNIm5EsVA3Itb4oAZX0RRiEkFcuuqiggvXrqQortqFC93kBaEEQSlRUbRFFxYE3YkoPipCfULQkIffaXtDvZ07yZ1k4GbunMf/nzkzZ+7Et6yLLZfLHa7X64lGo3EU2C0L0NOBQCAaj8d/qqh8KqFXWaFQ2FmpVMYgHnD4fmV8LJVKvXbIm8OOA8hkMv0Qj4O4rok6/9KSXMw6CiCbze4m5c/AWTnP2fxti1ysraaLwQszv4mbMblQGmeA1B8kgEln3D6f70AymXzulLuNjTMAeUQFSgB/VHKVLJ/PrzIOAKKNKlD2xA2V3Clj/+ytVqtF4wAAnHGCLozDLM9lF92cWMjJ4EMGfcYBkIH3GpIrkJxT6W1yAlgveuMALMsqEkRZRQK4j+eWMxNOcnw/GVeBEEMwCtEFVRCLZI95HyLY5fR37JmLHtmocQDFYnFFuVweB/C4gJk0v98fNgqAmW+G8C7kvSbE4sPsS5wXJwJeAdLp9B587kG+zavvIvvZYDA4t3SeNiEHRxiQpx2S/2L2pwcHB99KQG0HQNrP1Gq1CXxWi6OqAfyAZ4xHWR3Ip6geOaqf2P5t7QHKZ5hZj/C42gP+MhQK9Uej0d9kai0nYhT77RBtov+CfgLiKZvY7l0BxUAImfkIr8O2g6oH/ANymdlnlV4ncw2AWQQ5q2/jnNABoPvBc0h369H5K6vArnEctTXOzP9Sy6e477leuXTkoluSAcpsA8BS4306Z2wa6Ml6Mqeza6X7LwOs9w4cSpDvauWI/mKn5MLRLEP5UDCebJP8GuTXBaDTNrcEbLj9bDipcefNdgk+qc8kEomzC0uwRO9VYHGn3wp5qR1ybO6z6c53i1yCDfCH4ir9GhnoGqTTHDQxDpqKzs6rzmLNj7RygvxNT0/PSTnlWtl61Tc3oZsj5HK6DcRiMfmz0fVmQfBIgzqLPsKOf6ex6Uhl8V2+BMk3Bcp3/tVG2PGvFLquiSy+yx8JopcgMqDKVXtG3lnzfRyxL7rG5AL0DyIcLIQg027OAAAAAElFTkSuQmCC); 
+    .wrench_img { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAxFJREFUWAmtl0toU0EUhs1NSDHgG/GNIm5EsVA3Itb4oAZX0RRiEkFcuuqiggvXrqQortqFC93kBaEEQSlRUbRFFxYE3YkoPipCfULQkIffaXtDvZ07yZ1k4GbunMf/nzkzZ+7Et6yLLZfLHa7X64lGo3EU2C0L0NOBQCAaj8d/qqh8KqFXWaFQ2FmpVMYgHnD4fmV8LJVKvXbIm8OOA8hkMv0Qj4O4rok6/9KSXMw6CiCbze4m5c/AWTnP2fxti1ysraaLwQszv4mbMblQGmeA1B8kgEln3D6f70AymXzulLuNjTMAeUQFSgB/VHKVLJ/PrzIOAKKNKlD2xA2V3Clj/+ytVqtF4wAAnHGCLozDLM9lF92cWMjJ4EMGfcYBkIH3GpIrkJxT6W1yAlgveuMALMsqEkRZRQK4j+eWMxNOcnw/GVeBEEMwCtEFVRCLZI95HyLY5fR37JmLHtmocQDFYnFFuVweB/C4gJk0v98fNgqAmW+G8C7kvSbE4sPsS5wXJwJeAdLp9B587kG+zavvIvvZYDA4t3SeNiEHRxiQpx2S/2L2pwcHB99KQG0HQNrP1Gq1CXxWi6OqAfyAZ4xHWR3Ip6geOaqf2P5t7QHKZ5hZj/C42gP+MhQK9Uej0d9kai0nYhT77RBtov+CfgLiKZvY7l0BxUAImfkIr8O2g6oH/ANymdlnlV4ncw2AWQQ5q2/jnNABoPvBc0h369H5K6vArnEctTXOzP9Sy6e477leuXTkoluSAcpsA8BS4306Z2wa6Ml6Mqeza6X7LwOs9w4cSpDvauWI/mKn5MLRLEP5UDCebJP8GuTXBaDTNrcEbLj9bDipcefNdgk+qc8kEomzC0uwRO9VYHGn3wp5qR1ybO6z6c53i1yCDfCH4ir9GhnoGqTTHDQxDpqKzs6rzmLNj7RygvxNT0/PSTnlWtl61Tc3oZsj5HK6DcRiMfmz0fVmQfBIgzqLPsKOf6ex6Uhl8V2+BMk3Bcp3/tVG2PGvFLquiSy+yx8JopcgMqDKVXtG3lnzfRyxL7rG5AL0DyIcLIQg027OAAAAAElFTkSuQmCC);
       background-size: 16px 16px;
       background-repeat: no-repeat;
     }

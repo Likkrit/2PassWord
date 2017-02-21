@@ -1,93 +1,133 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title></title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<link rel="stylesheet" type="text/css" href="css/newvaultGlobal.css">
-<link rel="stylesheet" type="text/css" href="css/buttons.css">
-<link rel="stylesheet" type="text/css" href="css/dialog.css">
-<link rel="stylesheet" type="text/css" href="css/tabDialog.css">
-<link rel="stylesheet" type="text/css" href="css/siteDialog.css">
-</head>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="css/newvaultGlobal.css">
+    <link rel="stylesheet" type="text/css" href="css/buttons.css">
+    <link rel="stylesheet" type="text/css" href="css/dialog.css">
+    <link rel="stylesheet" type="text/css" href="css/tabDialog.css">
+    <link rel="stylesheet" type="text/css" href="css/siteDialog.css">
+    <script src="js/tabDialog.js" charset="utf-8"></script>
+  </head>
 
-<body class="tab">
+  <body class="tab">
 
-<div id="contextMenu" class="contextMenu dropdownMenu">
-  <ul></ul>
-</div>
-
-
-
-
-<div class="dialog responsive" role="dialog" aria-labelledby="siteDialogTitle" id="siteDialog" style="display: block; max-height: 566px;"><button class="focusCycler"></button><div class="dialogHeader icon dialogHeaderButtonsEnabled titleEnabled"><div class="dialogHeaderInner"><span class="dialogHeaderTitle" id="siteDialogTitle">编辑站点信息</span></div><div class="dialogHeaderButtons"><button title="最大化" class="dialogMaximizeButton dialogHeaderButton"></button><button title="关闭" class="dialogCloseButton dialogHeaderButton"></button></div></div><div class="dialogContent dialogContentFixed" style="bottom: 67px; top: 50px;"><div class="mainView" style="display: block;">
-  <div class="siteTypeahead">
-    <label for="siteDialogURL" class="label first">网址：</label>
-    <div class="dropdownContainer" style="margin: 0px;"><div class="relative"><div class="dropdownHint" style="line-height: 30px; padding-left: 5px; padding-right: 35px; font-weight: 400; left: 1px; right: 1px;"><span></span></div><input id="siteDialogURL" class="dialogInput clickToggles typeaheadDropdown dropdownDisabled" type="text" spellcheck="false" style="margin: 0px;"></div><div class="dropdownMenu selectDropdownList" style="margin-top: 0px; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px;"><ul><li class="siteTypeaheadOption" dropdownvalue="google.com"><div class="itemIcon"><img src="data:image/gif;base64,R0lGODlhEAAQAIcAAAAAAExnf1BpgWR0iHZ6hHeBkX+GkYiOmpeaopucoaSlqqWmqrm9w7q+xL+/wry/xcXGyc3Oz9HS1NPU1tnZ2d/h4+Di5OLj5uPl5+Tk5OXm6O7u7+7v8O/w8e/w8vDw8fHx8vLy8/Pz8/Pz9PT09fX19fX29vb29vf39/f3+Pj4+Pj4+fn5+vr6+/v7/Pz8/P39/f7+/v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAAAQABAAAAiQAAEIHEiw4MAFCBEmQCjBIIAFMiLK8CBjA4QIBiFu2Fgh4oYJDgpq5Chxw4KCCiqSlKigIAKVGyowYNDgAYGCB2BWsHABgwYDBQvA/CCiBAoVBQoOUNlBhAkVLV4MKCigIgenK1zAiCGgYICKIEhAhRExgFcZHEKcYEG27NkOI1K0aCvDLMEAePPqteuwr8CAADs="></div><span class="siteTypeaheadOptionText">google.com</span></li><li class="siteTypeaheadOption" dropdownvalue="facebook.com"><div class="itemIcon"><img src="data:image/gif;base64,R0lGODlhEAAQAIcAAAAAAExnf1BpgWR0iHZ6hHeBkX+GkYiOmpeaopucoaSlqqWmqrm9w7q+xL+/wry/xcXGyc3Oz9HS1NPU1tnZ2d/h4+Di5OLj5uPl5+Tk5OXm6O7u7+7v8O/w8e/w8vDw8fHx8vLy8/Pz8/Pz9PT09fX19fX29vb29vf39/f3+Pj4+Pj4+fn5+vr6+/v7/Pz8/P39/f7+/v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAAAQABAAAAiQAAEIHEiw4MAFCBEmQCjBIIAFMiLK8CBjA4QIBiFu2Fgh4oYJDgpq5Chxw4KCCiqSlKigIAKVGyowYNDgAYGCB2BWsHABgwYDBQvA/CCiBAoVBQoOUNlBhAkVLV4MKCigIgenK1zAiCGgYICKIEhAhRExgFcZHEKcYEG27NkOI1K0aCvDLMEAePPqteuwr8CAADs="></div><span class="siteTypeaheadOptionText">facebook.com</span></li><li class="siteTypeaheadOption" dropdownvalue="amazon.com"><div class="itemIcon"><img src="data:image/gif;base64,R0lGODlhEAAQAIcAAAAAAExnf1BpgWR0iHZ6hHeBkX+GkYiOmpeaopucoaSlqqWmqrm9w7q+xL+/wry/xcXGyc3Oz9HS1NPU1tnZ2d/h4+Di5OLj5uPl5+Tk5OXm6O7u7+7v8O/w8e/w8vDw8fHx8vLy8/Pz8/Pz9PT09fX19fX29vb29vf39/f3+Pj4+Pj4+fn5+vr6+/v7/Pz8/P39/f7+/v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAAAQABAAAAiQAAEIHEiw4MAFCBEmQCjBIIAFMiLK8CBjA4QIBiFu2Fgh4oYJDgpq5Chxw4KCCiqSlKigIAKVGyowYNDgAYGCB2BWsHABgwYDBQvA/CCiBAoVBQoOUNlBhAkVLV4MKCigIgenK1zAiCGgYICKIEhAhRExgFcZHEKcYEG27NkOI1K0aCvDLMEAePPqteuwr8CAADs="></div><span class="siteTypeaheadOptionText">amazon.com</span></li><li class="siteTypeaheadOption" dropdownvalue="paypal.com"><div class="itemIcon"><img src="data:image/gif;base64,R0lGODlhEAAQAIcAAAAAAExnf1BpgWR0iHZ6hHeBkX+GkYiOmpeaopucoaSlqqWmqrm9w7q+xL+/wry/xcXGyc3Oz9HS1NPU1tnZ2d/h4+Di5OLj5uPl5+Tk5OXm6O7u7+7v8O/w8e/w8vDw8fHx8vLy8/Pz8/Pz9PT09fX19fX29vb29vf39/f3+Pj4+Pj4+fn5+vr6+/v7/Pz8/P39/f7+/v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAAAQABAAAAiQAAEIHEiw4MAFCBEmQCjBIIAFMiLK8CBjA4QIBiFu2Fgh4oYJDgpq5Chxw4KCCiqSlKigIAKVGyowYNDgAYGCB2BWsHABgwYDBQvA/CCiBAoVBQoOUNlBhAkVLV4MKCigIgenK1zAiCGgYICKIEhAhRExgFcZHEKcYEG27NkOI1K0aCvDLMEAePPqteuwr8CAADs="></div><span class="siteTypeaheadOptionText">paypal.com</span></li><li class="siteTypeaheadOption" dropdownvalue="live.com"><div class="itemIcon"><img src="data:image/gif;base64,R0lGODlhEAAQAIcAAAAAAExnf1BpgWR0iHZ6hHeBkX+GkYiOmpeaopucoaSlqqWmqrm9w7q+xL+/wry/xcXGyc3Oz9HS1NPU1tnZ2d/h4+Di5OLj5uPl5+Tk5OXm6O7u7+7v8O/w8e/w8vDw8fHx8vLy8/Pz8/Pz9PT09fX19fX29vb29vf39/f3+Pj4+Pj4+fn5+vr6+/v7/Pz8/P39/f7+/v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAAAQABAAAAiQAAEIHEiw4MAFCBEmQCjBIIAFMiLK8CBjA4QIBiFu2Fgh4oYJDgpq5Chxw4KCCiqSlKigIAKVGyowYNDgAYGCB2BWsHABgwYDBQvA/CCiBAoVBQoOUNlBhAkVLV4MKCigIgenK1zAiCGgYICKIEhAhRExgFcZHEKcYEG27NkOI1K0aCvDLMEAePPqteuwr8CAADs="></div><span class="siteTypeaheadOptionText">live.com</span></li></ul></div></div>
-  </div>
-  <div class="twoColumn leftColumn">
-    <label for="siteDialogName" class="label">名称：</label>
-    <input id="siteDialogName" dialogfield="name" class="dialogInput" type="text" spellcheck="false">
-  </div>
-  <div class="twoColumn rightColumn">
-    <div>
-      <label for="siteDialogGroup" class="label">Folder:</label>
-      <div class="dropdownContainer" style="margin: 0px;"><div class="relative"><div class="dropdownHint" style="line-height: 30px; padding-left: 5px; padding-right: 35px; font-weight: 400; left: 1px; right: 1px;"><span></span></div><input id="siteDialogGroup" class="dialogInput typeaheadDropdown clickToggles" dialogfield="group" type="text" spellcheck="false" style="margin: 0px;"></div><div class="dropdownMenu selectDropdownList" style="margin-top: 0px; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px;"><ul></ul></div></div>
+    <div id="contextMenu" class="contextMenu dropdownMenu">
+      <ul></ul>
     </div>
-  </div>
-  <div class="twoColumn leftColumn hideSaveAll">
-    <label for="siteDialogUsername" class="label">用户名：<button class="history iconButton" id="siteDialogUsernameHistory" title="显示用户名历史记录"></button></label>
-    <input id="siteDialogUsername" dialogfield="unencryptedUsername" class="dialogInput" type="text" spellcheck="false" autocomplete="off">
-  </div>
-  <div class="twoColumn rightColumn hideSaveAll">
-    <div class="relative">
-      <label for="siteDialogPassword" class="label">密码：<button class="history iconButton" id="siteDialogPasswordHistory" title="显示密码历史记录"></button></label>
-      <div class="relative" style="margin: 0px;"><input id="siteDialogPassword" dialogfield="password" class="dialogInput passwordToggle password" type="password" autocomplete="off" spellcheck="false" style="margin: 0px;"><button class="showPassword iconButton" title="显示密码"></button><div class="meterContainer"><div class="meter"><div class="poor" style="width: 1%;"></div></div></div></div>
-      <div id="autoChangePassword" style="display: none;">自动更改密码</div>
-    </div>
-  </div>
-  <div class="clear"></div>
-  <label aria-label="Fields" class="label fieldsLabel">字段：</label>
-  <table class="saveAllFields"></table>
-  <label for="siteDialogNotes" class="label">笔记：<button class="history iconButton" id="siteDialogNoteHistory" title="笔记历史记录"></button></label>
-  <textarea id="siteDialogNotes" dialogfield="extra" class="dialogInput responsiveTextArea" spellcheck="false" style="_height: calc(100% - 309px);"></textarea>
-  <table class="fieldsTable" style="
+
+    <div class="dialog responsive" role="dialog" aria-labelledby="siteDialogTitle" id="siteDialog" style="display: block; max-height: 566px;">
+      <button class="focusCycler"></button>
+      <div class="dialogHeader icon dialogHeaderButtonsEnabled titleEnabled">
+        <div class="dialogHeaderInner">
+          <span class="dialogHeaderTitle" id="siteDialogTitle">编辑站点信息</span>
+        </div>
+        <div class="dialogHeaderButtons">
+          <button title="最大化" class="dialogMaximizeButton dialogHeaderButton"></button>
+          <button title="关闭" class="dialogCloseButton dialogHeaderButton"></button>
+        </div>
+      </div>
+      <div class="dialogContent dialogContentFixed" style="bottom: 67px; top: 50px;">
+        <div class="mainView" style="display: block;">
+          <div class="siteTypeahead">
+            <label for="siteDialogURL" class="label first">网址：</label>
+            <div class="dropdownContainer" style="margin: 0px;">
+              <div class="relative">
+                <div class="dropdownHint" style="line-height: 30px; padding-left: 5px; padding-right: 35px; font-weight: 400; left: 1px; right: 1px;">
+                  <span></span>
+                </div>
+                <input id="siteDialogURL" class="dialogInput clickToggles typeaheadDropdown dropdownDisabled" type="text" spellcheck="false" style="margin: 0px;">
+              </div>
+            </div>
+          </div>
+          <div class="twoColumn leftColumn">
+            <label for="siteDialogName" class="label">名称：</label>
+            <input id="siteDialogId" type="hidden">
+            <input id="siteDialogName" dialogfield="name" class="dialogInput" type="text" spellcheck="false">
+          </div>
+          <div class="twoColumn rightColumn">
+            <div>
+              <label for="siteDialogGroup" class="label">识别路径:</label>
+              <div class="dropdownContainer" style="margin: 0px;">
+                <div class="relative">
+                  <div class="dropdownHint" style="line-height: 30px; padding-left: 5px; padding-right: 35px; font-weight: 400; left: 1px; right: 1px;">
+                    <span></span>
+                  </div><input id="siteDialogGroup" class="dialogInput typeaheadDropdown clickToggles" dialogfield="group" type="text" spellcheck="false" style="margin: 0px;"></div>
+                <div class="dropdownMenu selectDropdownList" style="margin-top: 0px; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px;">
+                  <ul></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="twoColumn leftColumn hideSaveAll">
+            <label for="siteDialogUsername" class="label">用户名：</label>
+            <input id="siteDialogUsername" dialogfield="unencryptedUsername" class="dialogInput" type="text" spellcheck="false" autocomplete="off">
+          </div>
+          <div class="twoColumn rightColumn hideSaveAll">
+            <div class="relative">
+              <label for="siteDialogPassword" class="label">密码：</label>
+              <div class="relative" style="margin: 0px;"><input id="siteDialogPassword" dialogfield="password" class="dialogInput passwordToggle password" type="password" autocomplete="off" spellcheck="false" style="margin: 0px;">
+                <button class="showPassword iconButton" title="显示密码"></button>
+                <div class="meterContainer">
+                  <div class="meter">
+                    <div class="poor" style="width: 1%;"></div>
+                  </div>
+                </div>
+              </div>
+              <div id="autoChangePassword" style="display: none;">自动更改密码</div>
+            </div>
+          </div>
+          <div class="clear"></div>
+          <label aria-label="Fields" class="label fieldsLabel">字段：</label>
+          <table class="saveAllFields"></table>
+          <label for="siteDialogNotes" class="label">笔记：</label>
+          <textarea id="siteDialogNotes" dialogfield="extra" class="dialogInput responsiveTextArea" spellcheck="false" style="height: calc(100% - 409px);"></textarea>
+          <table class="fieldsTable" style="
     margin: 20px 0 5px 0;
 ">
-    <thead>
-      <tr class="settingsHeader">
-        <th>字段</th>
-        <th>值</th>
-      </tr>
-    </thead>
+            <thead>
+              <tr class="settingsHeader">
+                <th>输入框</th>
+                <th>识别字段</th>
+              </tr>
+            </thead>
 
-  <tbody class="fieldsElement"><tr class="settingsRow"><td class="settingLabel">authUser.name</td><td class="formFieldValue"><div><input class="dialogInput" type="text" aria-label="Form Field authUser.name" spellcheck="false"><div class="rightItemButtons"><button class="itemButton rejectShare" vaultaction="remove" title="移除" allowmultiple="false"></button></div></div></td></tr><tr class="settingsRow odd"><td class="settingLabel">authUser.pwd</td><td class="formFieldValue"><div><div class="relative" style="margin: 0px;"><input class="dialogInput password" type="password" aria-label="Form Field authUser.pwd" spellcheck="false" style="margin: 0px;"><button class="showPassword iconButton" title="显示密码"></button></div><div class="rightItemButtons"><button class="itemButton rejectShare" vaultaction="remove" title="移除" allowmultiple="false"></button></div></div></td></tr></tbody></table>
-  <button class="nbtn rbtn btn_mini addButton addFormFieldButton">添加表单字段</button>
-  <div class="advancedOptionsContainer">
-    <button class="label advancedOptionsLabel" aria-expanded="false">高级设置：</button>
-    <div class="advancedSiteSettings advancedOptions" style="display: none;">
-      <input id="siteDialogPasswordReprompt" class="checkbox" dialogfield="pwprotect" type="checkbox" spellcheck="false">
-      <label for="siteDialogPasswordReprompt">查阅时再次验证主密码</label>
-      <input id="siteDialogAutologin" class="checkbox" dialogfield="autologin" type="checkbox" spellcheck="false">
-      <label for="siteDialogAutologin">自动登录</label>
-      <input id="siteDialogDisableAutofill" class="checkbox" dialogfield="never_autofill" type="checkbox" spellcheck="false">
-      <label for="siteDialogDisableAutofill">Disable AutoFill</label>
+            <tbody class="fieldsElement">
+              <tr class="settingsRow">
+                <td class="settingLabel">用户名</td>
+                <td class="formFieldValue">
+                  <div><input id="dialogInput1" class="dialogInput" type="text" spellcheck="false">
+                    <div class="rightItemButtons">
+                      <button class="itemButton rejectShare" vaultaction="remove" title="移除" allowmultiple="false"></button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr class="settingsRow odd">
+                <td class="settingLabel">密码</td>
+                <td class="formFieldValue">
+                  <div>
+                    <div class="relative" style="margin: 0px;"><input id="dialogInput2" class="dialogInput password" spellcheck="false" style="margin: 0px;">
+                    </div>
+                    <div class="rightItemButtons">
+                      <button class="itemButton rejectShare" vaultaction="remove" title="移除" allowmultiple="false"></button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="nbtn rbtn btn_mini addButton addFormFieldButton">添加表单字段</button>
+        </div>
+      </div>
+      <div class="buttons buttonsFixed rightButtons">
+        <button id="cancel" class="nbtn btn_midi wbtn">取消</button>
+        <button id="save" class="nbtn btn_midi rbtn">保存</button>
+      </div>
+      <button class="focusCycler"></button>
+      <div class="dialogBlurOverlay"></div>
     </div>
-  </div>
-</div>
-
-<div class="formFieldsView" style="display: none;">
-  <table class="fieldsTable">
-    <thead>
-      <tr class="settingsHeader">
-        <th>字段</th>
-        <th>值</th>
-      </tr>
-    </thead>
-
-  <tbody class="fieldsElement"><tr class="settingsRow"><td class="settingLabel">authUser.name</td><td class="formFieldValue"><div><input class="dialogInput" type="text" aria-label="Form Field authUser.name" spellcheck="false"><div class="rightItemButtons"><button class="itemButton rejectShare" vaultaction="remove" title="移除" allowmultiple="false"></button></div></div></td></tr><tr class="settingsRow odd"><td class="settingLabel">authUser.pwd</td><td class="formFieldValue"><div><div class="relative" style="margin: 0px;"><input class="dialogInput password" type="password" aria-label="Form Field authUser.pwd" spellcheck="false" style="margin: 0px;"><button class="showPassword iconButton" title="显示密码"></button></div><div class="rightItemButtons"><button class="itemButton rejectShare" vaultaction="remove" title="移除" allowmultiple="false"></button></div></div></td></tr></tbody></table>
-
-<button class="nbtn rbtn btn_mini addButton addFormFieldButton">添加表单字段</button></div>
-</div><div class="buttons buttonsFixed rightButtons"><div class="itemButtons dialogItemButtons"><input type="checkbox" class="favButton" spellcheck="false"><label class="favButtonLabel itemButton" title="将站点标记为特别收藏"></label><div class="actionButtonContainer"><button class="itemButton share" vaultaction="share" title="共享" allowmultiple="false"></button><button class="itemButton delete" vaultaction="delete" title="删除" allowmultiple="false"></button></div><button class="itemButton edit" vaultaction="edit" title="编辑表单字段" allowmultiple="false" style="display: inline-block;"></button></div><button class="nbtn btn_midi wbtn">取消</button><button class="nbtn btn_midi rbtn">保存</button></div><button class="focusCycler"></button><div class="dialogBlurOverlay"></div></div>
-</body>
+  </body>
 
 </html>

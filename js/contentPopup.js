@@ -2,7 +2,7 @@
 
 var contentPopup = {
   // 从background获取item 只有成功没有失败
-  getItem: function(id) {
+  getItem: function(id, callback) {
     var port = chrome.runtime.connect({
       name: "getItem"
     });
@@ -10,16 +10,7 @@ var contentPopup = {
       id: id
     });
     port.onMessage.addListener(function(result) {
-      // 进入page页面
-      $('#page').transition('scale');
-      $('#items').transition('hide');
-      $('#add').css({
-        'visibility': 'hidden'
-      });
-      $('#back').css({
-        'visibility': 'visible'
-      });
-      popUp.renderPage(result.item);
+      callback(result);
     });
   },
   // 从background获取items 只有成功没有失败
@@ -36,6 +27,11 @@ var contentPopup = {
       that.render(result.items);
     });
   },
+  closeContentPopup: function() {
+    chrome.runtime.sendMessage({
+      type: "closeContentPopup"
+    });
+  },
   // 插入contentScript 只有成功没有失败
   insertContentScript: function(id) {
     chrome.runtime.sendMessage({
@@ -50,12 +46,11 @@ var contentPopup = {
     var itemStr = '<tbody>';
     response = response || [];
     for (var i = 0; i < response.length; i++) {
-      itemStr += '<tr class="popuprow" aid=' + response[i].id + '>';
+      itemStr += '<tr class="popuprow ';
       if (response[i].available)
-        itemStr += '<td>';
-      else {
-        itemStr += '<td>';
-      }
+        itemStr += 'available';
+      itemStr += '" aid=' + response[i].id + '>';
+      itemStr += '<td>';
       itemStr += '<span class="img"></span>';
       itemStr += '<span class="popcell shortenstr">';
       itemStr += response[i].name;
@@ -80,6 +75,7 @@ var contentPopup = {
 function eventFire() {
 
   document.oncontextmenu = function(e) {
+    // 右键点击tr
     if (e.target.tagName == 'TR' || e.target.parentNode.tagName == 'TR' || e.target.parentNode.parentNode.tagName == 'TR') {
       var aid = getAid(e);
       if (!aid) return;
@@ -92,35 +88,79 @@ function eventFire() {
   };
 
   document.addEventListener('click', function(e) {
+    // 动作 点击关闭
     if (e.target.attributes['action'] && e.target.attributes['action'].value == 'closemore') {
       document.getElementById('moreDiv').style.display = 'none';
       document.getElementById('lptabpopupsave').style.display = 'none';
       document.getElementById('popupcontainer').style.display = 'block';
-    } else if (e.target.id == 'savecancel') {
+      //动作 点击编辑
+    } else if (e.target.attributes['action'] && e.target.attributes['action'].value == 'edit') {
+      localStorage.tpw_tabDialogId = document.getElementById('lptabpopupmore').attributes['aid'].value;
+      contentPopup.closeContentPopup();
       chrome.runtime.sendMessage({
-        type: "closeContentPopup"
+        type: "openTabDialog"
       });
-    } else if (e.target.id == 'SB_closeico_img') {
-      window.close();
-      chrome.runtime.sendMessage({
-        type: "closeContentPopup"
-      });
-    } else if (e.target.tagName == 'SPAN' && (e.target.className == 'expander' || e.target.parentNode.className == 'expander')) {
-      var aid = getAid(e);
-      if (!aid) return;
-      document.getElementById('lptabpopupmore').setAttribute('aid', aid);
-
-      document.getElementById('moreDiv').style.display = 'block';
-      document.getElementById('lptabpopupsave').style.display = 'none';
-      document.getElementById('popupcontainer').style.display = 'none';
-    } else if (e.target.tagName == 'TR' || e.target.parentNode.tagName == 'TR' || e.target.parentNode.parentNode.tagName == 'TR') {
-      var aid = getAid(e);
+    }
+    //动作 点击自动插入
+    else if (e.target.attributes['action'] && e.target.attributes['action'].value == 'autocomplete') {
+      var aid = document.getElementById('lptabpopupmore').attributes['aid'].value;
       if (!aid) return;
       chrome.runtime.sendMessage({
         type: "insertContentScript",
         id: aid
       });
-      window.close();
+      // 复制 用户名、密码、地址
+    } else if (e.target.attributes['action'] && (e.target.attributes['action'].value == 'copypassword' ||
+      e.target.attributes['action'].value == 'copyusername' ||
+      e.target.attributes['action'].value == 'copyurl')) {
+      var aid = document.getElementById('lptabpopupmore').attributes['aid'].value;
+      contentPopup.getItem(aid, function(result) {
+        if (result.msg == 'ok') {
+          var copyInput = document.createElement('input');
+          if (e.target.attributes['action'].value == 'copyurl')
+            copyInput.value = result.item.host;
+          else if (e.target.attributes['action'].value == 'copyusername')
+            copyInput.value = result.item.userName;
+          else if (e.target.attributes['action'].value == 'copypassword')
+            copyInput.value = result.item.passWord;
+          copyInput.style.opacity = '0';
+          copyInput.id = 'copyInput';
+          document.body.appendChild(copyInput);
+          document.getElementById("copyInput").select();
+          document.execCommand("Copy");
+          document.body.removeChild(document.getElementById("copyInput"));
+          contentPopup.closeContentPopup();
+        }
+      })
+    }
+    // 点击 取消
+    else if (e.target.id == 'savecancel') {
+      contentPopup.closeContentPopup();
+      // 点击 关闭窗口
+    } else if (e.target.id == 'SB_closeico_img') {
+      contentPopup.closeContentPopup();
+      // 点击扳手
+    } else if (e.target.tagName == 'SPAN' && (e.target.className == 'expander' || e.target.parentNode.className == 'expander')) {
+      var aid = getAid(e);
+      if (!aid) return;
+      document.getElementById('lptabpopupmore').setAttribute('aid', aid);
+      document.getElementById('moreDiv').style.display = 'block';
+      document.getElementById('lptabpopupsave').style.display = 'none';
+      document.getElementById('popupcontainer').style.display = 'none';
+
+      // 点击tr
+    } else if (e.target.tagName == 'TR' || e.target.parentNode.tagName == 'TR' || e.target.parentNode.parentNode.tagName == 'TR') {
+
+
+      if ((e.target.attributes['aid'] || e.target.parentNode.attributes['aid'] || e.target.parentNode.parentNode.attributes['aid'])) {
+        var aid = getAid(e);
+        if (!aid) return;
+        chrome.runtime.sendMessage({
+          type: "insertContentScript",
+          id: aid
+        });
+      }
+      // 点击tab
     } else if (e.target.tagName == 'INPUT' && e.target.id.search(/SB_.+_img/) >= 0) {
       document.querySelector('input[class*=active]').className = document.querySelector('input[class*=active]').className.replace(/active/, 'img');
       e.target.className = e.target.className.replace(/img/, 'active');
@@ -129,7 +169,6 @@ function eventFire() {
         document.getElementById('popupcontainer').style.display = 'block';
         document.getElementById('lptabpopupsave').style.display = 'none';
       } else if (e.target.id == 'SB_addico_img') {
-
         document.getElementById('popupcontainer').style.display = 'none';
         document.getElementById('lptabpopupsave').style.display = 'block';
       }

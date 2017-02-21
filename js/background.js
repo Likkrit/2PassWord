@@ -60,6 +60,15 @@
         allFrames: true
       });
     }
+    // openTabDialog
+    else if (request.type == "openTabDialog") {
+      chrome.tabs.getSelected(null, function(tab) {
+        chrome.tabs.create({
+          index: tab.index + 1,
+          url: "chrome-extension://" + chrome.i18n.getMessage("@@extension_id") + "/tabDialog.html"
+        }, function(tab) {});
+      });
+    }
     // unlock
     else if (request.type == "unLock") {
       background.unLock(request.lockKey);
@@ -206,6 +215,7 @@
           item.id = z.items[i].id;
           item.name = z.items[i].name || '';
           item.host = z.items[i].host || '';
+          item.identify = z.items[i].identify || '';
           item.updateTime = z.items[i].updateTime || '';
           return item;
         }
@@ -236,6 +246,7 @@
             activeItem.id = newItems[i].id;
             activeItem.name = newItems[i].name || '';
             activeItem.host = newItems[i].host || '';
+            activeItem.identify = newItems[i].identify || '';
             activeItem.updateTime = newItems[i].updateTime || '';
             activeItem.available = true;
             items.push(activeItem);
@@ -295,10 +306,12 @@
       packedEncryped = AES.encrypt(packed, this.getKey());
       var _data_name = "data/" + id + "/name";
       var _data_host = "data/" + id + "/host";
+      var _data_identify = "data/" + id + "/identify";
       var _data_updateTime = "data/" + id + "/updateTime";
       var _data_z = "data/" + id + "/z";
       data[_data_name] = newItem.name;
       data[_data_host] = newItem.host;
+      data[_data_identify] = newItem.identify || '';
       data[_data_updateTime] = new Date().getTime();
       data[_data_z] = packedEncryped;
       this.notAccess() ? callback({
@@ -395,7 +408,12 @@
         if (!z.items)
           return;
         for (var i = 0; i < z.items.length; i++) {
-          if (z.items[i].name && url.indexOf(z.items[i].name) > 0 || url.indexOf(z.items[i].host) > 0) {
+          if (z.items[i].name &&
+            (url.indexOf(z.items[i].name) > 0 ||
+              (z.items[i].host && url.indexOf(z.items[i].host) > 0) ||
+              (z.items[i].identify && url.indexOf(z.items[i].identify) > 0)
+            )
+          ) {
             chrome.browserAction.setIcon({
               path: "images/page_64.png",
               tabId: tabId

@@ -32,7 +32,8 @@
         /*cursor: pointer;*/
       }
       .expander {
-        display: none;
+        visibility: hidden;
+        height: 40px;
       }
       #lptabpopup .expander .img {
         background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA0ElEQVQ4T6WSAQ3CQAxFmQLACTgYCpAAKAAHIAEcDAXgACSAAySAAvhv6ZLmcqxHaNJclvX9tv+uGvwZ1Q98rdqb8umZSGCk4q1yozwql2nDSGAvYP0NRiwSeFvHlc7GdZ/YOqEA+w5t75lBwBfluGSCs4rm1hkxpsCHu7KOBHZmYOob30xz7ROg08LIl07MbDsqEG7hnADXdnLFwIDcfzb8LQBjDiZ1Me2D/QQ5OL263gm82xQWwX4CL3DQD55uUXQesALQQ9kUkVYUPeVQ6wMfKSQRE3iWtAAAAABJRU5ErkJggg==");
@@ -43,7 +44,7 @@
         opacity: 0.5;
       }
       #lptabpopup td:hover .expander {
-        display: block;
+        visibility: visible;
       }
       #lptabpopup .expander:hover .img {
         opacity: 1;
@@ -187,17 +188,20 @@
 
       <div id="moreDiv">
         <table id="lptabpopupmore">
-          <tr class="row">
-            <td>编辑</td>
+        <tr class="row" action='autocomplete'>
+          <td action='autocomplete'>自动填写</td>
+        </tr>
+          <tr class="row" action='edit'>
+            <td action='edit'>编辑</td>
           </tr>
-          <tr class="row">
-            <td>复制用户名</td>
+          <tr class="row" action='copyusername'>
+            <td action='copyusername'>复制用户名</td>
           </tr>
-          <tr class="row">
-            <td>复制密码</td>
+          <tr class="row" action='copypassword'>
+            <td action='copypassword'>复制密码</td>
           </tr>
-          <tr class="row">
-            <td>复制网址</td>
+          <tr class="row" action='copyurl'>
+            <td action='copyurl'>复制网址</td>
           </tr>
           <tr class="row" action='closemore'>
             <td action="closemore">返回</td>
@@ -207,5 +211,4 @@
     </div>
   </body>
   <script src="./js/contentPopup.js" charset="utf-8"></script>
-
 </html>

@@ -26,7 +26,7 @@ function bind() {
     localStorage.url = $('[name=wilddog]').val();
     that.addClass('loading disabled');
     var port = chrome.runtime.connect({
-      name: "sendKey"
+      name: "setKey"
     });
     port.postMessage({
       key: $('[type=password]').val()

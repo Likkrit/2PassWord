@@ -1,0 +1,115 @@
+<html>
+  <head>
+    <title></title>
+    <style type="text/css">
+      #_loading,
+      .loading-mask {
+        position: fixed;
+        height: 100%;
+      }
+      #_loading {
+        display: block;
+        width: 100%;
+        top: 0;
+        z-index: 9999;
+      }
+
+      .loading-bg,
+      .loading-box,
+      .loading-content,
+      .text {
+        position: absolute;
+      }
+      .loading-box,
+      .text {
+        left: 50%;
+        margin-left: -100px;
+      }
+      .loading-box {
+        opacity: 0.95;
+        width: 200px;
+        height: 200px;
+        border-radius: 20px;
+        top: 50%;
+        margin-top: -110px;
+        background-color: rgba(0,0,0,.7);
+      }
+      .loading-content {
+        width: 80px;
+        height: 80px;
+        margin-top: -45px;
+        margin-left: -45px;
+        border: 5px dotted #fff;
+        opacity: 0.5;
+        top: 50%;
+        left: 50%;
+        border-radius: 120px;
+      }
+      .loading-content-outer {
+        width: 120px;
+        height: 120px;
+        border: 2px solid rgba(255,255,255,.2);
+        border-left-color: transparent;
+        border-right-color: transparent;
+        top: 50%;
+        left: 50%;
+        margin-left: -62px;
+        margin-top: -62px;
+        border-radius: 180px;
+        position: absolute;
+      }
+      .text {
+        color: #fff;
+        top: 50%;
+        margin-top: -10px;
+        width: 100%;
+        opacity: 0.8;
+        line-height: 20px;
+        font-size: 15px;
+      }
+      .loading-box,
+      .text {
+        left: 50%;
+        margin-left: -100px;
+        text-align: center;
+      }
+      .loading-bg,
+      .loading_Ie {
+        border-radius: 5px;
+        bottom: 5px;
+        left: 50%;
+        margin-left: -50px;
+      }
+
+      .animate-spin,
+      .animate-spin-outer {
+        -webkit-animation-name: spin;
+        -webkit-animation-timing-function: linear;
+        -webkit-animation-iteration-count: infinite;
+      }
+      .animate-spin {
+        -webkit-animation-duration: 3s;
+      }
+      .animate-spin-outer {
+        -webkit-animation-duration: 1.5s;
+      }
+      @-webkit-keyframes spin {
+        0% {
+          -webkit-transform: rotate(0);
+        }
+
+        50% {
+          -webkit-transform: rotate(180deg);
+        }
+
+        100% {
+          -webkit-transform: rotate(359deg);
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    
+  </body>
+</html>

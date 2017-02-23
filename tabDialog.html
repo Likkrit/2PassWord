@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="css/dialog.css">
     <link rel="stylesheet" type="text/css" href="css/tabDialog.css">
     <link rel="stylesheet" type="text/css" href="css/siteDialog.css">
+    <link rel="stylesheet" type="text/css" href="css/loading.css">
     <script src="js/tabDialog.js" charset="utf-8"></script>
   </head>
 
@@ -17,7 +18,7 @@
       <ul></ul>
     </div>
 
-    <div class="dialog responsive" role="dialog" aria-labelledby="siteDialogTitle" id="siteDialog" style="display: block; max-height: 566px;">
+    <div class="dialog responsive maximized2" role="dialog" aria-labelledby="siteDialogTitle" id="siteDialog" style="display: block; max-height: 566px;">
       <button class="focusCycler"></button>
       <div class="dialogHeader icon dialogHeaderButtonsEnabled titleEnabled">
         <div class="dialogHeaderInner">
@@ -122,12 +123,26 @@
         </div>
       </div>
       <div class="buttons buttonsFixed rightButtons">
+        <button id="delete" class="nbtn btn_midi dbtn leftButton">删除</button>
         <button id="cancel" class="nbtn btn_midi wbtn">取消</button>
         <button id="save" class="nbtn btn_midi rbtn">保存</button>
       </div>
       <button class="focusCycler"></button>
       <div class="dialogBlurOverlay"></div>
     </div>
+
+    <div id="_loading" style="display:none;">
+      <div class="loading-mask"></div>
+      <div class="loading-box">
+        <div class="loading-content animate-spin"></div>
+        <div class="loading-content-outer animate-spin-outer"></div>
+        <div class="text">
+          加载中
+        </div>
+        <div class="loading-bg"></div>
+      </div>
+    </div>
+
   </body>
 
 </html>

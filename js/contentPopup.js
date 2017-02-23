@@ -1,5 +1,57 @@
 // @see https://github.com/likkrit
 
+document.getElementById('search').addEventListener('input', function() {
+  test(document.getElementById('search').value);
+});
+
+function test(keyCache) {
+  var keyLength = keyCache.length;
+  var index, index2;
+  var indexWord = indexWord2 = '';
+  var c = [];
+  //遍历索引，执行查找
+  for (var i = 0; i < window.c.length; i++) {
+    index = window.c[i]['name_py'].toUpperCase().indexOf(keyCache.toUpperCase());
+    index2 = window.c[i]['userName_py'].toUpperCase().indexOf(keyCache.toUpperCase());
+    if (index >= 0 || index2 >= 0) {
+      
+      //区分多音字
+      if(window.c[i]['name_py'].length > window.c[i]['name'].length){
+        var dyzArr = window.c[i]['name_py'].split(',');
+        if(dyzArr.length > 1){
+          for(var j=0;j<dyzArr.length;j++){
+            if (dyzArr[j].toUpperCase().indexOf(keyCache.toUpperCase()) >= 0){
+              index = dyzArr[j].toUpperCase().indexOf(keyCache.toUpperCase());
+              break;
+            }
+          }
+        }
+      }
+      indexWord = window.c[i]['name'].substr(index, keyLength);
+      indexWord2 = window.c[i]['userName'].substr(index2, keyLength);
+      if (index < 0) {
+        hightLightName = window.c[i].name;
+      } else {
+        hightLightName = window.c[i].name.replace(new RegExp(indexWord, 'i'), '<i>' + indexWord + '</i>') || window.c[i].name;
+      }
+      if (index2 < 0) {
+        hightLightUserName = window.c[i].userName;
+      } else {
+        hightLightUserName = window.c[i].userName.replace(new RegExp(indexWord2, 'i'), '<i>' + indexWord2 + '</i>') || window.c[i].userName;
+      }
+      c.push({
+        id: window.c[i].id,
+        name: hightLightName,
+        name_py: window.c[i].name_py,
+        userName: hightLightUserName,
+        userName_py: window.c[i].userName_pyname_py,
+        available: window.c[i].available
+      });
+    }
+  }
+  contentPopup.render(c);
+}
+
 var contentPopup = {
   // 从background获取item 只有成功没有失败
   getItem: function(id, callback) {
@@ -24,7 +76,9 @@ var contentPopup = {
     var that = this;
     port.onMessage.addListener(function(result) {
       // 渲染列表
-      that.render(result.items);
+      window.c = that.py(result.items);
+      window.z = result.items;
+      that.render(window.c);
     });
   },
   closeContentPopup: function() {
@@ -39,6 +93,24 @@ var contentPopup = {
       id: id
     });
     window.close();
+  },
+  py: function(items) {
+    var c = [];
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].name != "" && items[i].userName != "") {
+        //获取拼音首字母缩写
+        //将拼音与中文的对应关系添加到数组中
+        c.push({
+          id: items[i].id,
+          name: items[i].name,
+          name_py: makePy(items[i].name).toString(),
+          userName: items[i].userName,
+          userName_py: makePy(items[i].userName).toString(),
+          available: items[i].available || false
+        });
+      }
+    }
+    return c;
   },
   // 显示列表
   render: function(response) {
@@ -60,10 +132,9 @@ var contentPopup = {
       itemStr += response[i].userName || '-----';
       itemStr += '</td></tr>';
     }
-
     //为空时显示empty页面
     if (response.length === 0) {
-      itemStr += '<div class="none_tip center"><h3 class="ui grey icon header empty"><i class="sticky note outline icon"></i><span class="dimmer text">Empty List</span></h3></div>'
+      itemStr += '<div style="text-align:center;height: 180px;vertical-align: middle;display: table-cell;"><p>空空如也</p></div>'
       document.querySelector('#lptabpopup').innerHTML = itemStr;
       // 原来的列表页与将要渲染的不一样时 才进行渲染
     } else if (oriItemStr != itemStr) {
@@ -111,8 +182,8 @@ function eventFire() {
       });
       // 复制 用户名、密码、地址
     } else if (e.target.attributes['action'] && (e.target.attributes['action'].value == 'copypassword' ||
-      e.target.attributes['action'].value == 'copyusername' ||
-      e.target.attributes['action'].value == 'copyurl')) {
+        e.target.attributes['action'].value == 'copyusername' ||
+        e.target.attributes['action'].value == 'copyurl')) {
       var aid = document.getElementById('lptabpopupmore').attributes['aid'].value;
       contentPopup.getItem(aid, function(result) {
         if (result.msg == 'ok') {
@@ -136,6 +207,47 @@ function eventFire() {
     // 点击 取消
     else if (e.target.id == 'savecancel') {
       contentPopup.closeContentPopup();
+      // 点击 关闭窗口
+    }
+    // 点击 确定
+    else if (e.target.id == 'savesubmit') {
+      var newItem = {
+        id: new Date().getTime(),
+        name: document.getElementById('name').value || '',
+        userName: document.getElementById('u').value || '',
+        passWord: document.getElementById('p').value || '',
+        other: '',
+        host: document.getElementById('url').innerHTML,
+        identify: document.getElementById('identify').innerHTML,
+        inputId1: document.getElementById('label-input1').innerText || '',
+        inputId2: document.getElementById('label-input2').innerText || '',
+      };
+      document.getElementById('savesubmit').innerText = '保存中';
+      var port = chrome.runtime.connect({
+        name: "addItem"
+      });
+      port.postMessage({
+        newItem: newItem
+      });
+      port.onMessage.addListener(function(result) {
+        if (result.msg == 'ok') {
+          contentPopup.closeContentPopup();
+        } else {
+          document.getElementById('savesubmit').innerText = result.msg;
+        }
+      });
+
+      // 点击 关闭窗口
+    }
+    // 点击 眼睛
+    else if (e.target.id == 'passwordIcon') {
+      if (e.target.className.indexOf('selected') >= 0) {
+        e.target.className = e.target.className.replace(/selected/, '');
+        document.getElementById('p').type = 'password';
+      } else {
+        e.target.className += ' selected';
+        document.getElementById('p').type = 'text';
+      }
       // 点击 关闭窗口
     } else if (e.target.id == 'SB_closeico_img') {
       contentPopup.closeContentPopup();
@@ -178,6 +290,7 @@ function eventFire() {
 }
 
 function init() {
+  document.body.style.opacity = 1;
   // 如果具有这些方法
   if (chrome && chrome.runtime) {
     contentPopup.getItems(location.href);
@@ -190,6 +303,8 @@ function init() {
     document.getElementById('p').value = saveForms[1].value;
     document.getElementById('u').style.background = 'rgba(0,255,0,0.1)';
     document.getElementById('p').style.background = 'rgba(0,255,0,0.1)';
+    document.getElementById('label-input1').innerHTML = '[name="' + saveForms[0].name + '"]';
+    document.getElementById('label-input2').innerHTML = '[name="' + saveForms[1].name + '"]';
   } else if (saveForms.length < 2 || !saveForms.length) {
 
   } else { // > 2
@@ -201,20 +316,30 @@ function init() {
       document.getElementById('p').value = result[1].value;
       document.getElementById('u').style.background = 'rgba(0,255,0,0.1)';
       document.getElementById('p').style.background = 'rgba(0,255,0,0.1)';
+      document.getElementById('label-input1').innerHTML = '[name="' + result[0].name + '"]';
+      document.getElementById('label-input2').innerHTML = '[name="' + result[1].name + '"]';
     } else if (result[0].type) {
       document.getElementById('u').value = result[0].value;
       document.getElementById('u').style.background = 'rgba(0,255,0,0.1)';
       document.getElementById('p').style.background = 'rgba(255,0,0,0.1)';
+      document.getElementById('label-input1').innerHTML = '[name="' + result[0].name + '"]';
     } else if (result[1].type) {
       document.getElementById('p').value = result[1].value;
       document.getElementById('u').style.background = 'rgba(255,0,0,0.1)';
       document.getElementById('p').style.background = 'rgba(0,255,0,0.1)';
+      document.getElementById('label-input2').innerHTML = '[name="' + result[1].name + '"]';
     } else {
       document.getElementById('p').style.background = 'rgba(255,0,0,0.1)';
       document.getElementById('u').style.background = 'rgba(255,0,0,0.1)';
     }
 
   }
+
+  var identify = location.href.split('?')[1] ? location.href.split('?')[1].match(/https?:\/\/[\w\.\-\_]+/) : '';
+  identify = identify ? identify[0].replace(/https?:\/\//ig, '') : '';
+  document.getElementById('identify').innerHTML = identify;
+  document.getElementById('url').innerHTML = location.href.split('?')[1] ? location.href.split('?')[1] : '';
+
   eventFire();
 }
 
@@ -224,7 +349,7 @@ function saveFormsRecognize(saveForms) {
   var saveForms = saveForms.concat();
   // 确定密码
   for (var i = 0; i < saveForms.length; i++) {
-    if (saveForms[i].type == 'password') {
+    if (saveForms[i].type == 'password' && saveForms[i].name) {
       result[1] = JSON.parse(JSON.stringify(saveForms[i]));
       saveForms.splice(i, 1);
       break;

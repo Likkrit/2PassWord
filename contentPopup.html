@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="css/popupfilltab.css">
     <link rel="stylesheet" href="css/buttons.css">
     <style>
+      body {
+        opacity: 0;
+        transition: 0.5s opacity;
+      }
       #contentdiv {
         width: 326px;
       }
@@ -70,6 +74,48 @@
       .saveinput {
         width: 280px;
       }
+      .relative {
+        position: relative;
+      }
+      .showPassword {
+        background-color: transparent;
+        border: none;
+        color: inherit;
+        box-sizing: content-box;
+        vertical-align: top;
+        padding: 0;
+        font-size: inherit;
+        cursor: pointer;
+        width: 18px;
+        height: 100%;
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAdxJREFUOBHdUjtIQmEYvV5fBUEFOggFLdkQFERkS0O0NEQQDRFBY15RHGqQrMGptgJR1JYgyIbAofYamipoK0inKFBIiB5Qvjvn+l+5We3RD/d+33fO+c7/lKR/Owy/7SwcDndZLJZp8L1CkykWi0d+v//hp55vRtFotNtoNG4ZDIYZNBibmiqoU+VyecXr9d7ruS9G8Xh8HuQOTNooqtVqTwgXzDFGgHcyAf6GsKQoygFrDrkeJAkm6xAmNRPgSWylB+JJfsyJUU8NtbFYbI01h7oimKyC2KhD6v8qm826bDZbO7a5LMtyrVQqbefz+WeHw3EOxZCmxeqCmGhThslck4lUrVZ3Q6FQ2Ww2H8IkiKY15sTIaSaM7KUHtxbQE4K8E9iwjlNzNGqcjpICMpa2CORVjwIbYI24p+G6fFDDhOaFHtoZTQA8xmytQvRYKBT68WYeE4nEODG3232Kt2W3Wq3XKO3EYPCOb8rj8ZyoRgRFQwppB2sIbmHswaGfscYhjwGLAesT/BPyWU7AumHEIhKJOE0m0z4E+rP5IIfRUg/q/xKmC7itjIY13hEBn8+XzuVyLtyMAuGNENFANSFGDqsc1ZtQ92VForERuEK8IyeBSqWS5kQN8s8nn9HVzS14VqbqAAAAAElFTkSuQmCC");
+        background-repeat: no-repeat;
+        background-position: center center;
+        position: absolute;
+        right: 0;
+        padding: 0 5px;
+        top: 0;
+      }
+      .showPassword.selected {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAiJJREFUOBHNkzFoU1EUhvNeQl4HQYdECLSgg05aOhTUKWQQCi1iBgkiOrjkJbxmKGpa6JBJkECG2IREcdAhuLiIg1NEsinoIIpEcLLEyUAoVR9J9DuX3HBTIwQnL5x37/nPf/577nn3BgL/w6jVavlKpbIgtVj/WhAiRcuybpD/sdPpnP6rULlcng+HwxcgniDhF6Pt+/6zXC73xRDxB4PBpWw2+/QPISk1GAyWSE4iEjxQ8QDBt8SWwcciwpkQYqfLYPcgHpIgSV2mV9gPsDjzEUwNYndd181p39YLRLYhN7QIeIOjHIO8gl3Ef6S5MsPzyMlrTFUEsEXgtgaZ39DAM5FI5DDH3LBt+xSY9MvHdrHjmB630ul00UIkhchjjco8HA7XM5nMTr1eb+ImBOMowMMkwkdx7wumB3hKjjYuTwcQ/jxan9MY8778HZK+Gphawt+0+/3+VXbrmUECi1RaBJsz8IeyJrZkYFJpD7umelStVuOU/ByCSiTwkwQHX3pyE3tHH15wt6KO47zHj2Ii8h1bow1N9dco+SX4eeybEEYisiwhUKbxLfqV4IK2wLRIF96qiAhRVSQLGZAfMF1XzujDjnskhHDNY74Gv8K1+KS5qiJxRj0RER/SHWY5glQnl1Mf+QPNdqnwrCmiePIRERLkAU5ce3B5ZydJtnhTbc/z2sKfNqxCoRCKxWJPCK7oBziNOBOGWJjdzTszU55J+g2ntvCk6kL2lQAAAABJRU5ErkJggg==');
+      }
+      #search {
+        width: 313px;
+        height: 26px;
+        margin-left: 3px;
+        margin-top: 3px;
+      }
+      input{
+        outline: none;
+      }
+      #SB_titlebox {
+        line-height: auto;
+        margin-left: 0;
+      }
+      i {
+        color: red;
+        font-style: normal;
+      }
 
     </style>
   </head>
@@ -97,46 +143,25 @@
           </a>
         </div>
         <div id="SB_titlebox" class="super40height bg40title super40title unselectable">
-          <span id="SB_titlebox_txt" draggable="false" class="super40title">站点</span>
+          <input id="search"></input>
         </div>
       </div>
       <div>
         <div id="popupcontainer">
           <table id="lptabpopup">
-            <tr aid="8767575147778626578" sitename="piaolianwang.com" username="fdsfdsf" class="popuprow">
-              <td aid="8767575147778626578" class="">
+            <tr aid="xxx" style="display:none;" class="popuprow">
+              <td aid="xxx" class="">
                 <span class="img"></span>
-                <span class="popcell shortenstr">fdsfdsf</span>
+                <span class="popcell shortenstr">username</span>
                 <span expander="true" class="expander">
                   <span class="img"></span>
                 </span>
-                <p class="subtext">piaolianwang.com</p>
-              </td>
-            </tr>
-            <tr aid="8767575147778626578" sitename="piaolianwang.com" username="fdsfdsf" class="popuprow">
-              <td aid="8767575147778626578" class="">
-                <span class="img"></span>
-                <span class="popcell shortenstr">fdsfdsf</span>
-                <span expander="true" class="expander">
-                  <span class="img"></span>
-                </span>
-                <p class="subtext">piaolianwang.com</p>
-              </td>
-            </tr>
-            <tr aid="8767575147778626578" sitename="piaolianwang.com" username="fdsfdsf" class="popuprow">
-              <td aid="8767575147778626578" class="">
-                <span class="img"></span>
-                <span class="popcell shortenstr">fdsfdsf</span>
-                <span expander="true" class="expander">
-                  <span class="img"></span>
-                </span>
-                <p class="subtext">piaolianwang.com</p>
+                <p class="subtext">xxxxxx.com</p>
               </td>
             </tr>
           </table>
         </div>
       </div>
-
       <div id="lptabpopupsave" style="background-color: rgb(242, 244, 245);">
         <div class="savesitediv">
           <p style="background-color: rgb(242, 244, 245);">
@@ -145,39 +170,37 @@
               <label for="name" style="background-color: rgb(242, 244, 245);">名称：</label>
             </a>
           </p>
-          <a href="#" class="tooltipgen2" tabindex="-1" draggable="false">
-            <span>这是此网页的名称或者网址。</span><input class="saveinput" spellcheck="false" type="text" id="name" value="google.com"></a>
-        </div>
-        <div id="groupdiv" class="savesitediv">
-          <p style="background-color: rgb(242, 244, 245);">
-            <a href="#" class="tooltipgen1" tabindex="-1" draggable="false">
-              <span>Select a folder in your LastPass Vault to place this website. [Optional]</span>
-              <label for="u" style="background-color: rgb(242, 244, 245);">文件夹:</label>
-            </a>
-          </p>
-          <a href="#" class="tooltipgen2" tabindex="-1" draggable="false">
-            <span>Select a folder in your LastPass Vault to place this website. [Optional]</span><input class="saveinput" spellcheck="false" type="text" id="group" value="" role="textfield" aria-haspopup="true" autocomplete="off" style="margin-right: 0px; text-overflow: ellipsis; white-space: nowrap;"></a>
+          <input class="saveinput" spellcheck="false" type="text" id="name">
         </div>
         <div class="savesitediv">
           <p style="background-color: rgb(242, 244, 245);">
             <a href="#" class="tooltipgen1" tabindex="-1" draggable="false">
               <span>你用什么登录此网站。</span>
-              <label for="u" style="background-color: rgb(242, 244, 245);">用户名：</label>
+              <label for="u" style="background-color: rgb(242, 244, 245);">用户名：<label id="label-input1"></label>
+              </label>
             </a>
           </p>
-          <a href="#" class="tooltipgen2" tabindex="-1" draggable="false">
-            <span>你用什么登录此网站。</span><input class="saveinput" spellcheck="false" type="text" id="u"></a>
+          <input class="saveinput" type="text" id="u">
+          <input class="saveinput" type="hidden" id="input1">
         </div>
-        <div class="savesitediv" style="padding-bottom: 8px;">
+
+        <div class="savesitediv">
           <p style="background-color: rgb(242, 244, 245);">
             <a href="#" class="tooltipgen1_40" tabindex="-1" draggable="false">
               <span>您用来登录此网站的密码。</span>
-              <label for="p" style="background-color: rgb(242, 244, 245);">密码：</label>
+              <label for="p" style="background-color: rgb(242, 244, 245);">密码：<label id="label-input2"></label>
+              </label>
             </a>
           </p>
-          <a href="#" class="tooltipgen2" tabindex="-1" draggable="false">
-            <span>您用来登录此网站的密码。</span><input class="saveinput" spellcheck="false" type="password" id="p" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"></a>
-        </div><hr>
+          <div class="relative">
+            <input class="saveinput" type="password" id="p" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+            <input class="saveinput" type="hidden" id="input2">
+            <button id="passwordIcon" class="showPassword iconButton" title="显示密码"></button>
+          </div>
+        </div>
+        <label id="url" style="display:none;"></label>
+        <label id="identify" style="display:none;"></label>
+        <hr>
         <div class="savesitediv wrap2btns btnnomargshift" style="padding-bottom: 10px; padding-top: 6px; background-color: rgb(242, 244, 245);">
           <div class="wrapinner">
             <button class="nbtn btn_mini" id="savecancel">取消</button>
@@ -185,14 +208,13 @@
           </div>
         </div>
       </div>
-
       <div id="moreDiv">
         <table id="lptabpopupmore">
-        <tr class="row" action='autocomplete'>
-          <td action='autocomplete'>自动填写</td>
-        </tr>
           <tr class="row" action='edit'>
             <td action='edit'>编辑</td>
+          </tr>
+          <tr class="row" action='autocomplete'>
+            <td action='autocomplete'>自动填写</td>
           </tr>
           <tr class="row" action='copyusername'>
             <td action='copyusername'>复制用户名</td>
@@ -208,7 +230,10 @@
           </tr>
         </table>
       </div>
+
     </div>
+
   </body>
+  <script src="./js/chinese.js" charset="utf-8"></script>
   <script src="./js/contentPopup.js" charset="utf-8"></script>
 </html>

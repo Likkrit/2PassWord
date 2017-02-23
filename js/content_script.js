@@ -18,7 +18,7 @@ var input,
 for (var i = 0; i < item.inputId1.length; i++) {
   item.inputId1[i] = (item.inputId1[i] + '').replace(/(^\s+)|(\s+$)/g, "");
   if (item.inputId1[i]) {
-    input = document.querySelector(item.inputId1[i]);
+    input = document.querySelector(item.inputId1[i].replace(/&/ig,"'"));
     if (input) {
       input.value = item.userName;
       inputCount1 ++;
@@ -28,7 +28,7 @@ for (var i = 0; i < item.inputId1.length; i++) {
 for (var i = 0; i < item.inputId2.length; i++) {
   item.inputId2[i] = (item.inputId2[i] + '').replace(/(^\s+)|(\s+$)/g, "");
   if (item.inputId2[i]) {
-    input = document.querySelector(item.inputId2[i]);
+    input = document.querySelector(item.inputId2[i].replace(/&/ig,"'"));
     if (input) {
       input.value = item.passWord;
       inputCount2 ++;

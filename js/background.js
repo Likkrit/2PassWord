@@ -17,6 +17,12 @@
           item = JSON.stringify(background.getItem(request.id));
         }
       }
+      item = item.replace((/\[\w+=\\?'[\w\.\_\-]*\\?'\]/ig), function(str) {
+        return str.replace(/\\?\'/ig, '&');
+      });
+      item = item.replace((/\[\w+=\\?"[\w\.\_\-]*\\?"\]/ig), function(str) {
+        return str.replace(/\\?\"/ig, '&');
+      });
       var code = "try{document.body.removeChild(document.querySelector('.tpw_iframe'));}catch(e){}";
       code += "window.item='" + item + "';item=JSON.parse(item);";
       chrome.tabs.executeScript(null, {
@@ -42,7 +48,6 @@
       code += "window.tpw_offset='" + JSON.stringify(request.offset) + "';";
       code += "tpw_offset=JSON.parse(tpw_offset);";
       localStorage.tpw_saveForms = JSON.stringify(request.saveForms);
-      // code += "tpw_offsetTL=JSON.parse(tpw_offsetTL);";
       chrome.tabs.executeScript(null, {
         code: code,
         allFrames: false
@@ -69,24 +74,49 @@
         }, function(tab) {});
       });
     }
-    // unlock
-    else if (request.type == "unLock") {
-      background.unLock(request.lockKey);
-      sendResponse({
-        msg: 'ok'
+    // 每次提交表单时，都将表单对象提交到此
+    else if (request.type == "formsSumit") {
+      background.formsSumit = request.object;
+    }
+    // 返回响应 是否显示 保存此密码
+    else if (request.type == "getFormsSumit" && background.formsSumit) {
+      if (request.url.indexOf(background.formsSumit.identify) >= 0) {
+        for (var i = 0; i < z.items.length; i++) {
+          if (request.url.indexOf(z.items[i].identify) >= 0) {
+            return;
+          }
+        }
+        sendResponse(true);
+      }
+    }
+    // 弹出对话框
+    else if (request.type == "saveFormsSumit") {
+      var newItem = {
+        id: new Date().getTime(),
+        identify: background.formsSumit.identify,
+        userName: background.formsSumit.form[0].value,
+        passWord: background.formsSumit.form[1].value,
+        inputId1: '[name="' + background.formsSumit.form[0].name + '"]',
+        inputId2: '[name="' + background.formsSumit.form[1].name + '"]',
+        host: background.formsSumit.url
+      }
+      background.formsSumit = null;
+      localStorage.tpw_tabDialogForms = JSON.stringify(newItem);
+      chrome.tabs.getSelected(null, function(tab) {
+        chrome.tabs.create({
+          index: tab.index + 1,
+          url: "chrome-extension://" + chrome.i18n.getMessage("@@extension_id") + "/tabDialog.html"
+        }, function(tab) {});
       });
-    } else if (request.type == "resetLockKey") {
-      background.resetLockKey(request.lockKey);
-      sendResponse({
-        msg: 'ok'
-      });
+    }
+    // getFormsSumit
+    else if (request.type == "cancelFormsSumit") {
+      background.formsSumit = null;
     }
     // popup 获取当前状态
     else if (request.type == "getStatus") {
       sendResponse({
-        msg: z.status,
-        locked: (!background.lockKey && localStorage.h5lock_password)
-          //已上锁 （没有lockKey 且 有password）
+        msg: z.status
       });
     }
   });
@@ -145,7 +175,7 @@
           });
         });
         break;
-      case "sendKey":
+      case "setKey":
         port.onMessage.addListener(function(request) {
           if (request.key)
             background.setKey(request.key);
@@ -185,6 +215,7 @@
     },
     // 通过锁屏密码来获取自定义密码，锁屏密码错误将返回
     getKey: function() {
+      // return AES.decrypt(localStorage.privateKey || '', this.lockKey);
       return AES.decrypt(localStorage.privateKey || '', this.lockKey);
     },
     // 使用lockKey将自定义密码加密后储存在localStorage中
@@ -193,10 +224,10 @@
       localStorage.privateKey = AES.encrypt(key, lockKey);
     },
     // 重新设置锁屏密码，并重新加密自定义密码，需要this.lockKey已经正确的情况下，否则会清空自定义密码
-    resetLockKey: function(newLockKey) {
-      localStorage.privateKey = AES.encrypt(this.getKey(), newLockKey);
-      this.lockKey = newLockKey;
-    },
+    // resetLockKey: function(newLockKey) {
+    //   localStorage.privateKey = AES.encrypt(this.getKey(), newLockKey);
+    //   this.lockKey = newLockKey;
+    // },
     // 输入了密码进行解锁操作，这里不判断锁屏密码是否正确，密码不正确将解密不了字段，但是不影响正常进入
     unLock: function(lockKey) {
       this.lockKey = lockKey;
@@ -205,7 +236,7 @@
     getDatabase: function() {
       // var path = CryptoJS.MD5(this.getKey()).toString().toUpperCase();
       // return 'http://' + localStorage.url + '/2password-' + path.slice(path.length - 6);
-      return 'http://' + localStorage.url;
+      return 'https://' + localStorage.url;
     },
     // 获取指定id 的对象
     getItem: function(id) {
@@ -241,7 +272,7 @@
         var activeItem;
         var newItems = this.clones(z.items);
         for (var i = 0; i < newItems.length; i++) {
-          if (url.indexOf(newItems[i].name) > 0 || url.indexOf(newItems[i].host) > 0) {
+          if (url.indexOf(newItems[i].identify) >= 0 || url.indexOf(newItems[i].name) > 0 || url.indexOf(newItems[i].host) > 0 ) {
             activeItem = this.decode(newItems[i].z);
             activeItem.id = newItems[i].id;
             activeItem.name = newItems[i].name || '';
@@ -254,7 +285,14 @@
           }
         }
         for (i = 0; i < newItems.length; i++) {
-          items.push(newItems[i]);
+          activeItem = this.decode(newItems[i].z);
+          activeItem.id = newItems[i].id;
+          activeItem.name = newItems[i].name || '';
+          activeItem.host = newItems[i].host || '';
+          activeItem.identify = newItems[i].identify || '';
+          activeItem.updateTime = newItems[i].updateTime || '';
+          items.push(activeItem);
+          // items.push(newItems[i]);
         }
       }
       callback({
@@ -271,7 +309,6 @@
         msg: 'not Access'
       }) : reqwest({
         url: background.getDatabase() + "/.json",
-        // url: "/collect-******/data.json?" + new Date().getTime(),
         method: 'GET',
         success: function(response) {
           response = response && response.data ? response.data : [];
@@ -283,10 +320,10 @@
           }
           z.items = items.reverse();
           z.status = 'loaded';
-          console.log('success');
+          console.log('complete');
           callback({
             msg: 'ok',
-            items: z.items
+            items: [] ? [] : z.items
           });
         },
         error: function(err) {
@@ -402,11 +439,13 @@
             allFrames: false
           });
         }, 300);
+        if (z.status == 'network error') {
+          background.pullItems();
+        }
         break;
       case 'loading':
+        if (!z.items) return;
         var url = tab.url || "";
-        if (!z.items)
-          return;
         for (var i = 0; i < z.items.length; i++) {
           if (z.items[i].name &&
             (url.indexOf(z.items[i].name) > 0 ||

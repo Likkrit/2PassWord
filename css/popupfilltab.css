@@ -1409,9 +1409,9 @@ color:#404040;
   border-style:solid;
   border-color:#4c4c4c;
   border-width:2px;   /* 1px loses corners? */
-  border-radius:4px 4px;
+  /*border-radius:4px 4px;
   -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
+  -webkit-border-radius: 4px;*/
   box-shadow: 1px rgba(200, 200, 200, 0.5);
   -webkit-box-shadow: 1px 1px rgba(200, 200, 200, 0.5);
   -moz-box-shadow: 1px 1px rgba(200, 200, 200, 0.5);

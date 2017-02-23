@@ -30,6 +30,102 @@ function contentIcons() {
     that.domNodeFind();
   }, false);
 
+  // 表单提交事件绑定 开始
+  for (var i = 0; i < document.forms.length; i++) {
+    document.forms[i].onsubmit = function(e) {
+      saveFormsSumit(e.target);
+    }
+  }
+  function saveFormsSumit(form) {
+    var newForm = [];
+    for (var i = 0; i < form.length; i++) {
+      if (form[i].tagName == 'INPUT' && form[i].value && form[i].type != 'hidden' && form[i].type != 'submit' && form[i].value.length > 2) {
+        newForm.push({
+          id: form[i].id,
+          name: form[i].name,
+          value: form[i].value,
+          type: form[i].type
+        });
+      }
+    }
+    var object = {
+      url: location.href,
+      identify: location.host,
+      form: newForm
+    }
+    if (object.form.length >= 2) {
+      chrome.runtime.sendMessage({
+        type: "formsSumit",
+        object: object
+      });
+    }
+  }
+  // 表单提交事件绑定 结束
+
+  // 提交后显示是否记住密码 按钮 开始
+  if(top == self){
+    chrome.runtime.sendMessage({
+      type: "getFormsSumit",
+      url: location.href
+    }, function(response) {
+      if(response){
+        var newNode = document.createElement("div");
+        newNode.className = "temptest";
+        newNode.style.position = "fixed";
+        newNode.style.top = 0;
+        newNode.style.zIndex = 999999;
+        newNode.style.backgroundColor = "#0fbb14";
+        newNode.style.width = "100%";
+        // newNode.style.textAlign = "center";
+        var newChildNode = document.createElement("span");
+        newChildNode.style.padding = "10px 20px";
+        newChildNode.style.fontSize = "13px";
+        newChildNode.style.display = "inline-block";
+        newChildNode.style.float = "left";
+        newChildNode.style.color = "#fff";
+        newChildNode.innerHTML = "是否允许2PassWord记住此密码？";
+        newNode.appendChild(newChildNode);
+        newChildNode = document.createElement("span");
+        newChildNode.style.padding = "3px 13px";
+        newChildNode.style.margin = "8px 8px 8px 0";
+        newChildNode.style.fontSize = "13px";
+        newChildNode.style.display = "inline-block";
+        newChildNode.style.color = "#0fbb14";
+        newChildNode.style.backgroundColor = "#fff";
+        newChildNode.style.float = "right";
+        newChildNode.style.cursor = "pointer";
+        newChildNode.className = "tpw_action_cancel";
+        newChildNode.innerHTML = "取消";
+        newNode.appendChild(newChildNode);
+        newChildNode = document.createElement("span");
+        newChildNode.style.padding = "3px 13px";
+        newChildNode.style.margin = "8px 8px 8px 0";
+        newChildNode.style.fontSize = "13px";
+        newChildNode.style.display = "inline-block";
+        newChildNode.style.color = "#0fbb14";
+        newChildNode.style.backgroundColor = "#fff";
+        newChildNode.style.cursor = "pointer";
+        newChildNode.style.float = "right";
+        newChildNode.className = "tpw_action_save";
+        newChildNode.innerHTML = "保存";
+        newNode.appendChild(newChildNode);
+        document.body.appendChild(newNode);
+        document.querySelector('.tpw_action_cancel').addEventListener('click',function(){
+          document.querySelector(".temptest").remove();
+          chrome.runtime.sendMessage({
+            type: "cancelFormsSumit",
+          });
+        });
+        document.querySelector('.tpw_action_save').addEventListener('click',function(){
+          document.querySelector(".temptest").remove();
+          chrome.runtime.sendMessage({
+            type: "saveFormsSumit",
+          });
+        });
+      }
+    });
+  }
+  // 提交后显示是否记住密码 按钮 结束
 }
 contentIcons.prototype.domNodeFind = function() {
     var iframes = document.getElementsByTagName('iframe');

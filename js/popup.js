@@ -208,7 +208,10 @@ function eventFire() {
       if ((e.target.attributes['aid'] || e.target.parentNode.attributes['aid'] || e.target.parentNode.parentNode.attributes['aid'])) {
         var aid = getAid(e);
         if (!aid) return;
-        contentPopup.insertContentScript(aid);
+        // contentPopup.insertContentScript(aid);
+        document.getElementById('lptabpopupmore').setAttribute('aid', aid);
+        document.getElementById('moreDiv').style.display = 'block';
+        document.getElementById('popupcontainer').style.display = 'none';
       }
     }
   });
@@ -216,6 +219,19 @@ function eventFire() {
 }
 
 function init() {
+  // 检测是否已经设置数据库地址和密码
+  chrome.runtime.sendMessage({
+    type: "getStatus"
+  }, function (response) {
+    if (response.msg == 'noUrl' || response.msg == 'noKey') {
+      chrome.tabs.getSelected(null, function (tab) {
+        chrome.tabs.create({
+          index: tab.index + 1,
+          url: "chrome-extension://" + chrome.i18n.getMessage("@@extension_id") + "/optionsE.html"
+        }, function (tab) {});
+      });
+    }
+  });
   document.body.style.opacity = 1;
   // 如果具有这些方法
   if (chrome && chrome.runtime) {

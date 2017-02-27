@@ -201,7 +201,6 @@ function eventFire() {
       if (!aid) return;
       document.getElementById('lptabpopupmore').setAttribute('aid', aid);
       document.getElementById('moreDiv').style.display = 'block';
-      document.getElementById('lptabpopupsave').style.display = 'none';
       document.getElementById('popupcontainer').style.display = 'none';
 
       // 点击tr

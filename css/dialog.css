@@ -107,7 +107,7 @@
 }
 
 .dialogHeader.icon > .dialogHeaderInner {
-  /*background-image: url('images/vault_4.0/LastPass_White.png');*/
+  background-image: url('../images/LastPass_White.png');
   background-position:  right center;
   background-repeat: no-repeat;
 }
@@ -240,7 +240,7 @@
 
 .checkbox + label {
   padding: 4px 4px 4px 25px;
-  background-image: url('images/vault_4.0/Uncheck_Modal.png');
+  /*background-image: url('images/vault_4.0/Uncheck_Modal.png');*/
   background-repeat: no-repeat;
   background-position: 4px center;
   height: 16px;

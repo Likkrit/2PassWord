@@ -11,7 +11,7 @@
     "scripts": ["./js/aes/aes.js","./js/reqwest.min.js","./js/background.js"],
     "persistent": true
   },
-  "options_page": "options.html",
+  "options_page": "optionsE.html",
   "browser_action": {
      "default_icon": "images/page_ori_64.png",
      "default_popup": "popup.html",

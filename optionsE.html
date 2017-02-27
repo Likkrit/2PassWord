@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="2PassWord" content="" charset="utf-8">
+  <title>2PassWord Settings</title>
+
+  <link rel="stylesheet" type="text/css" href="./css/newvaultGlobal.css">
+  <link rel="stylesheet" type="text/css" href="./css/buttons.css">
+  <link rel="stylesheet" type="text/css" href="./css/dialog.css">
+  <link rel="stylesheet" type="text/css" href="css/loading.css">
+  <script src="./js/optionsE.js"></script>
+  <style>
+    #loginDialog {
+      max-width: 660px;
+      background-color: transparent;
+      box-shadow: none;
+    }
+    
+    #loginDialog .dialogHeader.icon.leftIcon>.dialogHeaderInner {
+      background-position: center center;
+    }
+    
+    #loginDialog label {
+      color: white;
+      font-size: 13px;
+      font-weight: 300;
+    }
+    
+    .dialogContent {
+      overflow: hidden;
+    }
+    
+    .dialogHeader {
+      background-color: transparent;
+    }
+    
+    #loginDialog .dialogInput {
+      border-radius: 4px;
+      height: 50px;
+      padding: 0 10px;
+      border-width: 3px;
+      border-color: white;
+    }
+    
+    #saveButton {
+      font-size: 18px;
+      margin-top: 46px;
+    }
+    
+    .login-background {
+      background-image: url(./images/login-background.jpg);
+      background-position: center center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-color: #28353E;
+      box-shadow: inset 0 -36px 15px -10px #28353E;
+    }
+  </style>
+</head>
+
+<body class="tab login-background dialogState">
+  <div class="dialog" role="dialog" aria-labelledby="loginDialogTitle" id="loginDialog" style="display: block; height: 360px;">
+    <div class="dialogHeader icon leftIcon">
+      <div class="dialogHeaderInner"><span class="dialogHeaderTitle" id="loginDialogTitle"></span></div>
+    </div>
+    <div class="dialogContent dialogContentFixed" style="top: 70px;">
+      <div dialogsection="main" id="loginView" class="lp-grid container gutter-sm">
+        <div class="small-margins">
+          <label for="loginDialogEmail" class="label first">数据储存地址</label>
+        </div>
+        <div class="dropdownContainer">
+          <div class="relative">
+            <input class="dialogInput clickToggles" id="dataBaseURL" type="text"></div>
+
+        </div>
+        <div class="row small-margins">
+          <div class="col-8">
+            <label class="label" for="loginDialogPassword">主密码</label>
+          </div>
+        </div>
+        <div class="relative">
+          <input class="dialogInput inputCapsMatter" id="savePassword" type="password">
+        </div>
+        <div class="clear"></div>
+
+        <div class="buttons centerButtons">
+          <button id="saveButton" class="nbtn rbtn">保存设置</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="_loading" style="display:none;">
+    <div class="loading-mask"></div>
+    <div class="loading-box">
+      <div class="loading-content animate-spin"></div>
+      <div class="loading-content-outer animate-spin-outer"></div>
+      <div class="text">
+        加载中
+      </div>
+      <div class="loading-bg"></div>
+    </div>
+  </div>
+</body>
+
+</html>

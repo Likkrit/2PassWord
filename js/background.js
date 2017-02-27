@@ -236,7 +236,7 @@
     getDatabase: function() {
       // var path = CryptoJS.MD5(this.getKey()).toString().toUpperCase();
       // return 'http://' + localStorage.url + '/2password-' + path.slice(path.length - 6);
-      return 'https://' + localStorage.url;
+      return localStorage.url;
     },
     // 获取指定id 的对象
     getItem: function(id) {

@@ -33,10 +33,10 @@ function contentIcons() {
   // 表单提交事件绑定 开始
   for (var i = 0; i < document.forms.length; i++) {
     document.forms[i].onsubmit = function(e) {
-      saveFormsSumit(e.target);
+      formsSumit(e.target);
     }
   }
-  function saveFormsSumit(form) {
+  function formsSumit(form) {
     var newForm = [];
     for (var i = 0; i < form.length; i++) {
       if (form[i].tagName == 'INPUT' && form[i].value && form[i].type != 'hidden' && form[i].type != 'submit' && form[i].value.length > 2) {
@@ -55,7 +55,7 @@ function contentIcons() {
     }
     if (object.form.length >= 2) {
       chrome.runtime.sendMessage({
-        type: "formsSumit",
+        type: "formSumit",
         object: object
       });
     }
@@ -65,7 +65,7 @@ function contentIcons() {
   // 提交后显示是否记住密码 按钮 开始
   if(top == self){
     chrome.runtime.sendMessage({
-      type: "getFormsSumit",
+      type: "isShowTips",
       url: location.href
     }, function(response) {
       if(response){
@@ -113,13 +113,13 @@ function contentIcons() {
         document.querySelector('.tpw_action_cancel').addEventListener('click',function(){
           document.querySelector(".temptest").remove();
           chrome.runtime.sendMessage({
-            type: "cancelFormsSumit",
+            type: "tipsCancel",
           });
         });
         document.querySelector('.tpw_action_save').addEventListener('click',function(){
           document.querySelector(".temptest").remove();
           chrome.runtime.sendMessage({
-            type: "saveFormsSumit",
+            type: "tipsSave",
           });
         });
       }

@@ -75,22 +75,22 @@
       });
     }
     // 每次提交表单时，都将表单对象提交到此
-    else if (request.type == "formsSumit") {
+    else if (request.type == "formSumit") {
       background.formsSumit = request.object;
     }
     // 返回响应 是否显示 保存此密码
-    else if (request.type == "getFormsSumit" && background.formsSumit) {
+    else if (request.type == "isShowTips" && background.formsSumit) {
       if (request.url.indexOf(background.formsSumit.identify) >= 0) {
         for (var i = 0; i < z.items.length; i++) {
-          if (request.url.indexOf(z.items[i].identify) >= 0) {
-            return;
+          if (request.url.indexOf(z.items[i].identify) >= 0 && background.formsSumit.form[0].value == z.items[i].identify) { ////////////////
+            // return;
           }
         }
         sendResponse(true);
       }
     }
     // 弹出对话框
-    else if (request.type == "saveFormsSumit") {
+    else if (request.type == "tipsSave") {
       var newItem = {
         id: new Date().getTime(),
         identify: background.formsSumit.identify,
@@ -109,8 +109,8 @@
         }, function(tab) {});
       });
     }
-    // getFormsSumit
-    else if (request.type == "cancelFormsSumit") {
+    // cancelFormsSumit
+    else if (request.type == "tipsCancel") {
       background.formsSumit = null;
     }
     // popup 获取当前状态
@@ -272,7 +272,7 @@
         var activeItem;
         var newItems = this.clones(z.items);
         for (var i = 0; i < newItems.length; i++) {
-          if (url.indexOf(newItems[i].identify) >= 0 || url.indexOf(newItems[i].name) > 0 || url.indexOf(newItems[i].host) > 0 ) {
+          if (url.indexOf(newItems[i].name) > 0 || url.indexOf(newItems[i].host) > 0 || (newItems[i].identify && url.indexOf(newItems[i].identify) >= 0)) {
             activeItem = this.decode(newItems[i].z);
             activeItem.id = newItems[i].id;
             activeItem.name = newItems[i].name || '';

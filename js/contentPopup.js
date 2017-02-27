@@ -278,9 +278,11 @@ function eventFire() {
       e.target.className = e.target.className.replace(/img/, 'active');
       document.getElementById('moreDiv').style.display = 'none';
       if (e.target.id == 'SB_siteico_img') {
+        document.getElementById('SB_titlebox').style.display = 'block';
         document.getElementById('popupcontainer').style.display = 'block';
         document.getElementById('lptabpopupsave').style.display = 'none';
       } else if (e.target.id == 'SB_addico_img') {
+        document.getElementById('SB_titlebox').style.display = 'none';
         document.getElementById('popupcontainer').style.display = 'none';
         document.getElementById('lptabpopupsave').style.display = 'block';
       }
@@ -297,7 +299,6 @@ function init() {
   }
   var saveForms;
   saveForms = localStorage.tpw_saveForms ? JSON.parse(localStorage.tpw_saveForms) : {};
-  console.log(saveForms);
   if (saveForms.length > 0 && saveForms.length == 2) {
     document.getElementById('u').value = saveForms[0].value;
     document.getElementById('p').value = saveForms[1].value;
@@ -340,6 +341,8 @@ function init() {
   document.getElementById('identify').innerHTML = identify;
   document.getElementById('url').innerHTML = location.href.split('?')[1] ? location.href.split('?')[1] : '';
 
+  document.getElementById('search').focus();
+
   eventFire();
 }
 
@@ -367,6 +370,7 @@ function saveFormsRecognize(saveForms) {
       break;
     }
   }
+  // 获得用户名
   for (var i = 0; i < saveForms.length; i++) {
     saveForms[i].name = saveForms[i].name.toLowerCase();
     if (saveForms[i].name.indexOf('user') >= 0 ||

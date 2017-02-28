@@ -17,6 +17,7 @@
           item = JSON.stringify(background.getItem(request.id));
         }
       }
+      // 替换掉表单字段双引号和单引号
       item = item.replace((/\[\w+=\\?'[\w\.\_\-]*\\?'\]/ig), function (str) {
         return str.replace(/\\?\'/ig, '&');
       });
@@ -44,11 +45,19 @@
     // openContentPopup
     else if (request.type == "openContentPopup") {
       // 检测是否已经设置数据库地址和密码
-      if (z.status == 'noUrl' || z.status == 'noKey') {
+      if (z.status == 'noSetting') {
         chrome.tabs.getSelected(null, function (tab) {
           chrome.tabs.create({
             index: tab.index + 1,
             url: "chrome-extension://" + chrome.i18n.getMessage("@@extension_id") + "/optionsE.html"
+          }, function (tab) {});
+        });
+        return;
+      } else if (z.status == 'noLogin') {
+        chrome.tabs.getSelected(null, function (tab) {
+          chrome.tabs.create({
+            index: tab.index + 1,
+            url: "chrome-extension://" + chrome.i18n.getMessage("@@extension_id") + "/login.html"
           }, function (tab) {});
         });
         return;
@@ -85,6 +94,8 @@
         }, function (tab) {});
       });
     }
+
+    //提示 是否保存此网站密码
     // 每次提交表单时，都将表单对象提交到此
     else if (request.type == "formSumit") {
       background.formsSumit = request.object;
@@ -186,10 +197,33 @@
           });
         });
         break;
-      case "setKey":
+      case "initDatabase": //request.url
         port.onMessage.addListener(function (request) {
-          if (request.key)
-            background.setKey(request.key);
+          background.initDatabase(request.url, request.key, function (result) {
+            if (connecting)
+              port.postMessage(result);
+          });
+        });
+        break;
+      case "checkUrl": //request.url
+        port.onMessage.addListener(function (request) {
+          background.checkUrl(request.url, function (result) {
+            if (connecting)
+              port.postMessage(result);
+          });
+        });
+        break;
+      case "checkKey": //request.key
+        port.onMessage.addListener(function (request) {
+          background.checkKey(request.key, function (result) {
+            if (connecting)
+              port.postMessage(result);
+          });
+        });
+        break;
+      case "setKey": //request.key
+        port.onMessage.addListener(function (request) {
+          background.setKey(request.url, request.key);
           background.pullItems(function (result) {
             if (connecting)
               port.postMessage(result);
@@ -214,11 +248,9 @@
       if (localStorage.url && localStorage.privateKey) {
         z.status = 'loading';
         // 如果当前数组为空，则进行拉取操作，否则状态设置为已经就绪
-        z.items.length == 0 ? this.pullItems() : z.status = 'loaded';
-      } else if (!localStorage.url) {
-        z.status = 'noUrl';
-      } else if (!localStorage.privateKey) {
-        z.status = 'noKey';
+        z.items.length == 0 ? this.pullItems() : z.status = 'complete';
+      } else if (!localStorage.url || !localStorage.privateKey) {
+        z.status = 'noSetting';
       }
     },
     notAccess: function () {
@@ -228,11 +260,6 @@
     getKey: function () {
       // return AES.decrypt(localStorage.privateKey || '', this.lockKey);
       return AES.decrypt(localStorage.privateKey || '', this.lockKey);
-    },
-    // 使用lockKey将自定义密码加密后储存在localStorage中
-    setKey: function (key, lockKey) {
-      lockKey = lockKey || this.lockKey;
-      localStorage.privateKey = AES.encrypt(key, lockKey);
     },
     // 重新设置锁屏密码，并重新加密自定义密码，需要this.lockKey已经正确的情况下，否则会清空自定义密码
     // resetLockKey: function(newLockKey) {
@@ -316,34 +343,39 @@
     pullItems: function (callback) {
       var that = this;
       callback = callback || function () {};
-      this.notAccess() ? callback({
-        msg: 'not Access'
-      }) : reqwest({
-        url: background.getDatabase() + "/.json",
-        method: 'GET',
-        success: function (response) {
-          response = response && response.data ? response.data : [];
-          var i, temp, decrypted, name, host, updateTime, userName, passWord, other, inputId1, inputId2, newItem,
-            items = [];
-          for (i in response) {
-            response[i].id = i;
-            items.push(response[i]);
+      if (this.notAccess()) {
+        z.status = 'noSetting';
+        callback({
+          msg: 'noSetting'
+        });
+      } else {
+        reqwest({
+          url: background.getDatabase() + "/.json",
+          method: 'GET',
+          success: function (response) {
+            response = response && response.data ? response.data : [];
+            var i, temp, decrypted, name, host, updateTime, userName, passWord, other, inputId1, inputId2, newItem,
+              items = [];
+            for (i in response) {
+              response[i].id = i;
+              items.push(response[i]);
+            }
+            z.items = items.reverse();
+            z.status = 'complete';
+            console.log('complete');
+            callback({
+              msg: 'ok',
+              items: [] ? [] : z.items
+            });
+          },
+          error: function (err) {
+            z.status = 'network error';
+            callback({
+              msg: err
+            });
           }
-          z.items = items.reverse();
-          z.status = 'loaded';
-          console.log('complete');
-          callback({
-            msg: 'ok',
-            items: [] ? [] : z.items
-          });
-        },
-        error: function (err) {
-          z.status = 'network error';
-          callback({
-            msg: err
-          });
-        }
-      });
+        });
+      }
     },
     // 增加一个条目（需要增加的条目数组, 回调函数）
     addItem: function (newItem, callback) {
@@ -362,43 +394,134 @@
       data[_data_identify] = newItem.identify || '';
       data[_data_updateTime] = new Date().getTime();
       data[_data_z] = packedEncryped;
-      this.notAccess() ? callback({
-        msg: 'not Access'
-      }) : reqwest({
-        url: background.getDatabase() + "/.json",
-        // url: "/collect-******/data.json",
-        method: 'PATCH',
-        data: JSON.stringify(data),
-        success: function (resp) {
-          // 增加一个item 成功后重新拉取数据 传入回调函数
-          that.pullItems(callback);
-        },
-        error: function (err) {
-          callback({
-            msg: err
-          });
-        }
-      });
+      if (this.notAccess()) {
+        z.status = 'noSetting';
+        callback({
+          msg: 'noSetting'
+        });
+      } else {
+        reqwest({
+          url: background.getDatabase() + "/.json",
+          // url: "/collect-******/data.json",
+          method: 'PATCH',
+          data: JSON.stringify(data),
+          success: function (resp) {
+            // 增加一个item 成功后重新拉取数据 传入回调函数
+            that.pullItems(callback);
+          },
+          error: function (err) {
+            callback({
+              msg: err
+            });
+          }
+        });
+      }
     },
     // 删除列表（条目id, 回调函数）
     deleteItem: function (id, callback) {
       var that = this;
-      this.notAccess() ? callback({
-        msg: 'not Access'
-      }) : reqwest({
-        url: background.getDatabase() + "/data/" + id + ".json",
-        // url: "/collect-******/data/" + itemId + ".json",
-        method: 'DELETE',
-        success: function (resp) {
-          // 删除一个item 成功后重新拉取数据 传入回调函数
-          that.pullItems(callback);
+      if (this.notAccess()) {
+        z.status = 'noSetting';
+        callback({
+          msg: 'noSetting'
+        });
+      } else {
+        reqwest({
+          url: background.getDatabase() + "/data/" + id + ".json",
+          // url: "/collect-******/data/" + itemId + ".json",
+          method: 'DELETE',
+          success: function (resp) {
+            // 删除一个item 成功后重新拉取数据 传入回调函数
+            that.pullItems(callback);
+          },
+          error: function (err) {
+            callback({
+              msg: err
+            });
+          }
+        });
+      }
+    },
+    // 检查URL
+    checkUrl: function (url, callback) {
+      var that = this;
+      this.encryptString = "";
+      callback = callback || function () {};
+      reqwest({
+        url: url + "/.json",
+        method: 'GET',
+        success: function (response) {
+          if (response && response.authority && response.authority.encryptString) {
+            that.encryptString = response.authority.encryptString;
+            callback({
+              msg: 'ok',
+              num: response.data ? Object.keys(response.data).length : 0
+            });
+          } else {
+            callback({
+              msg: 'null'
+            });
+          }
         },
         error: function (err) {
           callback({
-            msg: err
+            msg: 'networkError'
           });
         }
       });
+    },
+    // 检查Key
+    checkKey: function (key, callback) {
+      var that = this;
+      callback = callback || function () {};
+      if (this.encryptString) {
+        if (AES.decrypt(this.encryptString, key))
+          callback({
+            msg: 'ok'
+          });
+        else
+          callback({
+            msg: 'error'
+          });
+      } else {
+        callback({
+          msg: 'noCheckUrl'
+        });
+      }
+    },
+    // 使用lockKey将自定义密码加密后储存在localStorage中
+    setKey: function (url, key, lockKey) {
+      localStorage.url = url;
+      lockKey = lockKey || this.lockKey;
+      localStorage.privateKey = AES.encrypt(key, lockKey);
+    },
+    // 检查Key
+    initDatabase: function (url, key, callback) {
+      // 先设置了密码和url
+      localStorage.url = url;
+      var lockKey = this.lockKey;
+      localStorage.privateKey = AES.encrypt(key, lockKey);
+      var that = this;
+      callback = callback || function () {};
+      var _encryptString = "authority/encryptString";
+      var _data = "data";
+      var data = {};
+      data[_encryptString] = AES.encrypt('test',key);
+      reqwest({
+          url: background.getDatabase() + "/.json",
+          // url: "/collect-******/data.json",
+          method: 'PATCH',
+          data: JSON.stringify(data),
+          success: function (resp) {
+            // 增加一个item 成功后重新拉取数据 传入回调函数
+            that.pullItems(callback);
+          },
+          error: function (err) {
+            callback({
+              msg: err
+            });
+          }
+        });
     },
     // 对象克隆
     clones: function (obj) {
@@ -477,5 +600,6 @@
   });
   window.z = z;
   window.background = background;
+  window.AES = AES;
   background.init();
 })();

@@ -1,16 +1,19 @@
 <!doctype html>
 <html>
-
 <head>
   <meta name="2PassWord" content="" charset="utf-8">
   <title>2PassWord Settings</title>
-
   <link rel="stylesheet" type="text/css" href="./css/newvaultGlobal.css">
   <link rel="stylesheet" type="text/css" href="./css/buttons.css">
   <link rel="stylesheet" type="text/css" href="./css/dialog.css">
   <link rel="stylesheet" type="text/css" href="css/loading.css">
   <script src="./js/optionsE.js"></script>
   <style>
+    #saveButton {
+      outline: none;
+      border: none;
+    }
+    
     #loginDialog {
       max-width: 660px;
       background-color: transparent;
@@ -43,9 +46,13 @@
       border-color: white;
     }
     
-    #saveButton {
+    .centerButtons {
+      margin-top: 16px;
+    }
+    
+    .nbtn {
       font-size: 18px;
-      margin-top: 46px;
+      margin-top: 20px;
     }
     
     .login-background {
@@ -56,6 +63,40 @@
       background-color: #28353E;
       box-shadow: inset 0 -36px 15px -10px #28353E;
     }
+    
+    #tip {
+      color: transparent;
+    }
+    
+    #_tip {
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translate3d(-50%, 0, 0);
+      transition: .5s all;
+      /* transform: translate3d(-50%, 60px, 0); */
+    }
+    
+    #_tip.show {
+      transform: translate3d(-50%, 80px, 0);
+    }
+    
+    .tip-content {
+      color: #fff;
+      background: #d32d27;
+      padding: 8px 60px;
+      font-size: 13px;
+      border-radius: 4px;
+    }
+    
+    .hide {
+      display: none;
+    }
+    
+    #dataBaseURLP {
+      color: #ddd;
+      text-align: center
+    }
   </style>
 </head>
 
@@ -64,33 +105,40 @@
     <div class="dialogHeader icon leftIcon">
       <div class="dialogHeaderInner"><span class="dialogHeaderTitle" id="loginDialogTitle"></span></div>
     </div>
-    <div class="dialogContent dialogContentFixed" style="top: 70px;">
-      <div dialogsection="main" id="loginView" class="lp-grid container gutter-sm">
-        <div class="small-margins">
-          <label for="loginDialogEmail" class="label first">数据储存地址</label>
+    <form class="dialogContent dialogContentFixed hide" action="#" style="top: 70px;">
+      <div>
+        <div id="databaseArea">
+          <label class="label first">数据储存地址</label>
+          <input class="dialogInput" id="dataBaseURL" type="text" placeholder="https://*******.firebaseio.com/******" autocomplete="true">
         </div>
-        <div class="dropdownContainer">
-          <div class="relative">
-            <input class="dialogInput clickToggles" id="dataBaseURL" type="text"></div>
-
+        <div id="passwordArea" style="display: none;">
+          <label class="label first">主密码</label>
+          <input class="dialogInput" id="savePassword" type="password">
         </div>
-        <div class="row small-margins">
-          <div class="col-8">
-            <label class="label" for="loginDialogPassword">主密码</label>
-          </div>
-        </div>
-        <div class="relative">
-          <input class="dialogInput inputCapsMatter" id="savePassword" type="password">
-        </div>
-        <div class="clear"></div>
-
         <div class="buttons centerButtons">
-          <button id="saveButton" class="nbtn rbtn">保存设置</button>
+          <p id="tip">说明</p>
+          <button id="saveButton" class="nbtn rbtn" action="next" type="submit">下一步</button >
+        </div>
+      </div>
+    </form>
+    <div id="setting" class="dialogContent dialogContentFixed hide" style="top: 70px;">
+      <div>
+        <div id="databaseArea">
+          <label class="label first" style="text-align: center">数据储存地址：</label>
+            <p id="dataBaseURLP"></p>
+        </div>
+        <div class="buttons centerButtons">
+           <button id="clearSetting" class="nbtn rbtn">清空设置</button >
+           <button id="setLockKey" class="nbtn rbtn">设置保护密码</button >
         </div>
       </div>
     </div>
   </div>
-
+  <div id="_tip">
+    <div class="tip-box">
+      <div class="tip-content"></div>
+    </div>
+  </div>
   <div id="_loading" style="display:none;">
     <div class="loading-mask"></div>
     <div class="loading-box">
@@ -103,5 +151,4 @@
     </div>
   </div>
 </body>
-
 </html>

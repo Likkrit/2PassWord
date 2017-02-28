@@ -223,7 +223,7 @@ function init() {
   chrome.runtime.sendMessage({
     type: "getStatus"
   }, function (response) {
-    if (response.msg == 'noUrl' || response.msg == 'noKey') {
+    if (response.msg == 'noSetting') {
       chrome.tabs.getSelected(null, function (tab) {
         chrome.tabs.create({
           index: tab.index + 1,

@@ -5,10 +5,12 @@ function showErrorMessage(content, delay) {
     document.getElementById('_tip').className = '';
   }, delay || 3000);
 }
+
 function showTip(content, color) {
   document.getElementById('tip').style.color = color;
   document.getElementById('tip').innerText = content;
 }
+
 function checkKeyClick() {
   document.getElementById('_loading').style.display = 'block';
   var port = chrome.runtime.connect({
@@ -28,6 +30,7 @@ function checkKeyClick() {
     }
   });
 }
+
 function initClick() {
   document.getElementById('_loading').style.display = 'block';
   var port = chrome.runtime.connect({
@@ -77,7 +80,7 @@ function nextClick() {
     name: "checkUrl"
   });
   port.postMessage({
-    url: document.getElementById('dataBaseURL').value.replace(/^\s+|\s+$/ig,'')
+    url: document.getElementById('dataBaseURL').value.replace(/^\s+|\s+$/ig, '')
   });
   port.onMessage.addListener(function (result) {
     document.getElementById('_loading').style.display = 'none';
@@ -99,6 +102,7 @@ function nextClick() {
     }
   });
 }
+
 function clearClick() {
   document.getElementById('_loading').style.display = 'block';
   var port = chrome.runtime.connect({
@@ -119,6 +123,7 @@ function clearClick() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+  
   document.forms[0].onsubmit = function (e) {
     return false;
   }
@@ -128,7 +133,11 @@ document.addEventListener('DOMContentLoaded', function () {
   } else {
     document.getElementById('setting').style.display = 'block';
     document.getElementById('dataBaseURLP').innerText = localStorage.url;
+    document.getElementById('check-1').checked = localStorage.cfg_clearKeyOnLaunch == 'true' ? true : false;
   }
+  document.getElementById('check-1').addEventListener('click', function () {
+    localStorage.cfg_clearKeyOnLaunch = document.getElementById('check-1').checked;
+  });
   document.getElementById('saveButton').addEventListener('click', function () {
     if (document.getElementById('saveButton').attributes['action']) {
       switch (document.getElementById('saveButton').attributes['action'].value) {

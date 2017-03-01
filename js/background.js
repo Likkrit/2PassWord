@@ -246,6 +246,9 @@
       } else if (!localStorage.url || !localStorage.privateKey) {
         z.status = 'noSetting';
       }
+      if(localStorage.cfg_clearKeyOnLaunch == 'true'){
+        localStorage.removeItem('privateKey');
+      }
     },
     notAccess: function () {
       return !(localStorage.privateKey && localStorage.url);
@@ -556,6 +559,7 @@
     }
   };
   var replaceQuotes = function (v) {
+    //替换引号、括号
     var entry = {
       "[": "\\[",
       ']': '\\]',
@@ -581,6 +585,8 @@
         });
         return ($1 + quotes1 + name + quotes2 + $5);
       });
+      v = v.replace(/\"other\":.*\"inputId1/ig,'"inputId1').replace(/\"host\":.*\"inputId1/ig,'"updateTime');
+      
     return v;
   };
   // 当一个标签加载完成时，此事件触发

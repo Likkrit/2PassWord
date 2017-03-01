@@ -5,13 +5,10 @@ document.onkeydown = function(event) {
     document.activeElement.style.background = 'rgba(255,0,0,.2)';
   }
 };
-
-item.inputId1 = item.inputId1 || "";
-item.inputId2 = item.inputId2 || "";
-
+item.inputId1 = item.inputId1 ? item.inputId1 : "";
+item.inputId2 = item.inputId2 ? item.inputId2 : "";
 item.inputId1 = item.inputId1.split("|");
 item.inputId2 = item.inputId2.split("|");
-
 var input,
   inputCount1 = 0,
   inputCount2 = 0;

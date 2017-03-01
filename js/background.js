@@ -17,13 +17,7 @@
           item = JSON.stringify(background.getItem(request.id));
         }
       }
-      // 替换掉表单字段双引号和单引号
-      item = item.replace((/\[\w+=\\?'[\w\.\_\-]*\\?'\]/ig), function (str) {
-        return str.replace(/\\?\'/ig, '&');
-      });
-      item = item.replace((/\[\w+=\\?"[\w\.\_\-]*\\?"\]/ig), function (str) {
-        return str.replace(/\\?\"/ig, '&');
-      });
+      item = replaceQuotes(item);
       var code = "try{document.body.removeChild(document.querySelector('.tpw_iframe'));}catch(e){}";
       code += "window.item='" + item + "';item=JSON.parse(item);";
       chrome.tabs.executeScript(null, {
@@ -506,22 +500,22 @@
       var _encryptString = "authority/encryptString";
       var _data = "data";
       var data = {};
-      data[_encryptString] = AES.encrypt('test',key);
+      data[_encryptString] = AES.encrypt('test', key);
       reqwest({
-          url: background.getDatabase() + "/.json",
-          // url: "/collect-******/data.json",
-          method: 'PATCH',
-          data: JSON.stringify(data),
-          success: function (resp) {
-            // 增加一个item 成功后重新拉取数据 传入回调函数
-            that.pullItems(callback);
-          },
-          error: function (err) {
-            callback({
-              msg: err
-            });
-          }
-        });
+        url: background.getDatabase() + "/.json",
+        // url: "/collect-******/data.json",
+        method: 'PATCH',
+        data: JSON.stringify(data),
+        success: function (resp) {
+          // 增加一个item 成功后重新拉取数据 传入回调函数
+          that.pullItems(callback);
+        },
+        error: function (err) {
+          callback({
+            msg: err
+          });
+        }
+      });
     },
     // 对象克隆
     clones: function (obj) {
@@ -560,6 +554,34 @@
       });
       return decrypted.toString(CryptoJS.enc.Utf8);
     }
+  };
+  var replaceQuotes = function (v) {
+    var entry = {
+      "[": "\\[",
+      ']': '\\]',
+      "'": "&",
+      '"': '&',
+      '\"': '&',
+      "\'": "&",
+      '\\"': '&',
+      "\\'": "&",
+    };
+    v = v.replace(/(\[\w+=)(\\?'?"?)([\w\.\_\-\[\]]*)(\\?'?"?)(\])/g,
+      function ($0, $1, $2, $3, $4, $5) {
+        //group0 前缀
+        //group1 name=
+        //group2 标点
+        //group3 name的值
+        //group4 标点
+        //group5 后缀
+        var quotes1 = entry[$2] || '';
+        var quotes2 = entry[$4] || '';
+        var name = $3.replace(/([\[\]])/g, function ($0) {
+          return entry[$0]
+        });
+        return ($1 + quotes1 + name + quotes2 + $5);
+      });
+    return v;
   };
   // 当一个标签加载完成时，此事件触发
   // 用于显示当前浏览标签是否有记录下的用户名密码

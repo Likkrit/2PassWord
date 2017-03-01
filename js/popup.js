@@ -1,5 +1,15 @@
 // @see https://github.com/likkrit
 
+function getAid(e) {
+  var aid = e.target.attributes['aid'] ||
+    e.target.parentNode.attributes['aid'] ||
+    e.target.parentNode.parentNode.attributes['aid'] ||
+    e.target.parentNode.parentNode.parentNode.attributes['aid'];
+  aid = aid ? aid.value : null;
+  console.log(aid);
+  return aid;
+}
+
 document.getElementById('search').addEventListener('input', function () {
   test(document.getElementById('search').value);
 });
@@ -83,6 +93,9 @@ var contentPopup = {
     });
   },
   closeContentPopup: function () {
+    chrome.runtime.sendMessage({
+      type: "closeContentPopup"
+    });
     window.close();
   },
   // 插入contentScript 只有成功没有失败
@@ -155,7 +168,7 @@ function eventFire() {
       document.getElementById('popupcontainer').style.display = 'none';
       e.preventDefault();
     }
-    
+
   };
 
   document.addEventListener('click', function (e) {
@@ -163,23 +176,23 @@ function eventFire() {
     if (e.target.attributes['action'] && e.target.attributes['action'].value == 'closemore') {
       document.getElementById('moreDiv').style.display = 'none';
       document.getElementById('popupcontainer').style.display = 'block';
-    document.getElementById('headerdiv').style.display = 'block';
+      document.getElementById('headerdiv').style.display = 'block';
       document.getElementById('headerback').style.display = 'none';
 
       // 点击 返回idid
     } else if (e.target.id == 'headerback' || e.target.parentNode.id == 'headerback') {
       document.getElementById('moreDiv').style.display = 'none';
       document.getElementById('popupcontainer').style.display = 'block';
-    document.getElementById('headerdiv').style.display = 'block';
+      document.getElementById('headerdiv').style.display = 'block';
       document.getElementById('headerback').style.display = 'none';
       e.preventDefault();
       //动作 点击编辑
     } else if (e.target.attributes['action'] && e.target.attributes['action'].value == 'edit') {
       localStorage.tpw_tabDialogId = document.getElementById('moreDiv').attributes['aid'].value;
-      contentPopup.closeContentPopup();
       chrome.runtime.sendMessage({
         type: "openTabDialog"
       });
+      contentPopup.closeContentPopup();
     }
     //动作 点击自动插入
     else if (e.target.attributes['action'] && e.target.attributes['action'].value == 'autocomplete') {
@@ -222,15 +235,15 @@ function eventFire() {
       var aid = getAid(e);
       if (!aid) return;
       contentPopup.insertContentScript(aid);
+    } else if (window.content) {
+      contentPopupEvent(e);
     }
   });
-
 }
 
-function init() {
-  // 检测是否已经设置数据库地址和密码
-  document.body.style.opacity = 1;
 
+function init() {
+  document.body.style.opacity = 1;
   // 如果具有这些方法
   if (chrome && chrome.runtime) {
     try {
@@ -258,15 +271,166 @@ function init() {
   eventFire();
 }
 
-
-function getAid(e) {
-  var aid = e.target.attributes['aid'] ||
-    e.target.parentNode.attributes['aid'] ||
-    e.target.parentNode.parentNode.attributes['aid'] ||
-    e.target.parentNode.parentNode.parentNode.attributes['aid'];
-  aid = aid ? aid.value : null;
-  console.log(aid);
-  return aid;
+function contentPopupEvent(e) {
+  // 点击 眼睛
+  if (e.target.id == 'passwordIcon') {
+    if (e.target.className.indexOf('selected') >= 0) {
+      e.target.className = e.target.className.replace(/selected/, '');
+      document.getElementById('p').type = 'password';
+    } else {
+      e.target.className += ' selected';
+      document.getElementById('p').type = 'text';
+    }
+    // 点击 关闭窗口
+  } else if (e.target.id == 'SB_closeico_img') {
+    contentPopup.closeContentPopup();
+  }
+  // 点击 取消
+  else if (e.target.id == 'savecancel') {
+    contentPopup.closeContentPopup();
+  }
+  // 点击 确定
+  else if (e.target.id == 'savesubmit') {
+    var newItem = {
+      id: new Date().getTime(),
+      name: document.getElementById('name').value || '',
+      userName: document.getElementById('u').value || '',
+      passWord: document.getElementById('p').value || '',
+      other: '',
+      host: document.getElementById('url').innerHTML,
+      identify: document.getElementById('identify').innerHTML,
+      inputId1: document.getElementById('label-input1').innerText || '',
+      inputId2: document.getElementById('label-input2').innerText || '',
+    };
+    document.getElementById('savesubmit').innerText = '保存中';
+    var port = chrome.runtime.connect({
+      name: "addItem"
+    });
+    port.postMessage({
+      newItem: newItem
+    });
+    port.onMessage.addListener(function (result) {
+      if (result.msg == 'ok') {
+        contentPopup.closeContentPopup();
+      } else {
+        document.getElementById('savesubmit').innerText = result.msg;
+      }
+    });
+  }
+  // 点击tab
+  else if (e.target.tagName == 'INPUT' && e.target.id.search(/SB_.+_img/) >= 0) {
+    document.querySelector('input[class*=active]').className = document.querySelector('input[class*=active]').className.replace(/active/, 'img');
+    e.target.className = e.target.className.replace(/img/, 'active');
+    document.getElementById('moreDiv').style.display = 'none';
+    if (e.target.id == 'SB_siteico_img') {
+      document.getElementById('headerdiv').style.display = 'block';
+      document.getElementById('popupcontainer').style.display = 'block';
+      document.getElementById('lptabpopupsave').style.display = 'none';
+    } else if (e.target.id == 'SB_addico_img') {
+      document.getElementById('headerdiv').style.display = 'none';
+      document.getElementById('popupcontainer').style.display = 'none';
+      document.getElementById('lptabpopupsave').style.display = 'block';
+    }
+  }
 }
 
-init();
+function contentPopupInit() {
+  document.body.style.opacity = 1;
+  window.content = true;
+  // 如果具有这些方法
+  if (chrome && chrome.runtime) {
+    contentPopup.getItems(location.href);
+  }
+  var saveForms;
+  saveForms = localStorage.tpw_saveForms ? JSON.parse(localStorage.tpw_saveForms) : {};
+  if (saveForms.length > 0 && saveForms.length == 2) {
+    document.getElementById('u').value = saveForms[0].value;
+    document.getElementById('p').value = saveForms[1].value;
+    document.getElementById('u').style.background = 'rgba(0,255,0,0.1)';
+    document.getElementById('p').style.background = 'rgba(0,255,0,0.1)';
+    document.getElementById('label-input1').innerHTML = '[name="' + saveForms[0].name + '"]';
+    document.getElementById('label-input2').innerHTML = '[name="' + saveForms[1].name + '"]';
+  } else if (saveForms.length < 2 || !saveForms.length) {
+
+  } else { // > 2
+    // 清除字段为空的
+    var result = saveFormsRecognize(saveForms);
+    console.log(result);
+    if (result[0].type && result[1].type) {
+      document.getElementById('u').value = result[0].value;
+      document.getElementById('p').value = result[1].value;
+      document.getElementById('u').style.background = 'rgba(0,255,0,0.1)';
+      document.getElementById('p').style.background = 'rgba(0,255,0,0.1)';
+      document.getElementById('label-input1').innerHTML = '[name="' + result[0].name + '"]';
+      document.getElementById('label-input2').innerHTML = '[name="' + result[1].name + '"]';
+    } else if (result[0].type) {
+      document.getElementById('u').value = result[0].value;
+      document.getElementById('u').style.background = 'rgba(0,255,0,0.1)';
+      document.getElementById('p').style.background = 'rgba(255,0,0,0.1)';
+      document.getElementById('label-input1').innerHTML = '[name="' + result[0].name + '"]';
+    } else if (result[1].type) {
+      document.getElementById('p').value = result[1].value;
+      document.getElementById('u').style.background = 'rgba(255,0,0,0.1)';
+      document.getElementById('p').style.background = 'rgba(0,255,0,0.1)';
+      document.getElementById('label-input2').innerHTML = '[name="' + result[1].name + '"]';
+    } else {
+      document.getElementById('p').style.background = 'rgba(255,0,0,0.1)';
+      document.getElementById('u').style.background = 'rgba(255,0,0,0.1)';
+    }
+
+  }
+
+  var identify = location.href.split('?')[1] ? location.href.split('?')[1].match(/https?:\/\/[\w\.\-\_]+/) : '';
+  identify = identify ? identify[0].replace(/https?:\/\//ig, '') : '';
+  document.getElementById('identify').innerHTML = identify;
+  document.getElementById('url').innerHTML = location.href.split('?')[1] ? location.href.split('?')[1] : '';
+  setTimeout(function () {
+    document.getElementById('search').focus();
+  }, 10);
+  eventFire();
+}
+
+
+// 字段大于3个的时候进行识别
+function saveFormsRecognize(saveForms) {
+  var result = [{}, {}];
+  var saveForms = saveForms.concat();
+  // 确定密码
+  for (var i = 0; i < saveForms.length; i++) {
+    if (saveForms[i].type == 'password' && saveForms[i].name) {
+      result[1] = JSON.parse(JSON.stringify(saveForms[i]));
+      saveForms.splice(i, 1);
+      break;
+    }
+  }
+  // 删除验证码
+  for (var i = 0; i < saveForms.length; i++) {
+    saveForms[i].name = saveForms[i].name.toLowerCase();
+    if (saveForms[i].name.indexOf('code') >= 0 ||
+      saveForms[i].name == 'c') {
+      saveForms.splice(i, 1);
+      if (saveForms.length == 1) {
+        result[0] = JSON.parse(JSON.stringify(saveForms[0]));
+      }
+      break;
+    }
+  }
+  // 获得用户名
+  for (var i = 0; i < saveForms.length; i++) {
+    saveForms[i].name = saveForms[i].name.toLowerCase();
+    if (saveForms[i].name.indexOf('user') >= 0 ||
+      saveForms[i].name.indexOf('usr') >= 0 ||
+      saveForms[i].name.indexOf('mail') >= 0 ||
+      saveForms[i].name == 'u') {
+      result[0] = JSON.parse(JSON.stringify(saveForms[i]));
+      break;
+    }
+  }
+  return result;
+}
+
+if (location.href.match(/\/popup.html/)) {
+  init();
+} else {
+  contentPopupInit();
+}

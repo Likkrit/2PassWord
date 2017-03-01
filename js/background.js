@@ -73,7 +73,7 @@
     }
     // closeContentPopup
     else if (request.type == "closeContentPopup") {
-      var code = "try{document.body.removeChild(document.querySelector('.tpw_iframe'));}catch(e){}";
+      var code = "try{document.body.removeChild(document.querySelector('.tpw_iframe'));document.querySelector('.tpw_icoclose').className = document.querySelector('.tpw_icoclose').className.replace(/tpw_icoclose/ig,'tpw_icon');}catch(e){}";
       chrome.tabs.executeScript(null, {
         code: code,
         allFrames: true
@@ -239,15 +239,17 @@
     lockKey: '',
     // 程序初始化，判断程序当前状态
     init: function () {
+
+      if (localStorage.cfg_clearKeyOnLaunch == 'true') {
+        localStorage.removeItem('privateKey');
+      }
+
       if (localStorage.url && localStorage.privateKey) {
         z.status = 'loading';
         // 如果当前数组为空，则进行拉取操作，否则状态设置为已经就绪
         z.items.length == 0 ? this.pullItems() : z.status = 'complete';
       } else if (!localStorage.url || !localStorage.privateKey) {
         z.status = 'noSetting';
-      }
-      if(localStorage.cfg_clearKeyOnLaunch == 'true'){
-        localStorage.removeItem('privateKey');
       }
     },
     notAccess: function () {
@@ -358,6 +360,10 @@
               items.push(response[i]);
             }
             z.items = items.reverse();
+
+            chrome.browserAction.setIcon({
+              path: "images/page_64.png"
+            });
             z.status = 'complete';
             console.log('complete');
             callback({
@@ -585,8 +591,8 @@
         });
         return ($1 + quotes1 + name + quotes2 + $5);
       });
-      v = v.replace(/\"other\":.*\"inputId1/ig,'"inputId1').replace(/\"host\":.*\"inputId1/ig,'"updateTime');
-      
+    v = v.replace(/\"other\":.*\"inputId1/ig, '"inputId1').replace(/\"host\":.*\"inputId1/ig, '"updateTime');
+
     return v;
   };
   // 当一个标签加载完成时，此事件触发
@@ -608,6 +614,7 @@
       case 'loading':
         if (!z.items) return;
         var url = tab.url || "";
+        var num = 0;
         for (var i = 0; i < z.items.length; i++) {
           if (z.items[i].name &&
             (url.indexOf(z.items[i].name) > 0 ||
@@ -615,12 +622,14 @@
               (z.items[i].identify && url.indexOf(z.items[i].identify) > 0)
             )
           ) {
-            chrome.browserAction.setIcon({
-              path: "images/page_64.png",
-              tabId: tabId
-            });
-            return;
+            num++;
           }
+        }
+        if (num > 0) {
+          chrome.browserAction.setBadgeText({
+            text: num + "",
+            tabId: tabId
+          })
         }
         break;
       default:

@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
   <meta name="2PassWord" content="" charset="utf-8">
   <title>2PassWord Settings</title>
@@ -95,7 +96,107 @@
     
     #dataBaseURLP {
       color: #ddd;
-      text-align: center
+      text-align: center;
+    }
+    
+    .detailSetting {
+      -webkit-user-select: none;
+      margin-top: 45px;
+    }
+    
+    #setting .buttons {
+      padding: 10px 16px 0 0;
+      text-align: initial;
+    }
+    #setting #setLockKey{
+      float:right;
+    }
+    #setting .detailSetting label {
+      width: 100%;
+      font-size: 15px;
+      line-height: 20px;
+    }
+    .detailSetting .row{
+      margin: 16px 0;
+    }
+    input[type='radio']+label,
+    input[type='checkbox']+label {
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      padding-left: 25px;
+      margin-right: 10px;
+      color: #0b4c6a;
+    }
+    
+    input[type='radio'],
+    input[type='checkbox'] {
+      display: none;
+      cursor: pointer;
+    }
+    
+    input[type='radio']+label:before,
+    input[type='radio']+label:after,
+    input[type='checkbox']+label:before,
+    input[type='checkbox']+label:after {
+      content: '';
+      font-family: helvetica;
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      left: 0;
+      bottom: 0;
+      text-align: center;
+      position: absolute;
+    }
+    
+    input[type='radio']+label:before,
+    input[type='checkbox']+label:before {
+      background-color: #fafafa;
+      -moz-transition: all 0.3s ease-in-out;
+      -o-transition: all 0.3s ease-in-out;
+      -webkit-transition: all 0.3s ease-in-out;
+      transition: all 0.3s ease-in-out;
+    }
+    
+    input[type='radio']+label:after,
+    input[type='checkbox']+label:after {
+      color: #fff;
+    }
+    
+    input[type='radio']:checked+label:before,
+    input[type='checkbox']:checked+label:before {
+      -moz-box-shadow: inset 0 0 0 10px #d32d27;
+      -webkit-box-shadow: inset 0 0 0 10px #d32d27;
+      box-shadow: inset 0 0 0 10px #d32d27;
+    }
+    
+    input[type='checkbox']+label:before {
+      -moz-border-radius: 3px;
+      -webkit-border-radius: 3px;
+      border-radius: 3px;
+    }
+    
+    input[type='radio']+label:before {
+      -moz-border-radius: 50%;
+      -webkit-border-radius: 50%;
+      border-radius: 50%;
+    }
+    
+    input[type='checkbox']+label:hover:after,
+    input[type='checkbox']:checked+label:after {
+      content: "\2713";
+      line-height: 20px;
+      font-size: 14px;
+    }
+    
+    input[type='checkbox']+label:hover:after {
+      color: #c7c7c7;
+    }
+    
+    input[type='checkbox']:checked+label:after,
+    input[type='checkbox']:checked+label:hover:after {
+      color: #fff;
     }
   </style>
 </head>
@@ -122,8 +223,8 @@
       </div>
     </form>
     <div id="setting" class="dialogContent dialogContentFixed hide" style="top: 70px;">
-      <div>
-        <div id="databaseArea">
+
+      <div id="databaseArea">
           <label class="label first" style="text-align: center">数据储存地址：</label>
             <p id="dataBaseURLP"></p>
         </div>
@@ -131,6 +232,11 @@
            <button id="clearSetting" class="nbtn rbtn">清空设置</button >
            <button id="setLockKey" class="nbtn rbtn">设置保护密码</button >
         </div>
+       <div class="detailSetting">
+         <div class="row">
+          <input id="check-1" type="checkbox" name="clearKeyOnlaunch">
+          <label for="check-1">每次使用浏览器都要求输入主密码</label>
+         </div>
       </div>
     </div>
   </div>

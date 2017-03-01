@@ -6,7 +6,6 @@ function getAid(e) {
     e.target.parentNode.parentNode.attributes['aid'] ||
     e.target.parentNode.parentNode.parentNode.attributes['aid'];
   aid = aid ? aid.value : null;
-  console.log(aid);
   return aid;
 }
 
@@ -145,7 +144,7 @@ var contentPopup = {
     }
     //为空时显示empty页面
     if (response.length === 0) {
-      itemStr += '<div style="display: flex;justify-content: center;align-items: center;height: 246px;"><p>空空如也</p></div>'
+      itemStr += '<div class="empty"><p>空空如也</p></div>'
       document.getElementById('popupcontainer').innerHTML = itemStr;
       // 原来的列表页与将要渲染的不一样时 才进行渲染
     } else if (oriItemStr != itemStr) {
@@ -234,7 +233,11 @@ function eventFire() {
     } else if (e.target.tagName == 'LI' || e.target.parentNode.tagName == 'LI' || e.target.parentNode.parentNode.tagName == 'LI') {
       var aid = getAid(e);
       if (!aid) return;
-      contentPopup.insertContentScript(aid);
+      if(!window.content){
+        contentPopup.insertContentScript(aid);
+      }else if(/active/i.test(e.target.className) || /active/i.test(e.target.parentNode.className) || /active/i.test(e.target.parentNode.parentNode.className)){
+        contentPopup.insertContentScript(aid);
+      }
     } else if (window.content) {
       contentPopupEvent(e);
     }

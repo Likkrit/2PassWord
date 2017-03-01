@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('dialogInput1').value = result.item.inputId1 || '';
       document.getElementById('dialogInput2').value = result.item.inputId2 || '';
     });
-    // localStorage.removeItem('tpw_tabDialogId');
+    localStorage.removeItem('tpw_tabDialogId');
   }
 
   document.querySelector('.showPassword').addEventListener('click', function() {

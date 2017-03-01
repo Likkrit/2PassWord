@@ -9,6 +9,7 @@ function test(keyCache) {
   var index, index2;
   var indexWord = indexWord2 = '';
   var c = [];
+  window.c = window.c || [];
   //遍历索引，执行查找
   for (var i = 0; i < window.c.length; i++) {
     index = window.c[i]['name_py'].toUpperCase().indexOf(keyCache.toUpperCase());
@@ -112,31 +113,30 @@ var contentPopup = {
   },
   // 显示列表
   render: function (response) {
-    var oriItemStr = document.querySelector('#lptabpopup').innerHTML;
-    var itemStr = '<tbody>';
+    var oriItemStr = document.getElementById('popupcontainer').innerHTML;
+    var itemStr = '';
     response = response || [];
     for (var i = 0; i < response.length; i++) {
-      itemStr += '<tr class="popuprow ';
+      itemStr += '<li class="cellrow ';
       if (response[i].available)
-        itemStr += 'available';
+        itemStr += 'active';
       itemStr += '" aid=' + response[i].id + '>';
-      itemStr += '<td>';
-      itemStr += '<span class="img"></span>';
-      itemStr += '<span class="popcell shortenstr">';
+      itemStr += '<div class="cellimg"></div>';
+      itemStr += '<div class="cellstr"><p class="cellname">';
       itemStr += response[i].name;
-      itemStr += '</span>';
-      itemStr += '<span expander="true" class="expander"><span class="img"></span></span>';
-      itemStr += '<p class="subtext">';
+      itemStr += '</p>';
+      itemStr += '<p class="cellinfo">';
       itemStr += response[i].userName || '-----';
-      itemStr += '</td></tr>';
+      itemStr += '</p>';
+      itemStr += '</div><div class="cellconfig"></div></li>';
     }
     //为空时显示empty页面
     if (response.length === 0) {
-      itemStr += '<div style="text-align:center;height: 180px;vertical-align: middle;display: table-cell;"><p>空空如也</p></div>'
-      document.querySelector('#lptabpopup').innerHTML = itemStr;
+      itemStr += '<div style="display: flex;justify-content: center;align-items: center;height: 246px;"><p>空空如也</p></div>'
+      document.getElementById('popupcontainer').innerHTML = itemStr;
       // 原来的列表页与将要渲染的不一样时 才进行渲染
     } else if (oriItemStr != itemStr) {
-      document.querySelector('#lptabpopup').innerHTML = itemStr;
+      document.getElementById('popupcontainer').innerHTML = itemStr;
     }
   }
 };
@@ -145,14 +145,17 @@ function eventFire() {
 
   document.oncontextmenu = function (e) {
     // 右键点击tr
-    if (e.target.tagName == 'TR' || e.target.parentNode.tagName == 'TR' || e.target.parentNode.parentNode.tagName == 'TR') {
+    if (e.target.tagName == 'LI' || e.target.parentNode.tagName == 'LI' || e.target.parentNode.parentNode.tagName == 'LI') {
       var aid = getAid(e);
       if (!aid) return;
-      document.getElementById('lptabpopupmore').setAttribute('aid', aid);
+      document.getElementById('headerdiv').style.display = 'none';
+      document.getElementById('headerback').style.display = 'block';
+      document.getElementById('moreDiv').setAttribute('aid', aid);
       document.getElementById('moreDiv').style.display = 'block';
       document.getElementById('popupcontainer').style.display = 'none';
+      e.preventDefault();
     }
-    e.preventDefault();
+    
   };
 
   document.addEventListener('click', function (e) {
@@ -160,9 +163,19 @@ function eventFire() {
     if (e.target.attributes['action'] && e.target.attributes['action'].value == 'closemore') {
       document.getElementById('moreDiv').style.display = 'none';
       document.getElementById('popupcontainer').style.display = 'block';
+    document.getElementById('headerdiv').style.display = 'block';
+      document.getElementById('headerback').style.display = 'none';
+
+      // 点击 返回idid
+    } else if (e.target.id == 'headerback' || e.target.parentNode.id == 'headerback') {
+      document.getElementById('moreDiv').style.display = 'none';
+      document.getElementById('popupcontainer').style.display = 'block';
+    document.getElementById('headerdiv').style.display = 'block';
+      document.getElementById('headerback').style.display = 'none';
+      e.preventDefault();
       //动作 点击编辑
     } else if (e.target.attributes['action'] && e.target.attributes['action'].value == 'edit') {
-      localStorage.tpw_tabDialogId = document.getElementById('lptabpopupmore').attributes['aid'].value;
+      localStorage.tpw_tabDialogId = document.getElementById('moreDiv').attributes['aid'].value;
       contentPopup.closeContentPopup();
       chrome.runtime.sendMessage({
         type: "openTabDialog"
@@ -170,14 +183,14 @@ function eventFire() {
     }
     //动作 点击自动插入
     else if (e.target.attributes['action'] && e.target.attributes['action'].value == 'autocomplete') {
-      var aid = document.getElementById('lptabpopupmore').attributes['aid'].value;
+      var aid = document.getElementById('moreDiv').attributes['aid'].value;
       if (!aid) return;
       contentPopup.insertContentScript(aid);
       // 复制 用户名、密码、地址
     } else if (e.target.attributes['action'] && (e.target.attributes['action'].value == 'copypassword' ||
         e.target.attributes['action'].value == 'copyusername' ||
         e.target.attributes['action'].value == 'copyurl')) {
-      var aid = document.getElementById('lptabpopupmore').attributes['aid'].value;
+      var aid = document.getElementById('moreDiv').attributes['aid'].value;
       contentPopup.getItem(aid, function (result) {
         if (result.msg == 'ok') {
           var copyInput = document.createElement('input');
@@ -196,23 +209,19 @@ function eventFire() {
           contentPopup.closeContentPopup();
         }
       })
-    } else if (e.target.tagName == 'SPAN' && (e.target.className == 'expander' || e.target.parentNode.className == 'expander')) {
+    } else if (e.target.className == 'cellconfig') {
       var aid = getAid(e);
       if (!aid) return;
-      document.getElementById('lptabpopupmore').setAttribute('aid', aid);
+      document.getElementById('headerdiv').style.display = 'none';
+      document.getElementById('headerback').style.display = 'block';
+      document.getElementById('moreDiv').setAttribute('aid', aid);
       document.getElementById('moreDiv').style.display = 'block';
       document.getElementById('popupcontainer').style.display = 'none';
-
       // 点击tr
-    } else if (e.target.tagName == 'TR' || e.target.parentNode.tagName == 'TR' || e.target.parentNode.parentNode.tagName == 'TR') {
-      if ((e.target.attributes['aid'] || e.target.parentNode.attributes['aid'] || e.target.parentNode.parentNode.attributes['aid'])) {
-        var aid = getAid(e);
-        if (!aid) return;
-        // contentPopup.insertContentScript(aid);
-        document.getElementById('lptabpopupmore').setAttribute('aid', aid);
-        document.getElementById('moreDiv').style.display = 'block';
-        document.getElementById('popupcontainer').style.display = 'none';
-      }
+    } else if (e.target.tagName == 'LI' || e.target.parentNode.tagName == 'LI' || e.target.parentNode.parentNode.tagName == 'LI') {
+      var aid = getAid(e);
+      if (!aid) return;
+      contentPopup.insertContentScript(aid);
     }
   });
 
@@ -220,27 +229,31 @@ function eventFire() {
 
 function init() {
   // 检测是否已经设置数据库地址和密码
-  chrome.runtime.sendMessage({
-    type: "getStatus"
-  }, function (response) {
-    if (response.msg == 'noSetting') {
-      chrome.tabs.getSelected(null, function (tab) {
-        chrome.tabs.create({
-          index: tab.index + 1,
-          url: "chrome-extension://" + chrome.i18n.getMessage("@@extension_id") + "/optionsE.html"
-        }, function (tab) {});
-      });
-    }
-  });
   document.body.style.opacity = 1;
+
   // 如果具有这些方法
   if (chrome && chrome.runtime) {
-    chrome.tabs.getSelected(function (tab) {
-      contentPopup.getItems(tab.url || "");
-      setTimeout(function () {
-        document.getElementById('search').focus();
-      }, 10);
-    });
+    try {
+      chrome.runtime.sendMessage({
+        type: "getStatus"
+      }, function (response) {
+        if (response.msg == 'noSetting') {
+          chrome.tabs.getSelected(null, function (tab) {
+            chrome.tabs.create({
+              index: tab.index + 1,
+              url: "chrome-extension://" + chrome.i18n.getMessage("@@extension_id") + "/optionsE.html"
+            }, function (tab) {});
+          });
+        }
+      });
+
+      chrome.tabs.getSelected(function (tab) {
+        contentPopup.getItems(tab.url || "");
+        setTimeout(function () {
+          document.getElementById('search').focus();
+        }, 10);
+      });
+    } catch (e) {}
   }
   eventFire();
 }
@@ -252,6 +265,7 @@ function getAid(e) {
     e.target.parentNode.parentNode.attributes['aid'] ||
     e.target.parentNode.parentNode.parentNode.attributes['aid'];
   aid = aid ? aid.value : null;
+  console.log(aid);
   return aid;
 }
 

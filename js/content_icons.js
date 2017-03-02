@@ -3,11 +3,14 @@ function contentIcons() {
   var styleNode = document.createElement("style");
   styleNode.setAttribute("type", "text/css");
   var icon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAvElEQVQ4T2NkoBAwIukXALL9gViBgJkPgPIbgfgDSB2yAQVAfj+RDioEqpuAbkADUKAeiB0JGLIfKN8IxCD1KC6AGYDsqgtANf+B2BDJUBCfaAM2QDUGkGMAcpjA/Qx1EVEugHkJZDlcA7EGgKJSHi0wHwL5D4g1wAGoEISRwQEgB4SJCkSQZns0Aw6SYgDICyCMDEDOJ8oL6E5HMwfsDayxQHFSBmUmUIJBdzq6C0DeWAATRE626AqJ4gMAKh82EQu8MAEAAAAASUVORK5CYII=';
-  var icon1 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASCAYAAABSO15qAAAAAXNSR0IArs4c6QAAAPhJREFUOBHlU70KgzAQPlMhEvoQTg6OPoOjT+JWOnRqkUKHgqWP4OQbOPokTk6OTkVULNSLVc62oJmbIdzd95NcuGjX2/3YVI/Ts+t0WLE2ut5xsQ0O+90F6UxFjAI8qNcEGONia08e6MNONYwCS7EQAizLmtG' +
-    'UDEzTBNd1fxsYhjEBnHPQNG3KKTYV34F8ec/zwHEciOMYyrIE3/ehKAqIoggo9inGXKmFXwbyBkmSQJqmUNe15IRhCG3byphitm1/eUzDM4qR0TTNjEixGdAnSi3keS5vSk2UDKqqgizLqB4YzvassiKhGtZ/jDMtLOnHz7TE+yf8BaDZXA509yeBAAAAAElFTkSuQmCC';
-  var closeIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAl0lEQVQ4T7VTgQ2AIAyTC/RD9QO9QLxAP1A/1A9sDZgFo0CQJctcWOs6hioSTRl8hVjDGUNsR9EG3y1Bh2QKQYqaHt+zJdBIhkiCEfU6G8HB9kRX/BtllqLLzw6uQ3hjAKvJpUyvhBYgAmkkWpwZ5SVIlsBF4RA5BxojhygXzSvBkfxI/yVIXmVq41XFPCZe8f2YfHpfz0+q7C4R/Q4GAgAAAABJRU5ErkJggg==';
-  var cssNodeText = '[class*="tpw_icon"]{background-image: url("' + icon + '")!important;background-position: 98% 50%!important;background-repeat: no-repeat!important;}';
-  cssNodeText += '[class*="tpw_icoclose"]{background-image: url("' + closeIcon + '")!important;background-position: 98% 50%!important;background-repeat: no-repeat!important;}';
+  var g_sites_light_ico = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASCAYAAABSO15qAAAAAXNSR0IArs4c6QAAAPhJREFUOBHlU70KgzAQPlMhEvoQTg6OPoOjT+JWOnRqkUKHgqWP4OQbOPokTk6OTkVULNSLVc62oJmbIdzd95NcuGjX2/3YVI/Ts+t0WLE2ut5xsQ0O+90F6UxFjAI8qNcEGONia08e6MNONYwCS7EQAizLmtGUDEzTBNd1fxsYhjEBnHPQNG3KKTYV34F8ec/zwHEciOMYyrIE3/ehKAqIoggo9inGXKmFXwbyBkmSQJqmUNe15IRhCG3byphitm1/eUzDM4qR0TTNjEixGdAnSi3keS5vSk2UDKqqgizLqB4YzvassiKhGtZ/jDMtLOnHz7TE+yf8BaDZXA509yeBAAAAAElFTkSuQmCC';
+  var g_sites_ico = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASCAYAAABSO15qAAAAAXNSR0IArs4c6QAAANJJREFUOBHdUzsOgzAMfaDOiIETcBjUDozcjetwh3CBdsnAgLiAa1uyG+gAtJ1qyYljv+dPAgBwY72z0kEV7JXV5QzZighHJeNVnJ+IcJGfYVZVhbZt3yjW1u7edR2FEAynibyDsiw9c1EUyHMPIY1lmXbuWEX1fY9pmtA0Deq6RowRwzAoKI05KzFeZRLnWVNn4jZtNuIRiEfws8XkDsZxNL/WuVi1eZ7NxLIsbothMSKC6FYs4+7Oz0j8jIbTPD/5kB7blg6cV5yvf6YDBf8a8gSLtXzq+l6rIQAAAABJRU5ErkJggg==";
+  var g_close_light_ico = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA3UlEQVQ4EaVTOQ7CMBCMETShzcdo4CVOkyJykQb/AXoaPsQT0uLGRZhZxVIirSMDljberOfwaaZpqv5pe5Kttce6rs8QO5SIGWNiCOHhvX+LAMko3hAlfMGAw/6+47fUmdjUEkcEUvGXPicwwqFFxDlaiI+agSoA0tU550G4MJizpgnIJioDQ9/3LxCfHEN+QjcouEqdgQbM1XICHd3pzJhn0mki6hJwH1oQiZdpI+9YKxYAsAFhuWnLfKWTW8IKtPUjAnCLWyBtLHFkD/gweLdx1l89JgobkDSD4toHHT5aJu9+N80AAAAASUVORK5CYII=";
+  var g_close_ico = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAl0lEQVQ4T7VTgQ2AIAyTC/RD9QO9QLxAP1A/1A9sDZgFo0CQJctcWOs6hioSTRl8hVjDGUNsR9EG3y1Bh2QKQYqaHt+zJdBIhkiCEfU6G8HB9kRX/BtllqLLzw6uQ3hjAKvJpUyvhBYgAmkkWpwZ5SVIlsBF4RA5BxojhygXzSvBkfxI/yVIXmVq41XFPCZe8f2YfHpfz0+q7C4R/Q4GAgAAAABJRU5ErkJggg==";
+  var cssNodeText = '[class*="tpw_icon"]{background-image: url("' + g_sites_light_ico + '")!important;background-position: 98% 50%!important;background-repeat: no-repeat!important;}';
+  cssNodeText += '[class*="tpw_icon"]:hover{background-image: url("' + g_sites_ico + '")!important;background-position: 98% 50%!important;background-repeat: no-repeat!important;}';
+  cssNodeText += '[class*="tpw_close"]{background-image: url("' + g_close_ico + '")!important;background-position: 98% 50%!important;background-repeat: no-repeat!important;}';
+  cssNodeText += '[class*="tpw_close"]:hover{background-image: url("' + g_close_ico + '")!important;background-position: 98% 50%!important;background-repeat: no-repeat!important;}';
   styleNode.appendChild(document.createTextNode(cssNodeText));
   document.body.appendChild(styleNode);
   this.inputsNum = 0;
@@ -15,6 +18,7 @@ function contentIcons() {
   this.domNodeFind();
   var that = this;
   // 事件绑定
+  
   document.addEventListener('mousemove', function (e) {
     if (!that.inputCheck(e.target)) return;
     if (that.mouseOnIcon(e)) {
@@ -164,9 +168,10 @@ contentIcons.prototype.domNodeFind = function () {
 // 输入框类型检测
 contentIcons.prototype.inputCheck = function (ele) {
   if (ele.nodeName == 'INPUT' && ele.attributes["type"]) {
-    if ((ele.attributes["type"].name && ele.attributes["type"].name.indexOf('search') >= 0) ||
-      (ele.className && ele.className.indexOf('search') >= 0) ||
-      (ele.id && ele.id.indexOf('search') >= 0))
+    if ((ele.name && ele.name.toLowerCase().indexOf('search') >= 0) ||
+      (ele.className && ele.className.toLowerCase().indexOf('search') >= 0) ||
+      (ele.id && ele.id.toLowerCase().indexOf('search') >= 0) ||
+      (ele.attributes && ele.attributes["placeholder"] && ele.attributes["placeholder"].value.toLowerCase().indexOf('search') >= 0))
       return false;
     if (ele.attributes["type"].value == 'text' ||
       ele.attributes["type"].value == 'password' ||
@@ -263,19 +268,19 @@ contentIcons.prototype.iconClick = function (e) {
     }
   }
   // 设置关闭样式
-  var closeIcon = document.querySelector('.tpw_icoclose');
+  var closeIcon = document.querySelector('.tpw_close.tpw_icon');
   if (e.target == closeIcon) { // 如果存在close状态按钮 并是当前的按钮时
-    closeIcon.className = closeIcon.className.replace(/tpw_icoclose/ig, 'tpw_icon'); // 清除close状态
+    closeIcon.className = closeIcon.className.replace(/tpw_icon tpw_close/ig, 'tpw_icon'); // 清除close状态
     //关闭popup
     chrome.runtime.sendMessage({
       type: "closeContentPopup"
     });
     // // 如果该按钮是普通状态 
-  } else if (e.target.className && /tpw_icon/ig.test(e.target.className)) { // 如果该按钮是普通按钮
+  } else if (e.target.className && !/tpw_close/ig.test(e.target.className)) { // 如果该按钮是普通按钮
     if (closeIcon) { // 存在close状态按钮时
-      closeIcon.className = closeIcon.className.replace(/tpw_icoclose/ig, 'tpw_icon'); // 清除close状态
+      closeIcon.className = closeIcon.className.replace(/tpw_icon tpw_close/ig, 'tpw_icon'); // 清除close状态
     }
-      e.target.className = e.target.className.replace(/tpw_icon/ig, 'tpw_icoclose'); // 增加close状态
+      e.target.className = e.target.className.replace(/tpw_icon/ig, 'tpw_icon tpw_close'); // 增加close状态
     
     chrome.runtime.sendMessage({
       type: "openContentPopup",

@@ -87,7 +87,6 @@ var contentPopup = {
     port.onMessage.addListener(function (result) {
       // 渲染列表
       window.c = that.py(result.items);
-      window.z = result.items;
       that.render(window.c);
     });
   },
@@ -108,7 +107,6 @@ var contentPopup = {
   py: function (items) {
     var c = [];
     for (var i = 0; i < items.length; i++) {
-      if (items[i].name != "" && items[i].userName != "") {
         //获取拼音首字母缩写
         //将拼音与中文的对应关系添加到数组中
         c.push({
@@ -119,7 +117,6 @@ var contentPopup = {
           userName_py: makePy(items[i].userName).toString(),
           available: items[i].available || false
         });
-      }
     }
     return c;
   },
@@ -135,10 +132,10 @@ var contentPopup = {
       itemStr += '" aid=' + response[i].id + '>';
       itemStr += '<div class="cellimg"></div>';
       itemStr += '<div class="cellstr"><p class="cellname">';
-      itemStr += response[i].name;
+      itemStr += response[i].name || '(empty)';
       itemStr += '</p>';
       itemStr += '<p class="cellinfo">';
-      itemStr += response[i].userName || '-----';
+      itemStr += response[i].userName || '(empty)';
       itemStr += '</p>';
       itemStr += '</div><div class="cellconfig"></div></li>';
     }
@@ -191,7 +188,8 @@ function eventFire() {
       chrome.runtime.sendMessage({
         type: "openTabDialog"
       });
-      contentPopup.closeContentPopup();
+      window.close();
+      // contentPopup.closeContentPopup();
     }
     //动作 点击自动插入
     else if (e.target.attributes['action'] && e.target.attributes['action'].value == 'autocomplete') {

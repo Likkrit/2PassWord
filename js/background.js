@@ -18,7 +18,7 @@
         }
       }
       item = replaceQuotes(item);
-      var code = "try{document.body.removeChild(document.querySelector('.tpw_iframe'));document.querySelector('.tpw_icoclose').className = document.querySelector('.tpw_icoclose').className.replace(/tpw_icoclose/ig,'tpw_icon');}catch(e){}";
+      var code = "try{document.body.removeChild(document.querySelector('.tpw_iframe'));}catch(e){}try{var iconInput = document.querySelector('.tpw_icon.tpw_close');if (iconInput) iconInput.className = iconInput.className.replace(/tpw_icon tpw_close/ig,'tpw_icon');}catch(e){}";
       code += "window.item='" + item + "';item=JSON.parse(item);";
       chrome.tabs.executeScript(null, {
         code: code,
@@ -73,7 +73,7 @@
     }
     // closeContentPopup
     else if (request.type == "closeContentPopup") {
-      var code = "try{document.body.removeChild(document.querySelector('.tpw_iframe'));document.querySelector('.tpw_icoclose').className = document.querySelector('.tpw_icoclose').className.replace(/tpw_icoclose/ig,'tpw_icon');}catch(e){}";
+      var code = "try{document.body.removeChild(document.querySelector('.tpw_iframe'));}catch(e){}try{var iconInput = document.querySelector('.tpw_icon.tpw_close');if (iconInput) iconInput.className = iconInput.className.replace(/tpw_icon tpw_close/,'tpw_icon');}catch(e){}";
       chrome.tabs.executeScript(null, {
         code: code,
         allFrames: true

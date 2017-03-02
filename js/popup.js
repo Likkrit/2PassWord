@@ -233,9 +233,7 @@ function eventFire() {
     } else if (e.target.tagName == 'LI' || e.target.parentNode.tagName == 'LI' || e.target.parentNode.parentNode.tagName == 'LI') {
       var aid = getAid(e);
       if (!aid) return;
-      if(!window.content){
-        contentPopup.insertContentScript(aid);
-      }else if(/active/i.test(e.target.className) || /active/i.test(e.target.parentNode.className) || /active/i.test(e.target.parentNode.parentNode.className)){
+      if(/active/i.test(e.target.className) || /active/i.test(e.target.parentNode.className) || /active/i.test(e.target.parentNode.parentNode.className)){
         contentPopup.insertContentScript(aid);
       }
     } else if (window.content) {

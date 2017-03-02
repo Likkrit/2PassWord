@@ -18,7 +18,7 @@
         }
       }
       item = replaceQuotes(item);
-      var code = "try{document.body.removeChild(document.querySelector('.tpw_iframe'));}catch(e){}";
+      var code = "try{document.body.removeChild(document.querySelector('.tpw_iframe'));document.querySelector('.tpw_icoclose').className = document.querySelector('.tpw_icoclose').className.replace(/tpw_icoclose/ig,'tpw_icon');}catch(e){}";
       code += "window.item='" + item + "';item=JSON.parse(item);";
       chrome.tabs.executeScript(null, {
         code: code,
@@ -310,18 +310,19 @@
         var newItems = this.clones(z.items);
         for (var i = 0; i < newItems.length; i++) {
           if (url.indexOf(newItems[i].name) > 0 || url.indexOf(newItems[i].host) > 0 || (newItems[i].identify && url.indexOf(newItems[i].identify) >= 0)) {
-            activeItem = this.decode(newItems[i].z);
+            activeItem = this.decode(newItems[i].z); // activeItem 被赋值为一个新的对象指针
             activeItem.id = newItems[i].id;
             activeItem.name = newItems[i].name || '';
             activeItem.host = newItems[i].host || '';
             activeItem.identify = newItems[i].identify || '';
             activeItem.updateTime = newItems[i].updateTime || '';
             activeItem.available = true;
+            newItems[i].available = true; // 将当前对象标记
             items.push(activeItem);
-            newItems.splice(i, 1);
           }
         }
         for (i = 0; i < newItems.length; i++) {
+          if(newItems[i].available) continue;
           activeItem = this.decode(newItems[i].z);
           activeItem.id = newItems[i].id;
           activeItem.name = newItems[i].name || '';

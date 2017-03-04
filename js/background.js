@@ -250,6 +250,11 @@
         z.items.length == 0 ? this.pullItems() : z.status = 'complete';
       } else if (!localStorage.url || !localStorage.privateKey) {
         z.status = 'noSetting';
+        if (localStorage.url) {
+          chrome.browserAction.setIcon({
+            path: "images/page_nokey_64.png"
+          });
+        }
       }
     },
     notAccess: function () {
@@ -322,7 +327,7 @@
           }
         }
         for (i = 0; i < newItems.length; i++) {
-          if(newItems[i].available) continue;
+          if (newItems[i].available) continue;
           activeItem = this.decode(newItems[i].z);
           activeItem.id = newItems[i].id;
           activeItem.name = newItems[i].name || '';
@@ -638,6 +643,5 @@
   });
   window.z = z;
   window.background = background;
-  window.AES = AES;
   background.init();
 })();

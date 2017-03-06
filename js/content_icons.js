@@ -15,12 +15,13 @@ function contentIcons() {
   document.body.appendChild(styleNode);
   this.inputsNum = 0;
   this.iframesNum = 0;
+  this.inputArr = [];
   this.domNodeFind();
   var that = this;
   // 事件绑定
-  
+
   document.addEventListener('mousemove', function (e) {
-    if (!that.inputCheck(e.target)) return;
+    if (!that.inputCheck2(e.target)) return;
     if (that.mouseOnIcon(e)) {
       e.target.style.cursor = 'pointer';
     } else {
@@ -28,7 +29,7 @@ function contentIcons() {
     }
   });
   document.addEventListener('click', function (e) {
-    if (!that.inputCheck(e.target)) return;
+    if (!that.inputCheck2(e.target)) return;
     if (that.mouseOnIcon(e)) {
       that.iconClick(e);
     }
@@ -155,8 +156,9 @@ contentIcons.prototype.domNodeFind = function () {
   iframes = [];
   var inputs = document.getElementsByTagName('input');
   if (this.inputsNum != inputs.length) {
+    this.inputCollect();
     for (i = 0; i < inputs.length; i++) {
-      if (inputs[i].className.indexOf('tpw_icon') <= 0 && this.inputCheck(inputs[i])) {
+      if (inputs[i].className.indexOf('tpw_icon') <= 0 && this.inputCheck2(inputs[i])) {
         inputs[i].className = inputs[i].className + ' tpw_icon';
         console.log('加入了一个图标');
       }
@@ -165,8 +167,47 @@ contentIcons.prototype.domNodeFind = function () {
   }
   inputs = [];
 }
+// 符合条件的输入框
+contentIcons.prototype.inputCollect = function () {
+  var inputArr = [];
+  var inputs = document.getElementsByTagName('input');
+  for (var i = 0; i < inputs.length; i++) {
+    if (this.inputTypeCheck(inputs[i])) {
+      inputArr.push(inputs[i]);
+    }
+  }
+  inputs = [];
+  for (i = 0; i < inputArr.length; i++) {
+    inputs.push(this.offsetTL(inputArr[i]));
+    inputs[i].target = inputArr[i];
+  }
+  for (i = 0; i < inputs.length; i++) {
+    for (var j = i + 1; j < inputs.length; j++) {
+      if (inputs[i].left == inputs[j].left) {
+        inputs[i].active = true;
+        inputs[j].active = true;
+      }
+    }
+  }
+  inputArr = [];
+  for (i = 0; i < inputs.length; i++) {
+    if (inputs[i].active) {
+      inputArr.push(inputs[i]);
+    }
+  }
+  this.inputArr = inputArr;
+}
 // 输入框类型检测
-contentIcons.prototype.inputCheck = function (ele) {
+contentIcons.prototype.inputCheck2 = function (ele) {
+  for (i = 0; i < this.inputArr.length; i++) {
+    if (this.inputArr[i].target == ele) {
+      return true;
+    }
+  }
+  return false;
+}
+// 输入框类型检测
+contentIcons.prototype.inputTypeCheck = function (ele) {
   if (ele.nodeName == 'INPUT' && ele.attributes["type"]) {
     if ((ele.name && ele.name.toLowerCase().indexOf('search') >= 0) ||
       (ele.className && ele.className.toLowerCase().indexOf('search') >= 0) ||
@@ -241,10 +282,6 @@ contentIcons.prototype.iconClick = function (e) {
     left: 0,
     top: 0
   };
-  var offsetTL = {
-    left: e.offsetX + this.offsetTL(e.target),
-    top: e.offsetY + this.offsetTL(e.target),
-  };
   offset = this.offset(e.target);
   offset.top += 21;
 
@@ -280,8 +317,8 @@ contentIcons.prototype.iconClick = function (e) {
     if (closeIcon) { // 存在close状态按钮时
       closeIcon.className = closeIcon.className.replace(/tpw_icon tpw_close/ig, 'tpw_icon'); // 清除close状态
     }
-      e.target.className = e.target.className.replace(/tpw_icon/ig, 'tpw_icon tpw_close'); // 增加close状态
-    
+    e.target.className = e.target.className.replace(/tpw_icon/ig, 'tpw_icon tpw_close'); // 增加close状态
+
     chrome.runtime.sendMessage({
       type: "openContentPopup",
       offset: offset,

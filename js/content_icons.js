@@ -183,7 +183,9 @@ contentIcons.prototype.inputCollect = function () {
   }
   for (i = 0; i < inputs.length; i++) {
     for (var j = i + 1; j < inputs.length; j++) {
-      if (inputs[i].left == inputs[j].left) {
+      if (inputs[i].left == inputs[j].left &&
+        inputs[i].top != inputs[j].top &&
+        (!inputs[i].offsetWidth || (inputs[i].offsetWidth && inputs[i].offsetWidth > 100))) {
         inputs[i].active = true;
         inputs[j].active = true;
       }
@@ -259,6 +261,7 @@ contentIcons.prototype.offset = function (ele) {
 // 获取位于input元素0 0位置的绝对坐标
 contentIcons.prototype.offsetTL = function (ele) {
   if (!ele) return;
+  var offsetHeight = ele.offsetWidth;
   var top = ele.offsetTop;
   var left = ele.offsetLeft;
   while (ele.offsetParent) {
@@ -273,7 +276,8 @@ contentIcons.prototype.offsetTL = function (ele) {
   }
   return {
     left: left,
-    top: top
+    top: top,
+    offsetWidth: offsetHeight,
   }
 }
 // 点击事件
